@@ -15,4 +15,8 @@ export const routes: Routes = [
         path: APPRoutes.ITEM_GROUP,
         loadComponent: () => import('../pages/group-item/group-item-list/group-item-list').then((m) => m.GroupItemList),
     },
+    {
+        path: APPRoutes.SUB_CATEGORY,
+        loadComponent: () => import('../pages/sub-category/sub-category-list/sub-category-list').then((m) => m.SubCategoryList),
+    },
 ];

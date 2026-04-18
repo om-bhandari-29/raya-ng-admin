@@ -3,34 +3,38 @@ import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angula
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { Base } from '../../../core/base/base';
 import { IGenericResponse } from '../../../core/response/genericResponse.interface';
-import { IGroupItem } from '../group-item.response';
+import { ISubCategory } from '../sub-category.response';
+import { IGroupItem } from '../../group-item/group-item.response';
 
-export interface GroupItemDialogData {
+export interface SubCategoryDialogData {
   /** 0 for create, positive id for edit */
   itemId: number;
 }
 
-export interface GroupItemForm {
+export interface SubCategoryForm {
+  item_group_id: FormControl<number | null>;
   name: FormControl<string>;
   is_active: FormControl<boolean>;
 }
 
 @Component({
-  selector: 'app-group-item-upsert',
+  selector: 'app-sub-category-upsert',
   imports: [ReactiveFormsModule],
-  templateUrl: './group-item-upsert.html',
-  styleUrl: './group-item-upsert.scss',
+  templateUrl: './sub-category-upsert.html',
+  styleUrl: './sub-category-upsert.scss',
 })
-export class GroupItemUpsert extends Base implements OnInit {
-  private dialogRef = inject(MatDialogRef<GroupItemUpsert>);
-  private dialogData = inject<GroupItemDialogData>(MAT_DIALOG_DATA);
+export class SubCategoryUpsert extends Base implements OnInit {
+  private dialogRef = inject(MatDialogRef<SubCategoryUpsert>);
+  private dialogData = inject<SubCategoryDialogData>(MAT_DIALOG_DATA);
 
   isEditMode = signal<boolean>(false);
   isLoading = signal<boolean>(false);
   isSaving = signal<boolean>(false);
   errorMessage = signal<string | null>(null);
+  itemGroups = signal<IGroupItem[]>([]);
 
-  form = new FormGroup<GroupItemForm>({
+  form = new FormGroup<SubCategoryForm>({
+    item_group_id: new FormControl<number | null>(null, { validators: [Validators.required] }),
     name: new FormControl<string>('', {
       nonNullable: true,
       validators: [Validators.required, Validators.minLength(2)],
@@ -39,9 +43,21 @@ export class GroupItemUpsert extends Base implements OnInit {
   });
 
   ngOnInit(): void {
+    this.loadItemGroups();
     if (this.dialogData.itemId !== 0) {
       this.isEditMode.set(true);
       this.loadItem();
+    }
+  }
+
+  private async loadItemGroups(): Promise<void> {
+    try {
+      const response = await this.httpGetPromise<IGenericResponse<IGroupItem[]>>(
+        this.apiRoutes.item_group.GET_ALL
+      );
+      if (response.status) this.itemGroups.set(response.data);
+    } catch {
+      // non-blocking
     }
   }
 
@@ -50,11 +66,12 @@ export class GroupItemUpsert extends Base implements OnInit {
     this.errorMessage.set(null);
 
     try {
-      const url = this.apiRoutes.item_group.GET_BY_ID(this.dialogData.itemId);
-      const response = await this.httpGetPromise<IGenericResponse<IGroupItem>>(url);
+      const url = this.apiRoutes.sub_category.GET_BY_ID(this.dialogData.itemId);
+      const response = await this.httpGetPromise<IGenericResponse<ISubCategory>>(url);
 
       if (response.status) {
         this.form.patchValue({
+          item_group_id: response.data.item_group_id,
           name: response.data.name,
           is_active: response.data.is_active,
         });
@@ -81,11 +98,11 @@ export class GroupItemUpsert extends Base implements OnInit {
       const payload = this.form.getRawValue();
 
       if (this.isEditMode()) {
-        const url = this.apiRoutes.item_group.UPDATE(this.dialogData.itemId);
-        await this.httpPutPromise<IGenericResponse<IGroupItem>, typeof payload>(url, payload);
+        const url = this.apiRoutes.sub_category.UPDATE(this.dialogData.itemId);
+        await this.httpPutPromise<IGenericResponse<ISubCategory>, typeof payload>(url, payload);
       } else {
-        await this.httpPostPromise<IGenericResponse<IGroupItem>, typeof payload>(
-          this.apiRoutes.item_group.CREATE,
+        await this.httpPostPromise<IGenericResponse<ISubCategory>, typeof payload>(
+          this.apiRoutes.sub_category.CREATE,
           payload
         );
       }
@@ -102,5 +119,6 @@ export class GroupItemUpsert extends Base implements OnInit {
     this.dialogRef.close(false);
   }
 
+  get itemGroupIdControl() { return this.form.controls.item_group_id; }
   get nameControl() { return this.form.controls.name; }
 }
