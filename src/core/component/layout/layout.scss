@@ -1,0 +1,14 @@
+:host {
+  display: block;
+  min-height: 100vh;
+}
+
+main {
+  transition: margin-left 0.3s ease;
+}
+
+// Ensure content doesn't get hidden
+.bg-\[\#f8f9fb\] {
+  position: relative;
+  z-index: 1;
+}

@@ -1,6 +1,9 @@
 /* You can add global styles to this file, and also import other style files */
 @use 'tailwindcss';
 
+/* ngx-toastr styles */
+@import 'ngx-toastr/toastr';
+
 button, [role="button"], [role="switch"] {
   cursor: pointer;
 }

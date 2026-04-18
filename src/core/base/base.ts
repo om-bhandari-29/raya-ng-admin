@@ -1,6 +1,7 @@
 import { Component, inject } from '@angular/core';
 import { Observable, Subscription } from 'rxjs';
 import { HttpClient, HttpErrorResponse, HttpHeaders } from '@angular/common/http';
+import { ToastrService } from 'ngx-toastr';
 // import { ApiRoutes, ToastService, variable, ConfirmationUtil } from '@shared';
 import { APPRoutes } from '../constant/app-routes';
 import { APIRoutes } from '../constant/api-routes';
@@ -13,6 +14,7 @@ import { variable } from '../enum/variable.enum';
   template: '',
 })
 export class Base {
+  public toastr: ToastrService = inject(ToastrService);
   // public toastService: ToastService = inject(ToastService);
 
   public subscriptionArray: Array<Subscription> = [];
