@@ -1,4 +1,4 @@
 export const environment = {
-  baseUrl: 'https://wonderful-brattain.77-245-76-122.plesk.page',
+  baseUrl: 'http://192.168.29.237:3000/api',
   // baseUrl: 'http://indraprasth.runasp.net',
 };

@@ -13,6 +13,6 @@ export const routes: Routes = [
     },
     {
         path: APPRoutes.ITEM_GROUP,
-        loadComponent: () => import('./../pages/group-item/group-item').then((m) => m.GroupItem),
+        loadComponent: () => import('../pages/group-item/group-item-list/group-item-list').then((m) => m.GroupItemList),
     },
 ];
