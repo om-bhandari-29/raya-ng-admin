@@ -3,11 +3,11 @@ import { APPRoutes } from '../core/constant/app-routes';
 import { Layout } from '../core/component/layout/layout';
 
 export const routes: Routes = [
-    // {
-    //     path: '',
-    //     redirectTo: APPRoutes.DASHBOARD,
-    //     pathMatch: 'full'
-    // },
+    {
+        path: '',
+        redirectTo: APPRoutes.DASHBOARD,
+        pathMatch: 'full'
+    },
     {
         path: '',
         component: Layout,
@@ -23,6 +23,10 @@ export const routes: Routes = [
             {
                 path: APPRoutes.SUB_CATEGORY,
                 loadComponent: () => import('../pages/sub-category/sub-category-list/sub-category-list').then((m) => m.SubCategoryList),
+            },
+            {
+                path: APPRoutes.PRODUCT_MASTER,
+                loadComponent: () => import('../pages/product-master/product-master-list/product-master-list').then((m) => m.ProductMasterList),
             },
         ]
     },

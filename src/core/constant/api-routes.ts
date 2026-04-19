@@ -12,5 +12,12 @@ export const APIRoutes = {
     CREATE: '/sub-category',
     UPDATE: (id: number | string) => `/sub-category/${id}`,
     DELETE: (id: number | string) => `/sub-category/${id}`
+  },
+  product_master: {
+    GET_ALL: '/product-master',
+    GET_BY_ID: (id: number | string) => `/product-master/${id}`,
+    CREATE: '/product-master',
+    UPDATE: (id: number | string) => `/product-master/${id}`,
+    DELETE: (id: number | string) => `/product-master/${id}`
   }
 };

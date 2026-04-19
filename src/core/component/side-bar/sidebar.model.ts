@@ -36,4 +36,11 @@ export const MenuItems: IMenuSideBarItem[] = [
         userType: [],
         child: [],
     },
+    {
+        name: 'Product Master',
+        route: APPRoutes.PRODUCT_MASTER,
+        icon: 'bx bx-package',
+        userType: [],
+        child: [],
+    },
 ]

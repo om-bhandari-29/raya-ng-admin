@@ -89,6 +89,23 @@ export class Base {
     });
   }
 
+  public httpPatchPromise<RType, PType>(
+    url: string,
+    payload: PType,
+    showLoader: boolean = true
+  ): Promise<RType> {
+    return new Promise((resolve, reject) => {
+      this.httpClient
+        .patch<RType>(this.apiBaseUrl + url, payload, {
+          headers: this.getHeaderWithLoaderConfigure(showLoader),
+        })
+        .subscribe({
+          next: (res: RType) => resolve(res),
+          error: (err: HttpErrorResponse) => reject(err),
+        });
+    });
+  }
+
   public httpDeletePromise<T>(url: string, showLoader: boolean = true): Promise<T> {
     return new Promise((resolve, reject) => {
       this.httpClient

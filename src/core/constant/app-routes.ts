@@ -3,5 +3,6 @@ export const APPRoutes = {
   DASHBOARD: 'dashboard',
   PROFILE: 'profile',
   ITEM_GROUP: 'item-group',
-  SUB_CATEGORY: 'sub-category'
+  SUB_CATEGORY: 'sub-category',
+  PRODUCT_MASTER: 'product-master'
 };
