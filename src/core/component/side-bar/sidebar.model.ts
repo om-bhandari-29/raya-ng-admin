@@ -57,4 +57,11 @@ export const MenuItems: IMenuSideBarItem[] = [
         userType: [],
         child: [],
     },
+    {
+        name: 'Item',
+        route: APPRoutes.ITEM,
+        icon: 'bx bx-box',
+        userType: [],
+        child: [],
+    },
 ]

@@ -33,5 +33,12 @@ export const APIRoutes = {
     CREATE: '/uom',
     UPDATE: (id: number | string) => `/uom/${id}`,
     DELETE: (id: number | string) => `/uom/${id}`
+  },
+  item: {
+    GET_ALL: '/item',
+    GET_BY_ID: (id: number | string) => `/item/${id}`,
+    CREATE: '/item',
+    UPDATE: (id: number | string) => `/item/${id}`,
+    DELETE: (id: number | string) => `/item/${id}`
   }
 };

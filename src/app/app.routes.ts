@@ -36,6 +36,14 @@ export const routes: Routes = [
                 path: APPRoutes.UOM,
                 loadComponent: () => import('../pages/uom/uom-list/uom-list').then((m) => m.UomList),
             },
+            {
+                path: APPRoutes.ITEM,
+                loadComponent: () => import('../pages/item/item-list/item-list').then((m) => m.ItemList),
+            },
+            {
+                path: `${APPRoutes.ITEM}/:id`,
+                loadComponent: () => import('../pages/item/item-upsert/item-upsert').then((m) => m.ItemUpsert),
+            },
         ]
     },
 ];
