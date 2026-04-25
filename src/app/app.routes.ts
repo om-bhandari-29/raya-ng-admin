@@ -28,6 +28,10 @@ export const routes: Routes = [
                 path: APPRoutes.PRODUCT_MASTER,
                 loadComponent: () => import('../pages/product-master/product-master-list/product-master-list').then((m) => m.ProductMasterList),
             },
+            {
+                path: APPRoutes.GST_HSN_CODE,
+                loadComponent: () => import('../pages/gst-hsn-code/gst-hsn-code-list/gst-hsn-code-list').then((m) => m.GstHsnCodeList),
+            },
         ]
     },
 ];

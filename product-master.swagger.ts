@@ -1,119 +1,128 @@
 import { applyDecorators } from '@nestjs/common';
 import { ApiOperation, ApiResponse } from '@nestjs/swagger';
 
-const productMasterExample = {
+const gstHsnCodeExample = {
   id: 1,
-  name: 'Steel Rod',
-  sub_category_id: 1,
-  labour_rate: '150.50',
-  labour_rate_on: 'Net',
-  product_description: 'High quality steel rod',
+  hsn_code: '8471',
+  description: 'Automatic data processing machines and units',
+  gst_rate: '18.00',
   is_active: true,
-  created_at: '2026-04-19T00:00:00.000Z',
-  updated_at: '2026-04-19T00:00:00.000Z',
-  sub_category: {
-    id: 1,
-    name: 'Mobile Phones',
-    item_group_id: 1,
-    is_active: true,
-  },
+  created_at: '2026-04-25T00:00:00.000Z',
+  updated_at: '2026-04-25T00:00:00.000Z',
 };
 
 const notFoundExample = {
   status: false,
-  message: 'Product master with id 1 not found',
+  message: 'GST HSN code with id 1 not found',
   statusCode: 404,
   data: null,
 };
 
-export const CreateProductMasterSwagger = () =>
+const conflictExample = {
+  status: false,
+  message: "GST HSN code '8471' already exists",
+  statusCode: 409,
+  data: null,
+};
+
+export const CreateGstHsnCodeSwagger = () =>
   applyDecorators(
-    ApiOperation({ summary: 'Create a new product master' }),
+    ApiOperation({ summary: 'Create a new GST HSN code' }),
     ApiResponse({
       status: 201,
-      description: 'Product master created successfully',
+      description: 'GST HSN code created successfully',
       schema: {
         example: {
           status: true,
-          message: 'Product master created successfully',
+          message: 'GST HSN code created successfully',
           statusCode: 201,
-          data: productMasterExample,
+          data: gstHsnCodeExample,
+        },
+      },
+    }),
+    ApiResponse({
+      status: 409,
+      description: 'GST HSN code already exists',
+      schema: { example: conflictExample },
+    }),
+  );
+
+export const FindAllGstHsnCodesSwagger = () =>
+  applyDecorators(
+    ApiOperation({ summary: 'Get all GST HSN codes' }),
+    ApiResponse({
+      status: 200,
+      description: 'GST HSN codes retrieved successfully',
+      schema: {
+        example: {
+          status: true,
+          message: 'GST HSN codes retrieved successfully',
+          statusCode: 200,
+          data: [gstHsnCodeExample],
         },
       },
     }),
   );
 
-export const FindAllProductMastersSwagger = () =>
+export const FindOneGstHsnCodeSwagger = () =>
   applyDecorators(
-    ApiOperation({ summary: 'Get all product masters' }),
+    ApiOperation({ summary: 'Get a GST HSN code by id' }),
     ApiResponse({
       status: 200,
-      description: 'Product masters retrieved successfully',
+      description: 'GST HSN code retrieved successfully',
       schema: {
         example: {
           status: true,
-          message: 'Product masters retrieved successfully',
+          message: 'GST HSN code retrieved successfully',
           statusCode: 200,
-          data: [productMasterExample],
-        },
-      },
-    }),
-  );
-
-export const FindOneProductMasterSwagger = () =>
-  applyDecorators(
-    ApiOperation({ summary: 'Get a product master by id' }),
-    ApiResponse({
-      status: 200,
-      description: 'Product master retrieved successfully',
-      schema: {
-        example: {
-          status: true,
-          message: 'Product master retrieved successfully',
-          statusCode: 200,
-          data: productMasterExample,
+          data: gstHsnCodeExample,
         },
       },
     }),
     ApiResponse({
       status: 404,
-      description: 'Product master not found',
+      description: 'GST HSN code not found',
       schema: { example: notFoundExample },
     }),
   );
 
-export const UpdateProductMasterSwagger = () =>
+export const UpdateGstHsnCodeSwagger = () =>
   applyDecorators(
-    ApiOperation({ summary: 'Update a product master by id' }),
+    ApiOperation({ summary: 'Update a GST HSN code by id' }),
     ApiResponse({
       status: 200,
-      description: 'Product master updated successfully',
+      description: 'GST HSN code updated successfully',
       schema: {
         example: {
           status: true,
-          message: 'Product master updated successfully',
+          message: 'GST HSN code updated successfully',
           statusCode: 200,
-          data: productMasterExample,
+          data: gstHsnCodeExample,
         },
       },
     }),
     ApiResponse({
       status: 404,
-      description: 'Product master not found',
+      description: 'GST HSN code not found',
       schema: { example: notFoundExample },
+    }),
+    ApiResponse({
+      status: 409,
+      description: 'GST HSN code already exists',
+      schema: { example: conflictExample },
     }),
   );
 
-export const RemoveProductMasterSwagger = () =>
+export const RemoveGstHsnCodeSwagger = () =>
   applyDecorators(
-    ApiOperation({ summary: 'Delete a product master by id' }),
+    ApiOperation({ summary: 'Delete a GST HSN code by id' }),
     ApiResponse({
       status: 200,
-      description: 'Product master deleted successfully',
+      description: 'GST HSN code deleted successfully',
       schema: {
         example: {
           status: true,
-          message: 'Product master deleted successfully',
+          message: 'GST HSN code deleted successfully',
           statusCode: 200,
           data: null,
         },
@@ -121,7 +130,7 @@ export const RemoveProductMasterSwagger = () =>
     }),
     ApiResponse({
       status: 404,
-      description: 'Product master not found',
+      description: 'GST HSN code not found',
       schema: { example: notFoundExample },
     }),
   );

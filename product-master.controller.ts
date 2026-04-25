@@ -9,52 +9,52 @@ import {
   Post,
 } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
-import { ProductMasterService } from './product-master.service';
-import { CreateProductMasterDto } from './dto/create-product-master.dto';
-import { UpdateProductMasterDto } from './dto/update-product-master.dto';
+import { GstHsnCodeService } from './gst-hsn-code.service';
+import { CreateGstHsnCodeDto } from './dto/create-gst-hsn-code.dto';
+import { UpdateGstHsnCodeDto } from './dto/update-gst-hsn-code.dto';
 import {
-  CreateProductMasterSwagger,
-  FindAllProductMastersSwagger,
-  FindOneProductMasterSwagger,
-  UpdateProductMasterSwagger,
-  RemoveProductMasterSwagger,
-} from './product-master.swagger';
+  CreateGstHsnCodeSwagger,
+  FindAllGstHsnCodesSwagger,
+  FindOneGstHsnCodeSwagger,
+  UpdateGstHsnCodeSwagger,
+  RemoveGstHsnCodeSwagger,
+} from './gst-hsn-code.swagger';
 
-@ApiTags('product-master')
-@Controller('product-master')
-export class ProductMasterController {
-  constructor(private readonly productMasterService: ProductMasterService) {}
+@ApiTags('gst-hsn-code')
+@Controller('gst-hsn-code')
+export class GstHsnCodeController {
+  constructor(private readonly gstHsnCodeService: GstHsnCodeService) {}
 
   @Post()
-  @CreateProductMasterSwagger()
-  create(@Body() createProductMasterDto: CreateProductMasterDto) {
-    return this.productMasterService.create(createProductMasterDto);
+  @CreateGstHsnCodeSwagger()
+  create(@Body() createGstHsnCodeDto: CreateGstHsnCodeDto) {
+    return this.gstHsnCodeService.create(createGstHsnCodeDto);
   }
 
   @Get()
-  @FindAllProductMastersSwagger()
+  @FindAllGstHsnCodesSwagger()
   findAll() {
-    return this.productMasterService.findAll();
+    return this.gstHsnCodeService.findAll();
   }
 
   @Get(':id')
-  @FindOneProductMasterSwagger()
+  @FindOneGstHsnCodeSwagger()
   findOne(@Param('id', ParseIntPipe) id: number) {
-    return this.productMasterService.findOne(id);
+    return this.gstHsnCodeService.findOne(id);
   }
 
   @Patch(':id')
-  @UpdateProductMasterSwagger()
+  @UpdateGstHsnCodeSwagger()
   update(
     @Param('id', ParseIntPipe) id: number,
-    @Body() updateProductMasterDto: UpdateProductMasterDto,
+    @Body() updateGstHsnCodeDto: UpdateGstHsnCodeDto,
   ) {
-    return this.productMasterService.update(id, updateProductMasterDto);
+    return this.gstHsnCodeService.update(id, updateGstHsnCodeDto);
   }
 
   @Delete(':id')
-  @RemoveProductMasterSwagger()
+  @RemoveGstHsnCodeSwagger()
   remove(@Param('id', ParseIntPipe) id: number) {
-    return this.productMasterService.remove(id);
+    return this.gstHsnCodeService.remove(id);
   }
 }

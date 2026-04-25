@@ -19,5 +19,12 @@ export const APIRoutes = {
     CREATE: '/product-master',
     UPDATE: (id: number | string) => `/product-master/${id}`,
     DELETE: (id: number | string) => `/product-master/${id}`
+  },
+  gst_hsn_code: {
+    GET_ALL: '/gst-hsn-code',
+    GET_BY_ID: (id: number | string) => `/gst-hsn-code/${id}`,
+    CREATE: '/gst-hsn-code',
+    UPDATE: (id: number | string) => `/gst-hsn-code/${id}`,
+    DELETE: (id: number | string) => `/gst-hsn-code/${id}`
   }
 };

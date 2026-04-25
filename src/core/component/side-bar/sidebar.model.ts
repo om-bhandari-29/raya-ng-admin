@@ -43,4 +43,11 @@ export const MenuItems: IMenuSideBarItem[] = [
         userType: [],
         child: [],
     },
+    {
+        name: 'GST HSN Code',
+        route: APPRoutes.GST_HSN_CODE,
+        icon: 'bx bx-receipt',
+        userType: [],
+        child: [],
+    },
 ]
