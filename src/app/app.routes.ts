@@ -32,6 +32,10 @@ export const routes: Routes = [
                 path: APPRoutes.GST_HSN_CODE,
                 loadComponent: () => import('../pages/gst-hsn-code/gst-hsn-code-list/gst-hsn-code-list').then((m) => m.GstHsnCodeList),
             },
+            {
+                path: APPRoutes.UOM,
+                loadComponent: () => import('../pages/uom/uom-list/uom-list').then((m) => m.UomList),
+            },
         ]
     },
 ];

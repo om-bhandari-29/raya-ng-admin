@@ -1,20 +1,24 @@
-export class CreateGstHsnCodeDto {
-  @ApiProperty({ example: '8471' })
+import {
+  IsBoolean,
+  IsNotEmpty,
+  IsOptional,
+  IsString,
+  MaxLength,
+} from 'class-validator';
+import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
+
+export class CreateUomDto {
+  @ApiProperty({ example: 'Kilogram' })
   @IsString()
   @IsNotEmpty()
-  hsn_code: string;
+  @MaxLength(50)
+  name: string;
 
-  @ApiProperty({ example: 'Automatic data processing machines and units' })
+  @ApiPropertyOptional({ example: 'Unit of weight measurement' })
   @IsString()
-  @IsNotEmpty()
-  description: string;
-
-  @ApiProperty({ example: 18.0 })
-  @IsNumber()
-  @Min(0)
-  @Max(100)
-  @Type(() => Number)
-  gst_rate: number;
+  @IsOptional()
+  @MaxLength(255)
+  description?: string;
 
   @ApiPropertyOptional({ example: true })
   @IsBoolean()
@@ -23,24 +27,24 @@ export class CreateGstHsnCodeDto {
 }
 
 
-export class UpdateGstHsnCodeDto extends PartialType(CreateGstHsnCodeDto) {}
+import { PartialType } from '@nestjs/swagger';
+import { CreateUomDto } from './create-uom.dto';
+
+export class UpdateUomDto extends PartialType(CreateUomDto) {}
 
 
 import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
 
-@Entity('gst_hsn_code')
-export class GstHsnCode {
+@Entity('uom')
+export class Uom {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column({ length: 20, type: 'varchar', unique: true })
-  hsn_code: string;
+  @Column({ length: 50, type: 'varchar', unique: true })
+  name: string;
 
-  @Column({ length: 255, type: 'varchar' })
+  @Column({ length: 255, type: 'varchar', nullable: true })
   description: string;
-
-  @Column({ type: 'decimal', precision: 5, scale: 2 })
-  gst_rate: number;
 
   @Column({ type: 'boolean', default: true })
   is_active: boolean;

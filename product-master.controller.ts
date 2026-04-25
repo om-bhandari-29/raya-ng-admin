@@ -9,52 +9,52 @@ import {
   Post,
 } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
-import { GstHsnCodeService } from './gst-hsn-code.service';
-import { CreateGstHsnCodeDto } from './dto/create-gst-hsn-code.dto';
-import { UpdateGstHsnCodeDto } from './dto/update-gst-hsn-code.dto';
+import { UomService } from './uom.service';
+import { CreateUomDto } from './dto/create-uom.dto';
+import { UpdateUomDto } from './dto/update-uom.dto';
 import {
-  CreateGstHsnCodeSwagger,
-  FindAllGstHsnCodesSwagger,
-  FindOneGstHsnCodeSwagger,
-  UpdateGstHsnCodeSwagger,
-  RemoveGstHsnCodeSwagger,
-} from './gst-hsn-code.swagger';
+  CreateUomSwagger,
+  FindAllUomsSwagger,
+  FindOneUomSwagger,
+  UpdateUomSwagger,
+  RemoveUomSwagger,
+} from './uom.swagger';
 
-@ApiTags('gst-hsn-code')
-@Controller('gst-hsn-code')
-export class GstHsnCodeController {
-  constructor(private readonly gstHsnCodeService: GstHsnCodeService) {}
+@ApiTags('uom')
+@Controller('uom')
+export class UomController {
+  constructor(private readonly uomService: UomService) {}
 
   @Post()
-  @CreateGstHsnCodeSwagger()
-  create(@Body() createGstHsnCodeDto: CreateGstHsnCodeDto) {
-    return this.gstHsnCodeService.create(createGstHsnCodeDto);
+  @CreateUomSwagger()
+  create(@Body() createUomDto: CreateUomDto) {
+    return this.uomService.create(createUomDto);
   }
 
   @Get()
-  @FindAllGstHsnCodesSwagger()
+  @FindAllUomsSwagger()
   findAll() {
-    return this.gstHsnCodeService.findAll();
+    return this.uomService.findAll();
   }
 
   @Get(':id')
-  @FindOneGstHsnCodeSwagger()
+  @FindOneUomSwagger()
   findOne(@Param('id', ParseIntPipe) id: number) {
-    return this.gstHsnCodeService.findOne(id);
+    return this.uomService.findOne(id);
   }
 
   @Patch(':id')
-  @UpdateGstHsnCodeSwagger()
+  @UpdateUomSwagger()
   update(
     @Param('id', ParseIntPipe) id: number,
-    @Body() updateGstHsnCodeDto: UpdateGstHsnCodeDto,
+    @Body() updateUomDto: UpdateUomDto,
   ) {
-    return this.gstHsnCodeService.update(id, updateGstHsnCodeDto);
+    return this.uomService.update(id, updateUomDto);
   }
 
   @Delete(':id')
-  @RemoveGstHsnCodeSwagger()
+  @RemoveUomSwagger()
   remove(@Param('id', ParseIntPipe) id: number) {
-    return this.gstHsnCodeService.remove(id);
+    return this.uomService.remove(id);
   }
 }

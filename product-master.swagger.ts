@@ -1,11 +1,10 @@
 import { applyDecorators } from '@nestjs/common';
 import { ApiOperation, ApiResponse } from '@nestjs/swagger';
 
-const gstHsnCodeExample = {
+const uomExample = {
   id: 1,
-  hsn_code: '8471',
-  description: 'Automatic data processing machines and units',
-  gst_rate: '18.00',
+  name: 'Kilogram',
+  description: 'Unit of weight measurement',
   is_active: true,
   created_at: '2026-04-25T00:00:00.000Z',
   updated_at: '2026-04-25T00:00:00.000Z',
@@ -13,116 +12,116 @@ const gstHsnCodeExample = {
 
 const notFoundExample = {
   status: false,
-  message: 'GST HSN code with id 1 not found',
+  message: 'UOM with id 1 not found',
   statusCode: 404,
   data: null,
 };
 
 const conflictExample = {
   status: false,
-  message: "GST HSN code '8471' already exists",
+  message: "UOM 'Kilogram' already exists",
   statusCode: 409,
   data: null,
 };
 
-export const CreateGstHsnCodeSwagger = () =>
+export const CreateUomSwagger = () =>
   applyDecorators(
-    ApiOperation({ summary: 'Create a new GST HSN code' }),
+    ApiOperation({ summary: 'Create a new UOM' }),
     ApiResponse({
       status: 201,
-      description: 'GST HSN code created successfully',
+      description: 'UOM created successfully',
       schema: {
         example: {
           status: true,
-          message: 'GST HSN code created successfully',
+          message: 'UOM created successfully',
           statusCode: 201,
-          data: gstHsnCodeExample,
+          data: uomExample,
         },
       },
     }),
     ApiResponse({
       status: 409,
-      description: 'GST HSN code already exists',
+      description: 'UOM already exists',
       schema: { example: conflictExample },
     }),
   );
 
-export const FindAllGstHsnCodesSwagger = () =>
+export const FindAllUomsSwagger = () =>
   applyDecorators(
-    ApiOperation({ summary: 'Get all GST HSN codes' }),
+    ApiOperation({ summary: 'Get all UOMs' }),
     ApiResponse({
       status: 200,
-      description: 'GST HSN codes retrieved successfully',
+      description: 'UOMs retrieved successfully',
       schema: {
         example: {
           status: true,
-          message: 'GST HSN codes retrieved successfully',
+          message: 'UOMs retrieved successfully',
           statusCode: 200,
-          data: [gstHsnCodeExample],
+          data: [uomExample],
         },
       },
     }),
   );
 
-export const FindOneGstHsnCodeSwagger = () =>
+export const FindOneUomSwagger = () =>
   applyDecorators(
-    ApiOperation({ summary: 'Get a GST HSN code by id' }),
+    ApiOperation({ summary: 'Get a UOM by id' }),
     ApiResponse({
       status: 200,
-      description: 'GST HSN code retrieved successfully',
+      description: 'UOM retrieved successfully',
       schema: {
         example: {
           status: true,
-          message: 'GST HSN code retrieved successfully',
+          message: 'UOM retrieved successfully',
           statusCode: 200,
-          data: gstHsnCodeExample,
+          data: uomExample,
         },
       },
     }),
     ApiResponse({
       status: 404,
-      description: 'GST HSN code not found',
+      description: 'UOM not found',
       schema: { example: notFoundExample },
     }),
   );
 
-export const UpdateGstHsnCodeSwagger = () =>
+export const UpdateUomSwagger = () =>
   applyDecorators(
-    ApiOperation({ summary: 'Update a GST HSN code by id' }),
+    ApiOperation({ summary: 'Update a UOM by id' }),
     ApiResponse({
       status: 200,
-      description: 'GST HSN code updated successfully',
+      description: 'UOM updated successfully',
       schema: {
         example: {
           status: true,
-          message: 'GST HSN code updated successfully',
+          message: 'UOM updated successfully',
           statusCode: 200,
-          data: gstHsnCodeExample,
+          data: uomExample,
         },
       },
     }),
     ApiResponse({
       status: 404,
-      description: 'GST HSN code not found',
+      description: 'UOM not found',
       schema: { example: notFoundExample },
     }),
     ApiResponse({
       status: 409,
-      description: 'GST HSN code already exists',
+      description: 'UOM already exists',
       schema: { example: conflictExample },
     }),
   );
 
-export const RemoveGstHsnCodeSwagger = () =>
+export const RemoveUomSwagger = () =>
   applyDecorators(
-    ApiOperation({ summary: 'Delete a GST HSN code by id' }),
+    ApiOperation({ summary: 'Delete a UOM by id' }),
     ApiResponse({
       status: 200,
-      description: 'GST HSN code deleted successfully',
+      description: 'UOM deleted successfully',
       schema: {
         example: {
           status: true,
-          message: 'GST HSN code deleted successfully',
+          message: 'UOM deleted successfully',
           statusCode: 200,
           data: null,
         },
@@ -130,7 +129,7 @@ export const RemoveGstHsnCodeSwagger = () =>
     }),
     ApiResponse({
       status: 404,
-      description: 'GST HSN code not found',
+      description: 'UOM not found',
       schema: { example: notFoundExample },
     }),
   );

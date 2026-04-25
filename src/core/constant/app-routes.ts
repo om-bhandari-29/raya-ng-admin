@@ -5,5 +5,6 @@ export const APPRoutes = {
   ITEM_GROUP: 'item-group',
   SUB_CATEGORY: 'sub-category',
   PRODUCT_MASTER: 'product-master',
-  GST_HSN_CODE: 'gst-hsn-code'
+  GST_HSN_CODE: 'gst-hsn-code',
+  UOM: 'uom'
 };
