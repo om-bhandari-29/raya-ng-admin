@@ -40,5 +40,12 @@ export const APIRoutes = {
     CREATE: '/item',
     UPDATE: (id: number | string) => `/item/${id}`,
     DELETE: (id: number | string) => `/item/${id}`
+  },
+  item_attribute: {
+    GET_ALL: '/item-attribute-master',
+    GET_BY_ID: (id: number | string) => `/item-attribute-master/${id}`,
+    CREATE: '/item-attribute-master',
+    UPDATE: (id: number | string) => `/item-attribute-master/${id}`,
+    DELETE: (id: number | string) => `/item-attribute-master/${id}`
   }
 };

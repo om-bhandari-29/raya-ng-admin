@@ -44,6 +44,14 @@ export const routes: Routes = [
                 path: `${APPRoutes.ITEM}/:id`,
                 loadComponent: () => import('../pages/item/item-upsert/item-upsert').then((m) => m.ItemUpsert),
             },
+            {
+                path: APPRoutes.ITEM_ATTRIBUTE,
+                loadComponent: () => import('../pages/item-attribute/item-attribute-list/item-attribute-list').then((m) => m.ItemAttributeList),
+            },
+            {
+                path: `${APPRoutes.ITEM_ATTRIBUTE}/:id`,
+                loadComponent: () => import('../pages/item-attribute/item-attribute-upsert/item-attribute-upsert').then((m) => m.ItemAttributeUpsert),
+            },
         ]
     },
 ];
