@@ -9,6 +9,7 @@ import { IProductMaster } from '../../product-master/product-master.response';
 import { IUom } from '../../uom/uom.response';
 import { IGstHsnCode } from '../../gst-hsn-code/gst-hsn-code.response';
 import { IItemAttribute } from '../../item-attribute/item-attribute.response';
+import { IStoneMaster } from '../../stone-master/stone-master.response';
 
 export type ItemTab = 'details' | 'dashboard' | 'inventory' | 'variants' | 'metal-tags' | 'stone-details' | 'accounting' | 'purchasing' | 'sales' | 'tax' | 'quality' | 'manufacturing';
 
@@ -62,8 +63,15 @@ export interface ItemVariantAttribute {
   stone_family: string;
 }
 
-export interface ItemVariantWeightForm {
-  gross_weight: FormControl<number>;
+export interface ItemStoneDetail {
+  id: number;
+  stone_family_id: number | null;
+  stone_clarity_id: number | null;
+  stone_shape_id: number | null;
+  weight_carat: number;
+}
+
+export interface ItemVariantWeightForm {  gross_weight: FormControl<number>;
   net_weight: FormControl<number>;
   stones_weight: FormControl<number>;
   stone_carat_wt: FormControl<number>;
@@ -100,6 +108,16 @@ export class ItemUpsert extends Base implements OnInit {
 
   itemAttributes = signal<IItemAttribute[]>([]);
   variantAttributes = signal<ItemVariantAttribute[]>([]);
+
+  stoneFamilies = signal<IStoneMaster[]>([]);
+  stoneClarities = signal<IStoneMaster[]>([]);
+  stoneShapes = signal<IStoneMaster[]>([]);
+  stoneDetails = signal<ItemStoneDetail[]>([]);
+  editingStoneId = signal<number | null>(null);
+
+  stoneModalOpen = signal<boolean>(false);
+  stoneModalIsNew = signal<boolean>(false);
+  stoneModalDraft = signal<ItemStoneDetail>({ id: 0, stone_family_id: null, stone_clarity_id: null, stone_shape_id: null, weight_carat: 0 });
   editingVariantId = signal<number | null>(null);
 
   variantModalOpen = signal<boolean>(false);
@@ -308,20 +326,72 @@ export class ItemUpsert extends Base implements OnInit {
       .join(', ');
   }
 
+  addStoneDetail(): void {
+    this.stoneModalDraft.set({ id: Date.now(), stone_family_id: null, stone_clarity_id: null, stone_shape_id: null, weight_carat: 0 });
+    this.stoneModalIsNew.set(true);
+    this.stoneModalOpen.set(true);
+  }
+
+  openStoneModal(id: number): void {
+    const row = this.stoneDetails().find(r => r.id === id);
+    if (!row) return;
+    this.stoneModalDraft.set({ ...row });
+    this.stoneModalIsNew.set(false);
+    this.stoneModalOpen.set(true);
+  }
+
+  closeStoneModal(): void { this.stoneModalOpen.set(false); }
+
+  confirmStoneModal(): void {
+    const draft = this.stoneModalDraft();
+    if (this.stoneModalIsNew()) {
+      this.stoneDetails.update(s => [...s, { ...draft }]);
+    } else {
+      this.stoneDetails.update(rows => rows.map(r => r.id === draft.id ? { ...draft } : r));
+    }
+    this.stoneModalOpen.set(false);
+  }
+
+  updateStoneDraft(field: keyof ItemStoneDetail, value: any): void {
+    this.stoneModalDraft.update(d => ({ ...d, [field]: value }));
+  }
+
+  editStoneRow(id: number): void { this.openStoneModal(id); }
+  cancelStoneEdit(): void { this.editingStoneId.set(null); }
+
+  deleteStoneRow(id: number): void {
+    this.stoneDetails.update(s => s.filter(r => r.id !== id));
+  }
+
+  updateStoneField(id: number, field: keyof ItemStoneDetail, value: any): void {
+    this.stoneDetails.update(rows => rows.map(r => r.id === id ? { ...r, [field]: value } : r));
+  }
+
+  getStoneName(list: IStoneMaster[], id: number | null): string {
+    if (!id) return '—';
+    return list.find(s => s.id === id)?.name ?? '—';
+  }
+
   private async loadDropdowns(): Promise<void> {
     try {
-      const [groups, products, uoms, hsn, attrs] = await Promise.all([
+      const [groups, products, uoms, hsn, attrs, families, clarities, shapes] = await Promise.all([
         this.httpGetPromise<IGenericResponse<IGroupItem[]>>(this.apiRoutes.item_group.GET_ALL),
         this.httpGetPromise<IGenericResponse<IProductMaster[]>>(this.apiRoutes.product_master.GET_ALL),
         this.httpGetPromise<IGenericResponse<IUom[]>>(this.apiRoutes.uom.GET_ALL),
         this.httpGetPromise<IGenericResponse<IGstHsnCode[]>>(this.apiRoutes.gst_hsn_code.GET_ALL),
         this.httpGetPromise<IGenericResponse<IItemAttribute[]>>(this.apiRoutes.item_attribute.GET_ALL),
+        this.httpGetPromise<IGenericResponse<IStoneMaster[]>>(this.apiRoutes.stone_family.GET_ALL),
+        this.httpGetPromise<IGenericResponse<IStoneMaster[]>>(this.apiRoutes.stone_clarity.GET_ALL),
+        this.httpGetPromise<IGenericResponse<IStoneMaster[]>>(this.apiRoutes.stone_shape.GET_ALL),
       ]);
       if (groups.status) this.itemGroups.set(groups.data);
       if (products.status) this.productMasters.set(products.data);
       if (uoms.status) this.uoms.set(uoms.data);
       if (hsn.status) this.hsnCodes.set(hsn.data);
       if (attrs.status) this.itemAttributes.set(attrs.data);
+      if (families.status) this.stoneFamilies.set(families.data);
+      if (clarities.status) this.stoneClarities.set(clarities.data);
+      if (shapes.status) this.stoneShapes.set(shapes.data);
     } catch {
       // non-critical, dropdowns may be empty
     }
