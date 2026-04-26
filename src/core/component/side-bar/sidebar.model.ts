@@ -65,13 +65,6 @@ export const MenuItems: IMenuSideBarItem[] = [
         child: [],
     },
     {
-        name: 'Item',
-        route: APPRoutes.ITEM,
-        icon: 'bx bx-box',
-        userType: [],
-        child: [],
-    },
-    {
         name: 'Stone Family',
         route: APPRoutes.STONE_FAMILY,
         icon: 'bx bx-diamond',
@@ -89,6 +82,13 @@ export const MenuItems: IMenuSideBarItem[] = [
         name: 'Stone Shape',
         route: APPRoutes.STONE_SHAPE,
         icon: 'bx bx-shape-circle',
+        userType: [],
+        child: [],
+    },
+    {
+        name: 'Item',
+        route: APPRoutes.ITEM,
+        icon: 'bx bx-box',
         userType: [],
         child: [],
     },
