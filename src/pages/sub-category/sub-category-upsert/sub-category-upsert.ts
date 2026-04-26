@@ -3,8 +3,8 @@ import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angula
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { Base } from '../../../core/base/base';
 import { IGenericResponse } from '../../../core/response/genericResponse.interface';
+import { IComboItem } from '../../../core/response/combo.interface';
 import { ISubCategory } from '../sub-category.response';
-import { IGroupItem } from '../../group-item/group-item.response';
 
 export interface SubCategoryDialogData {
   /** 0 for create, positive id for edit */
@@ -31,7 +31,7 @@ export class SubCategoryUpsert extends Base implements OnInit {
   isLoading = signal<boolean>(false);
   isSaving = signal<boolean>(false);
   errorMessage = signal<string | null>(null);
-  itemGroups = signal<IGroupItem[]>([]);
+  itemGroups = signal<IComboItem[]>([]);
 
   form = new FormGroup<SubCategoryForm>({
     item_group_id: new FormControl<number | null>(null, { validators: [Validators.required] }),
@@ -52,8 +52,8 @@ export class SubCategoryUpsert extends Base implements OnInit {
 
   private async loadItemGroups(): Promise<void> {
     try {
-      const response = await this.httpGetPromise<IGenericResponse<IGroupItem[]>>(
-        this.apiRoutes.item_group.GET_ALL
+      const response = await this.httpGetPromise<IGenericResponse<IComboItem[]>>(
+        this.apiRoutes.item_group.COMBO
       );
       if (response.status) this.itemGroups.set(response.data);
     } catch {
@@ -99,7 +99,7 @@ export class SubCategoryUpsert extends Base implements OnInit {
 
       if (this.isEditMode()) {
         const url = this.apiRoutes.sub_category.UPDATE(this.dialogData.itemId);
-        await this.httpPutPromise<IGenericResponse<ISubCategory>, typeof payload>(url, payload);
+        await this.httpPatchPromise<IGenericResponse<ISubCategory>, typeof payload>(url, payload);
       } else {
         await this.httpPostPromise<IGenericResponse<ISubCategory>, typeof payload>(
           this.apiRoutes.sub_category.CREATE,

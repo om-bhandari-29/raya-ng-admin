@@ -1,7 +1,7 @@
 import { Component, Input, Output, EventEmitter, OnChanges, SimpleChanges, signal } from '@angular/core';
 import { ItemDropdowns } from '../../../item.models';
 import { IItem } from '../../../item.response';
-import { IStoneMaster } from '../../../../stone-master/stone-master.response';
+import { IComboItem } from '../../../../../core/response/combo.interface';
 
 export interface ItemStoneDetailRow {
   id: number;
@@ -31,9 +31,9 @@ export class StoneDetailsTab implements OnChanges {
   stoneModalIsNew = signal<boolean>(false);
   stoneModalDraft = signal<ItemStoneDetailRow>({ id: 0, stone_family_id: null, stone_clarity_id: null, stone_shape_id: null, weight_carat: 0 });
 
-  get stoneFamilies(): IStoneMaster[] { return this.dropdowns?.stoneFamilies ?? []; }
-  get stoneClarities(): IStoneMaster[] { return this.dropdowns?.stoneClarities ?? []; }
-  get stoneShapes(): IStoneMaster[] { return this.dropdowns?.stoneShapes ?? []; }
+  get stoneFamilies(): IComboItem[] { return this.dropdowns?.stoneFamilies ?? []; }
+  get stoneClarities(): IComboItem[] { return this.dropdowns?.stoneClarities ?? []; }
+  get stoneShapes(): IComboItem[] { return this.dropdowns?.stoneShapes ?? []; }
 
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['item'] && this.item) {
@@ -79,7 +79,7 @@ export class StoneDetailsTab implements OnChanges {
 
   deleteRow(id: number): void { this.stoneDetails.update(s => s.filter(r => r.id !== id)); }
 
-  getStoneName(list: IStoneMaster[], id: number | null): string {
+  getStoneName(list: IComboItem[], id: number | null): string {
     if (!id) return '—';
     return list.find(s => s.id === id)?.name ?? '—';
   }

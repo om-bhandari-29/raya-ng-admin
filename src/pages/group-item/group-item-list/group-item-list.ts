@@ -1,5 +1,6 @@
 import { Component, OnInit, inject, signal } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
+import { HttpErrorResponse } from '@angular/common/http';
 import { Base } from '../../../core/base/base';
 import { IGenericResponse } from '../../../core/response/genericResponse.interface';
 import { IGroupItem } from '../group-item.response';
@@ -44,6 +45,26 @@ export class GroupItemList extends Base implements OnInit {
         this.getAllGroupItems();
       }
     });
+  }
+
+  async deleteGroupItem(id: number): Promise<void> {
+    if (!confirm('Are you sure you want to delete this item?')) return;
+
+    try {
+      const url = this.apiRoutes.item_group.DELETE(id);
+      const response = await this.httpDeletePromise<IGenericResponse<null>>(url);
+
+      if (response.status) {
+        this.getAllGroupItems();
+      } else {
+        this.errorMessage.set(response.message);
+      }
+    } catch (err) {
+      const message = err instanceof HttpErrorResponse
+        ? err.error?.message ?? 'Failed to delete item. Please try again.'
+        : 'Failed to delete item. Please try again.';
+      this.toastr.error(message);
+    }
   }
 
   private async getAllGroupItems(): Promise<void> {

@@ -2,13 +2,9 @@ import { Component, OnInit, inject, signal } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Base } from '../../../core/base/base';
 import { IGenericResponse } from '../../../core/response/genericResponse.interface';
-import { IItem } from '../item.response';
-import { IGroupItem } from '../../group-item/group-item.response';
-import { IProductMaster } from '../../product-master/product-master.response';
-import { IUom } from '../../uom/uom.response';
-import { IGstHsnCode } from '../../gst-hsn-code/gst-hsn-code.response';
+import { IComboItem, IComboHsnCode } from '../../../core/response/combo.interface';
 import { IItemAttribute } from '../../item-attribute/item-attribute.response';
-import { IStoneMaster } from '../../stone-master/stone-master.response';
+import { IItem } from '../item.response';
 import { ItemDropdowns } from '../item.models';
 import { ItemTab, ITEM_TABS } from '../../../core/enum/item-tab.enum';
 import { DetailsTab, ItemDetailsPayload } from './tabs/details-tab/details-tab';
@@ -158,14 +154,14 @@ export class ItemUpsert extends Base implements OnInit {
   private async loadDropdowns(): Promise<void> {
     try {
       const [groups, products, uoms, hsn, attrs, families, clarities, shapes] = await Promise.all([
-        this.httpGetPromise<IGenericResponse<IGroupItem[]>>(this.apiRoutes.item_group.GET_ALL),
-        this.httpGetPromise<IGenericResponse<IProductMaster[]>>(this.apiRoutes.product_master.GET_ALL),
-        this.httpGetPromise<IGenericResponse<IUom[]>>(this.apiRoutes.uom.GET_ALL),
-        this.httpGetPromise<IGenericResponse<IGstHsnCode[]>>(this.apiRoutes.gst_hsn_code.GET_ALL),
+        this.httpGetPromise<IGenericResponse<IComboItem[]>>(this.apiRoutes.item_group.COMBO),
+        this.httpGetPromise<IGenericResponse<IComboItem[]>>(this.apiRoutes.product_master.COMBO()),
+        this.httpGetPromise<IGenericResponse<IComboItem[]>>(this.apiRoutes.uom.COMBO),
+        this.httpGetPromise<IGenericResponse<IComboHsnCode[]>>(this.apiRoutes.gst_hsn_code.COMBO),
         this.httpGetPromise<IGenericResponse<IItemAttribute[]>>(this.apiRoutes.item_attribute.GET_ALL),
-        this.httpGetPromise<IGenericResponse<IStoneMaster[]>>(this.apiRoutes.stone_family.GET_ALL),
-        this.httpGetPromise<IGenericResponse<IStoneMaster[]>>(this.apiRoutes.stone_clarity.GET_ALL),
-        this.httpGetPromise<IGenericResponse<IStoneMaster[]>>(this.apiRoutes.stone_shape.GET_ALL),
+        this.httpGetPromise<IGenericResponse<IComboItem[]>>(this.apiRoutes.stone_family.COMBO),
+        this.httpGetPromise<IGenericResponse<IComboItem[]>>(this.apiRoutes.stone_clarity.COMBO),
+        this.httpGetPromise<IGenericResponse<IComboItem[]>>(this.apiRoutes.stone_shape.COMBO),
       ]);
       this.dropdowns.set({
         itemGroups: groups.status ? groups.data : [],

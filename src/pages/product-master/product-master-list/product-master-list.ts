@@ -1,5 +1,6 @@
 import { Component, OnInit, inject, signal } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
+import { HttpErrorResponse } from '@angular/common/http';
 import { Base } from '../../../core/base/base';
 import { IGenericResponse } from '../../../core/response/genericResponse.interface';
 import { IProductMaster } from '../product-master.response';
@@ -42,6 +43,26 @@ export class ProductMasterList extends Base implements OnInit {
     dialogRef.afterClosed().subscribe((saved: boolean) => {
       if (saved) this.getAll();
     });
+  }
+
+  async delete(id: number): Promise<void> {
+    if (!confirm('Are you sure you want to delete this product master?')) return;
+
+    try {
+      const response = await this.httpDeletePromise<IGenericResponse<null>>(
+        this.apiRoutes.product_master.DELETE(id)
+      );
+      if (response.status) {
+        this.getAll();
+      } else {
+        this.errorMessage.set(response.message);
+      }
+    } catch (err) {
+      const message = err instanceof HttpErrorResponse
+        ? err.error?.message ?? 'Failed to delete. Please try again.'
+        : 'Failed to delete. Please try again.';
+      this.toastr.error(message);
+    }
   }
 
   private async getAll(): Promise<void> {

@@ -82,7 +82,7 @@ export class GroupItemUpsert extends Base implements OnInit {
 
       if (this.isEditMode()) {
         const url = this.apiRoutes.item_group.UPDATE(this.dialogData.itemId);
-        await this.httpPutPromise<IGenericResponse<IGroupItem>, typeof payload>(url, payload);
+        await this.httpPatchPromise<IGenericResponse<IGroupItem>, typeof payload>(url, payload);
       } else {
         await this.httpPostPromise<IGenericResponse<IGroupItem>, typeof payload>(
           this.apiRoutes.item_group.CREATE,

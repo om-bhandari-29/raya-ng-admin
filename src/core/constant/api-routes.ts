@@ -4,35 +4,42 @@ export const APIRoutes = {
     GET_BY_ID: (id: number | string) => `/item-group/${id}`,
     CREATE: '/item-group',
     UPDATE: (id: number | string) => `/item-group/${id}`,
-    DELETE: (id: number | string) => `/item-group/${id}`
+    DELETE: (id: number | string) => `/item-group/${id}`,
+    COMBO: '/item-group/combo'
   },
   sub_category: {
     GET_ALL: '/sub-category',
     GET_BY_ID: (id: number | string) => `/sub-category/${id}`,
     CREATE: '/sub-category',
     UPDATE: (id: number | string) => `/sub-category/${id}`,
-    DELETE: (id: number | string) => `/sub-category/${id}`
+    DELETE: (id: number | string) => `/sub-category/${id}`,
+    COMBO: (item_group_id?: number) =>
+      item_group_id ? `/sub-category/combo?item_group_id=${item_group_id}` : '/sub-category/combo'
   },
   product_master: {
     GET_ALL: '/product-master',
     GET_BY_ID: (id: number | string) => `/product-master/${id}`,
     CREATE: '/product-master',
     UPDATE: (id: number | string) => `/product-master/${id}`,
-    DELETE: (id: number | string) => `/product-master/${id}`
+    DELETE: (id: number | string) => `/product-master/${id}`,
+    COMBO: (sub_category_id?: number) =>
+      sub_category_id ? `/product-master/combo?sub_category_id=${sub_category_id}` : '/product-master/combo'
   },
   gst_hsn_code: {
     GET_ALL: '/gst-hsn-code',
     GET_BY_ID: (id: number | string) => `/gst-hsn-code/${id}`,
     CREATE: '/gst-hsn-code',
     UPDATE: (id: number | string) => `/gst-hsn-code/${id}`,
-    DELETE: (id: number | string) => `/gst-hsn-code/${id}`
+    DELETE: (id: number | string) => `/gst-hsn-code/${id}`,
+    COMBO: '/gst-hsn-code/combo'
   },
   uom: {
     GET_ALL: '/uom',
     GET_BY_ID: (id: number | string) => `/uom/${id}`,
     CREATE: '/uom',
     UPDATE: (id: number | string) => `/uom/${id}`,
-    DELETE: (id: number | string) => `/uom/${id}`
+    DELETE: (id: number | string) => `/uom/${id}`,
+    COMBO: '/uom/combo'
   },
   item: {
     GET_ALL: '/item',
@@ -46,27 +53,31 @@ export const APIRoutes = {
     GET_BY_ID: (id: number | string) => `/item-attribute-master/${id}`,
     CREATE: '/item-attribute-master',
     UPDATE: (id: number | string) => `/item-attribute-master/${id}`,
-    DELETE: (id: number | string) => `/item-attribute-master/${id}`
+    DELETE: (id: number | string) => `/item-attribute-master/${id}`,
+    COMBO: '/item-attribute-master/combo'
   },
   stone_family: {
     GET_ALL: '/stone-master/family',
     GET_BY_ID: (id: number | string) => `/stone-master/family/${id}`,
     CREATE: '/stone-master/family',
     UPDATE: (id: number | string) => `/stone-master/family/${id}`,
-    DELETE: (id: number | string) => `/stone-master/family/${id}`
+    DELETE: (id: number | string) => `/stone-master/family/${id}`,
+    COMBO: '/stone-master/family/combo'
   },
   stone_clarity: {
     GET_ALL: '/stone-master/clarity',
     GET_BY_ID: (id: number | string) => `/stone-master/clarity/${id}`,
     CREATE: '/stone-master/clarity',
     UPDATE: (id: number | string) => `/stone-master/clarity/${id}`,
-    DELETE: (id: number | string) => `/stone-master/clarity/${id}`
+    DELETE: (id: number | string) => `/stone-master/clarity/${id}`,
+    COMBO: '/stone-master/clarity/combo'
   },
   stone_shape: {
     GET_ALL: '/stone-master/shape',
     GET_BY_ID: (id: number | string) => `/stone-master/shape/${id}`,
     CREATE: '/stone-master/shape',
     UPDATE: (id: number | string) => `/stone-master/shape/${id}`,
-    DELETE: (id: number | string) => `/stone-master/shape/${id}`
+    DELETE: (id: number | string) => `/stone-master/shape/${id}`,
+    COMBO: '/stone-master/shape/combo'
   }
 };

@@ -1,11 +1,10 @@
-import { Component, OnInit, inject, signal, computed } from '@angular/core';
+import { Component, OnInit, inject, signal } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { Base } from '../../../core/base/base';
 import { IGenericResponse } from '../../../core/response/genericResponse.interface';
+import { IComboItem } from '../../../core/response/combo.interface';
 import { IProductMaster } from '../product-master.response';
-import { ISubCategory } from '../../sub-category/sub-category.response';
-import { IGroupItem } from '../../group-item/group-item.response';
 
 export interface ProductMasterDialogData {
   /** 0 for create, positive id for edit */
@@ -13,6 +12,7 @@ export interface ProductMasterDialogData {
 }
 
 export interface ProductMasterForm {
+  item_group_id: FormControl<number | null>;
   sub_category_id: FormControl<number | null>;
   name: FormControl<string>;
   labour_rate: FormControl<string>;
@@ -37,19 +37,14 @@ export class ProductMasterUpsert extends Base implements OnInit {
   errorMessage = signal<string | null>(null);
   
   // Category (Group Item) related
-  itemGroups = signal<IGroupItem[]>([]);
-  selectedCategoryId = signal<number | null>(null);
+  itemGroups = signal<IComboItem[]>([]);
   
   // Sub Category related
-  allSubCategories = signal<ISubCategory[]>([]);
-  filteredSubCategories = computed(() => {
-    const categoryId = this.selectedCategoryId();
-    if (!categoryId) return [];
-    return this.allSubCategories().filter(sc => sc.item_group_id === categoryId);
-  });
+  subCategories = signal<IComboItem[]>([]);
 
   form = new FormGroup<ProductMasterForm>({
-    sub_category_id: new FormControl<number | null>(null, { validators: [Validators.required] }),
+    item_group_id: new FormControl<number | null>(null),
+    sub_category_id: new FormControl<number | null>({ value: null, disabled: true }, { validators: [Validators.required] }),
     name: new FormControl<string>('', {
       nonNullable: true,
       validators: [Validators.required, Validators.minLength(2)],
@@ -71,17 +66,21 @@ export class ProductMasterUpsert extends Base implements OnInit {
 
   ngOnInit(): void {
     this.loadItemGroups();
-    this.loadSubCategories();
     if (this.dialogData.itemId !== 0) {
       this.isEditMode.set(true);
       this.loadItem();
     }
   }
 
+  private async loadDropdownsThenItem(): Promise<void> {
+    await Promise.all([this.loadItemGroups(), this.loadSubCategories()]);
+    this.loadItem();
+  }
+
   private async loadItemGroups(): Promise<void> {
     try {
-      const response = await this.httpGetPromise<IGenericResponse<IGroupItem[]>>(
-        this.apiRoutes.item_group.GET_ALL
+      const response = await this.httpGetPromise<IGenericResponse<IComboItem[]>>(
+        this.apiRoutes.item_group.COMBO
       );
       if (response.status) this.itemGroups.set(response.data);
     } catch {
@@ -89,21 +88,27 @@ export class ProductMasterUpsert extends Base implements OnInit {
     }
   }
 
-  private async loadSubCategories(): Promise<void> {
+  private async loadSubCategories(item_group_id?: number): Promise<void> {
     try {
-      const response = await this.httpGetPromise<IGenericResponse<ISubCategory[]>>(
-        this.apiRoutes.sub_category.GET_ALL
+      const response = await this.httpGetPromise<IGenericResponse<IComboItem[]>>(
+        this.apiRoutes.sub_category.COMBO(item_group_id)
       );
-      if (response.status) this.allSubCategories.set(response.data);
+      if (response.status) this.subCategories.set(response.data);
     } catch {
       // non-blocking
     }
   }
 
   onCategoryChange(categoryId: number | null): void {
-    this.selectedCategoryId.set(categoryId);
-    // Reset sub-category when category changes
+    this.form.controls.item_group_id.setValue(categoryId);
     this.form.controls.sub_category_id.setValue(null);
+    this.subCategories.set([]);
+    if (categoryId) {
+      this.form.controls.sub_category_id.enable();
+      this.loadSubCategories(categoryId);
+    } else {
+      this.form.controls.sub_category_id.disable();
+    }
   }
 
   private async loadItem(): Promise<void> {
@@ -115,13 +120,13 @@ export class ProductMasterUpsert extends Base implements OnInit {
       const response = await this.httpGetPromise<IGenericResponse<IProductMaster>>(url);
 
       if (response.status) {
-        // Set the category based on the sub_category's item_group_id
-        const subCategory = this.allSubCategories().find(sc => sc.id === response.data.sub_category_id);
-        if (subCategory) {
-          this.selectedCategoryId.set(subCategory.item_group_id);
-        }
-        
+        const itemGroupId = response.data.sub_category?.item_group_id ?? null;
+
+        await this.loadSubCategories(itemGroupId ?? undefined);
+        this.form.controls.sub_category_id.enable();
+
         this.form.patchValue({
+          item_group_id: itemGroupId,
           sub_category_id: response.data.sub_category_id,
           name: response.data.name,
           labour_rate: response.data.labour_rate,
@@ -149,7 +154,7 @@ export class ProductMasterUpsert extends Base implements OnInit {
     this.errorMessage.set(null);
 
     try {
-      const payload = this.form.getRawValue();
+      const { item_group_id, ...payload } = this.form.getRawValue();
 
       if (this.isEditMode()) {
         const url = this.apiRoutes.product_master.UPDATE(this.dialogData.itemId);

@@ -1,19 +1,15 @@
-import { IGroupItem } from '../group-item/group-item.response';
-import { IProductMaster } from '../product-master/product-master.response';
-import { IUom } from '../uom/uom.response';
-import { IGstHsnCode } from '../gst-hsn-code/gst-hsn-code.response';
+import { IComboItem, IComboHsnCode } from '../../core/response/combo.interface';
 import { IItemAttribute } from '../item-attribute/item-attribute.response';
-import { IStoneMaster } from '../stone-master/stone-master.response';
 
 export interface ItemDropdowns {
-  itemGroups: IGroupItem[];
-  productMasters: IProductMaster[];
-  uoms: IUom[];
-  hsnCodes: IGstHsnCode[];
+  itemGroups: IComboItem[];
+  productMasters: IComboItem[];
+  uoms: IComboItem[];
+  hsnCodes: IComboHsnCode[];
   itemAttributes: IItemAttribute[];
-  stoneFamilies: IStoneMaster[];
-  stoneClarities: IStoneMaster[];
-  stoneShapes: IStoneMaster[];
+  stoneFamilies: IComboItem[];
+  stoneClarities: IComboItem[];
+  stoneShapes: IComboItem[];
 }
 
 // Matches backend MaterialRequestTypeEnum
