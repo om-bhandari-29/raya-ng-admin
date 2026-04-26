@@ -1,6 +1,7 @@
 import { Routes } from '@angular/router';
 import { APPRoutes } from '../core/constant/app-routes';
 import { Layout } from '../core/component/layout/layout';
+import { StoneMasterType, StoneMasterLabel } from '../core/enum/stone-master.enum';
 
 export const routes: Routes = [
     {
@@ -51,6 +52,21 @@ export const routes: Routes = [
             {
                 path: `${APPRoutes.ITEM_ATTRIBUTE}/:id`,
                 loadComponent: () => import('../pages/item-attribute/item-attribute-upsert/item-attribute-upsert').then((m) => m.ItemAttributeUpsert),
+            },
+            {
+                path: APPRoutes.STONE_FAMILY,
+                loadComponent: () => import('../pages/stone-master/stone-master-list/stone-master-list').then((m) => m.StoneMasterList),
+                data: { stoneType: StoneMasterType.FAMILY, typeLabel: StoneMasterLabel.FAMILY },
+            },
+            {
+                path: APPRoutes.STONE_CLARITY,
+                loadComponent: () => import('../pages/stone-master/stone-master-list/stone-master-list').then((m) => m.StoneMasterList),
+                data: { stoneType: StoneMasterType.CLARITY, typeLabel: StoneMasterLabel.CLARITY },
+            },
+            {
+                path: APPRoutes.STONE_SHAPE,
+                loadComponent: () => import('../pages/stone-master/stone-master-list/stone-master-list').then((m) => m.StoneMasterList),
+                data: { stoneType: StoneMasterType.SHAPE, typeLabel: StoneMasterLabel.SHAPE },
             },
         ]
     },

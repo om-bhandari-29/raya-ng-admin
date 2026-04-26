@@ -8,5 +8,8 @@ export const APPRoutes = {
   GST_HSN_CODE: 'gst-hsn-code',
   UOM: 'uom',
   ITEM: 'item',
-  ITEM_ATTRIBUTE: 'item-attribute'
+  ITEM_ATTRIBUTE: 'item-attribute',
+  STONE_FAMILY: 'stone-family',
+  STONE_CLARITY: 'stone-clarity',
+  STONE_SHAPE: 'stone-shape'
 };

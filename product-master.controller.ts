@@ -9,103 +9,121 @@ import {
   Post,
 } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
-import { ItemAttributeMasterService } from './item-attribute-master.service';
-import { CreateItemAttributeMasterDto } from './dto/create-item-attribute-master.dto';
-import { UpdateItemAttributeMasterDto } from './dto/update-item-attribute-master.dto';
-import { CreateItemAttributeValueDto } from './dto/create-item-attribute-value.dto';
-import { UpdateItemAttributeValueDto } from './dto/update-item-attribute-value.dto';
+import { StoneMasterService } from './stone-master.service';
+import { CreateStoneMasterDto } from './dto/create-stone-master.dto';
+import { UpdateStoneMasterDto } from './dto/update-stone-master.dto';
 import {
-  CreateAttributeSwagger,
-  FindAllAttributesSwagger,
-  FindOneAttributeSwagger,
-  UpdateAttributeSwagger,
-  RemoveAttributeSwagger,
-  CreateValueSwagger,
-  FindAllValuesSwagger,
-  FindOneValueSwagger,
-  UpdateValueSwagger,
-  RemoveValueSwagger,
-} from './item-attribute-master.swagger';
+  CreateStoneMasterSwagger,
+  FindAllStoneMasterSwagger,
+  FindOneStoneMasterSwagger,
+  UpdateStoneMasterSwagger,
+  RemoveStoneMasterSwagger,
+} from './stone-master.swagger';
 
-@ApiTags('item-attribute-master')
-@Controller('item-attribute-master')
-export class ItemAttributeMasterController {
-  constructor(private readonly service: ItemAttributeMasterService) {}
+@ApiTags('stone-master/family')
+@Controller('stone-master/family')
+export class StoneFamilyController {
+  constructor(private readonly service: StoneMasterService) {}
 
   @Post()
-  @CreateAttributeSwagger()
-  create(@Body() createDto: CreateItemAttributeMasterDto) {
-    return this.service.create(createDto);
+  @CreateStoneMasterSwagger('family')
+  create(@Body() dto: CreateStoneMasterDto) {
+    return this.service.create('family', dto);
   }
 
   @Get()
-  @FindAllAttributesSwagger()
+  @FindAllStoneMasterSwagger('family')
   findAll() {
-    return this.service.findAll();
+    return this.service.findAll('family');
   }
 
   @Get(':id')
-  @FindOneAttributeSwagger()
+  @FindOneStoneMasterSwagger('family')
   findOne(@Param('id', ParseIntPipe) id: number) {
-    return this.service.findOne(id);
+    return this.service.findOne('family', id);
   }
 
   @Patch(':id')
-  @UpdateAttributeSwagger()
-  update(
-    @Param('id', ParseIntPipe) id: number,
-    @Body() updateDto: UpdateItemAttributeMasterDto,
-  ) {
-    return this.service.update(id, updateDto);
+  @UpdateStoneMasterSwagger('family')
+  update(@Param('id', ParseIntPipe) id: number, @Body() dto: UpdateStoneMasterDto) {
+    return this.service.update('family', id, dto);
   }
 
   @Delete(':id')
-  @RemoveAttributeSwagger()
+  @RemoveStoneMasterSwagger('family')
   remove(@Param('id', ParseIntPipe) id: number) {
-    return this.service.remove(id);
+    return this.service.remove('family', id);
+  }
+}
+
+@ApiTags('stone-master/clarity')
+@Controller('stone-master/clarity')
+export class StoneClarityController {
+  constructor(private readonly service: StoneMasterService) {}
+
+  @Post()
+  @CreateStoneMasterSwagger('clarity')
+  create(@Body() dto: CreateStoneMasterDto) {
+    return this.service.create('clarity', dto);
   }
 
-  // Values endpoints
-  @Post(':attributeId/values')
-  @CreateValueSwagger()
-  createValue(
-    @Param('attributeId', ParseIntPipe) attributeId: number,
-    @Body() createDto: CreateItemAttributeValueDto,
-  ) {
-    return this.service.createValue(attributeId, createDto);
+  @Get()
+  @FindAllStoneMasterSwagger('clarity')
+  findAll() {
+    return this.service.findAll('clarity');
   }
 
-  @Get(':attributeId/values')
-  @FindAllValuesSwagger()
-  findAllValues(@Param('attributeId', ParseIntPipe) attributeId: number) {
-    return this.service.findAllValues(attributeId);
+  @Get(':id')
+  @FindOneStoneMasterSwagger('clarity')
+  findOne(@Param('id', ParseIntPipe) id: number) {
+    return this.service.findOne('clarity', id);
   }
 
-  @Get(':attributeId/values/:valueId')
-  @FindOneValueSwagger()
-  findOneValue(
-    @Param('attributeId', ParseIntPipe) attributeId: number,
-    @Param('valueId', ParseIntPipe) valueId: number,
-  ) {
-    return this.service.findOneValue(attributeId, valueId);
+  @Patch(':id')
+  @UpdateStoneMasterSwagger('clarity')
+  update(@Param('id', ParseIntPipe) id: number, @Body() dto: UpdateStoneMasterDto) {
+    return this.service.update('clarity', id, dto);
   }
 
-  @Patch(':attributeId/values/:valueId')
-  @UpdateValueSwagger()
-  updateValue(
-    @Param('attributeId', ParseIntPipe) attributeId: number,
-    @Param('valueId', ParseIntPipe) valueId: number,
-    @Body() updateDto: UpdateItemAttributeValueDto,
-  ) {
-    return this.service.updateValue(attributeId, valueId, updateDto);
+  @Delete(':id')
+  @RemoveStoneMasterSwagger('clarity')
+  remove(@Param('id', ParseIntPipe) id: number) {
+    return this.service.remove('clarity', id);
+  }
+}
+
+@ApiTags('stone-master/shape')
+@Controller('stone-master/shape')
+export class StoneShapeController {
+  constructor(private readonly service: StoneMasterService) {}
+
+  @Post()
+  @CreateStoneMasterSwagger('shape')
+  create(@Body() dto: CreateStoneMasterDto) {
+    return this.service.create('shape', dto);
   }
 
-  @Delete(':attributeId/values/:valueId')
-  @RemoveValueSwagger()
-  removeValue(
-    @Param('attributeId', ParseIntPipe) attributeId: number,
-    @Param('valueId', ParseIntPipe) valueId: number,
-  ) {
-    return this.service.removeValue(attributeId, valueId);
+  @Get()
+  @FindAllStoneMasterSwagger('shape')
+  findAll() {
+    return this.service.findAll('shape');
+  }
+
+  @Get(':id')
+  @FindOneStoneMasterSwagger('shape')
+  findOne(@Param('id', ParseIntPipe) id: number) {
+    return this.service.findOne('shape', id);
+  }
+
+  @Patch(':id')
+  @UpdateStoneMasterSwagger('shape')
+  update(@Param('id', ParseIntPipe) id: number, @Body() dto: UpdateStoneMasterDto) {
+    return this.service.update('shape', id, dto);
+  }
+
+  @Delete(':id')
+  @RemoveStoneMasterSwagger('shape')
+  remove(@Param('id', ParseIntPipe) id: number) {
+    return this.service.remove('shape', id);
   }
 }

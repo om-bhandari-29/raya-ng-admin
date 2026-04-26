@@ -47,5 +47,26 @@ export const APIRoutes = {
     CREATE: '/item-attribute-master',
     UPDATE: (id: number | string) => `/item-attribute-master/${id}`,
     DELETE: (id: number | string) => `/item-attribute-master/${id}`
+  },
+  stone_family: {
+    GET_ALL: '/stone-master/family',
+    GET_BY_ID: (id: number | string) => `/stone-master/family/${id}`,
+    CREATE: '/stone-master/family',
+    UPDATE: (id: number | string) => `/stone-master/family/${id}`,
+    DELETE: (id: number | string) => `/stone-master/family/${id}`
+  },
+  stone_clarity: {
+    GET_ALL: '/stone-master/clarity',
+    GET_BY_ID: (id: number | string) => `/stone-master/clarity/${id}`,
+    CREATE: '/stone-master/clarity',
+    UPDATE: (id: number | string) => `/stone-master/clarity/${id}`,
+    DELETE: (id: number | string) => `/stone-master/clarity/${id}`
+  },
+  stone_shape: {
+    GET_ALL: '/stone-master/shape',
+    GET_BY_ID: (id: number | string) => `/stone-master/shape/${id}`,
+    CREATE: '/stone-master/shape',
+    UPDATE: (id: number | string) => `/stone-master/shape/${id}`,
+    DELETE: (id: number | string) => `/stone-master/shape/${id}`
   }
 };
