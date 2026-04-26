@@ -1,13 +1,33 @@
-import { Component, Input, OnChanges, SimpleChanges, signal } from '@angular/core';
+import { Component, Input, Output, EventEmitter, OnChanges, SimpleChanges } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { IItem } from '../../../item.response';
 import { ItemDropdowns } from '../../../item.models';
 
-export interface ItemDetailsForm {
+export interface ItemDetailsPayload {
+  product_master_id: number | null;
+  name: string;
+  item_group_id: number | null;
+  hsn_sac_id: number | null;
+  default_uom_id: number | null;
+  fixed_qty: number;
+  is_disabled: boolean;
+  allow_alternative_item: boolean;
+  maintain_stock: boolean;
+  is_in_stock: boolean;
+  has_variants: boolean;
+  estimated_delivery_days: number;
+  valuation_rate: number;
+  is_fixed_asset: boolean;
+  over_delivery_receipt_allowance: number;
+  over_billing_allowance: number;
+  description: string;
+}
+
+interface DetailsForm {
   product_master_id: FormControl<number | null>;
-  item_name: FormControl<string>;
+  name: FormControl<string>;
   item_group_id: FormControl<number | null>;
-  hsn_sac: FormControl<string>;
+  hsn_sac_id: FormControl<number | null>;
   default_uom_id: FormControl<number | null>;
   fixed_qty: FormControl<number>;
   is_disabled: FormControl<boolean>;
@@ -31,12 +51,14 @@ export interface ItemDetailsForm {
 export class DetailsTab implements OnChanges {
   @Input() item: IItem | null = null;
   @Input() dropdowns: ItemDropdowns | null = null;
+  @Input() isSaving = false;
+  @Output() save = new EventEmitter<ItemDetailsPayload>();
 
-  form = new FormGroup<ItemDetailsForm>({
+  form = new FormGroup<DetailsForm>({
     product_master_id: new FormControl<number | null>(null),
-    item_name: new FormControl<string>('', { nonNullable: true, validators: [Validators.required, Validators.minLength(2)] }),
+    name: new FormControl<string>('', { nonNullable: true, validators: [Validators.required, Validators.minLength(2)] }),
     item_group_id: new FormControl<number | null>(null, { validators: [Validators.required] }),
-    hsn_sac: new FormControl<string>('', { nonNullable: true, validators: [Validators.required] }),
+    hsn_sac_id: new FormControl<number | null>(null, { validators: [Validators.required] }),
     default_uom_id: new FormControl<number | null>(null, { validators: [Validators.required] }),
     fixed_qty: new FormControl<number>(0, { nonNullable: true, validators: [Validators.required, Validators.min(0)] }),
     is_disabled: new FormControl<boolean>(false, { nonNullable: true }),
@@ -54,8 +76,16 @@ export class DetailsTab implements OnChanges {
 
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['item'] && this.item) {
-      this.form.patchValue({ ...this.item, description: this.item.description ?? '' });
+      this.form.patchValue({
+        ...this.item,
+        description: this.item.description ?? '',
+      });
     }
+  }
+
+  onSave(): void {
+    if (this.form.invalid) { this.form.markAllAsTouched(); return; }
+    this.save.emit(this.form.getRawValue() as ItemDetailsPayload);
   }
 
   get f() { return this.form.controls; }

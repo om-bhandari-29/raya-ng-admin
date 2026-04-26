@@ -11,10 +11,10 @@ import { IItemAttribute } from '../../item-attribute/item-attribute.response';
 import { IStoneMaster } from '../../stone-master/stone-master.response';
 import { ItemDropdowns } from '../item.models';
 import { ItemTab, ITEM_TABS } from '../../../core/enum/item-tab.enum';
-import { DetailsTab } from './tabs/details-tab/details-tab';
-import { InventoryTab } from './tabs/inventory-tab/inventory-tab';
-import { VariantsTab } from './tabs/variants-tab/variants-tab';
-import { StoneDetailsTab } from './tabs/stone-details-tab/stone-details-tab';
+import { DetailsTab, ItemDetailsPayload } from './tabs/details-tab/details-tab';
+import { InventoryTab, ItemInventoryPayload } from './tabs/inventory-tab/inventory-tab';
+import { VariantsTab, ItemVariantsPayload } from './tabs/variants-tab/variants-tab';
+import { StoneDetailsTab, ItemStoneDetailsPayload } from './tabs/stone-details-tab/stone-details-tab';
 
 @Component({
   selector: 'app-item-upsert',
@@ -49,6 +49,100 @@ export class ItemUpsert extends Base implements OnInit {
   }
 
   setTab(tab: ItemTab): void { this.activeTab.set(tab); }
+
+  // ── Per-tab save handlers ──────────────────────────────────────────────────
+
+  async onSaveDetails(payload: ItemDetailsPayload): Promise<void> {
+    this.isSaving.set(true);
+    this.errorMessage.set(null);
+    try {
+      if (this.isEditMode()) {
+        await this.httpPatchPromise<IGenericResponse<IItem>, ItemDetailsPayload>(
+          this.apiRoutes.item.UPDATE(this.itemId()), payload
+        );
+        this.toastr.success('Details saved.');
+      } else {
+        const res = await this.httpPostPromise<IGenericResponse<IItem>, ItemDetailsPayload>(
+          this.apiRoutes.item.CREATE, payload
+        );
+        if (res.status) {
+          this.itemId.set(res.data.id);
+          this.isEditMode.set(true);
+          this.item.set(res.data);
+          // Update URL without navigation so the user stays on the page
+          this.router.navigate([this.appRoutes.ITEM, res.data.id], { replaceUrl: true });
+          this.toastr.success('Item created. You can now fill in the other tabs.');
+          this.setTab(ItemTab.INVENTORY);
+        }
+      }
+    } catch {
+      this.errorMessage.set('Failed to save details. Please try again.');
+    } finally {
+      this.isSaving.set(false);
+    }
+  }
+
+  async onSaveInventory(payload: ItemInventoryPayload): Promise<void> {
+    if (!this.isEditMode()) {
+      this.toastr.warning('Please save the Details tab first.');
+      this.setTab(ItemTab.DETAILS);
+      return;
+    }
+    this.isSaving.set(true);
+    this.errorMessage.set(null);
+    try {
+      await this.httpPatchPromise<IGenericResponse<IItem>, ItemInventoryPayload>(
+        this.apiRoutes.item.UPDATE(this.itemId()), payload
+      );
+      this.toastr.success('Inventory saved.');
+    } catch {
+      this.errorMessage.set('Failed to save inventory. Please try again.');
+    } finally {
+      this.isSaving.set(false);
+    }
+  }
+
+  async onSaveVariants(payload: ItemVariantsPayload): Promise<void> {
+    if (!this.isEditMode()) {
+      this.toastr.warning('Please save the Details tab first.');
+      this.setTab(ItemTab.DETAILS);
+      return;
+    }
+    this.isSaving.set(true);
+    this.errorMessage.set(null);
+    try {
+      await this.httpPatchPromise<IGenericResponse<IItem>, ItemVariantsPayload>(
+        this.apiRoutes.item.UPDATE(this.itemId()), payload
+      );
+      this.toastr.success('Variants saved.');
+    } catch {
+      this.errorMessage.set('Failed to save variants. Please try again.');
+    } finally {
+      this.isSaving.set(false);
+    }
+  }
+
+  async onSaveStoneDetails(payload: ItemStoneDetailsPayload): Promise<void> {
+    if (!this.isEditMode()) {
+      this.toastr.warning('Please save the Details tab first.');
+      this.setTab(ItemTab.DETAILS);
+      return;
+    }
+    this.isSaving.set(true);
+    this.errorMessage.set(null);
+    try {
+      await this.httpPatchPromise<IGenericResponse<IItem>, ItemStoneDetailsPayload>(
+        this.apiRoutes.item.UPDATE(this.itemId()), payload
+      );
+      this.toastr.success('Stone details saved.');
+    } catch {
+      this.errorMessage.set('Failed to save stone details. Please try again.');
+    } finally {
+      this.isSaving.set(false);
+    }
+  }
+
+  // ── Data loading ───────────────────────────────────────────────────────────
 
   private async loadDropdowns(): Promise<void> {
     try {
@@ -93,29 +187,6 @@ export class ItemUpsert extends Base implements OnInit {
       this.errorMessage.set('Failed to load item. Please try again.');
     } finally {
       this.isLoading.set(false);
-    }
-  }
-
-  async onSave(): Promise<void> {
-    this.isSaving.set(true);
-    this.errorMessage.set(null);
-    try {
-      const payload = { item_id: this.itemId() };
-      if (this.isEditMode()) {
-        await this.httpPutPromise<IGenericResponse<IItem>, typeof payload>(
-          this.apiRoutes.item.UPDATE(this.itemId()), payload
-        );
-      } else {
-        await this.httpPostPromise<IGenericResponse<IItem>, typeof payload>(
-          this.apiRoutes.item.CREATE, payload
-        );
-      }
-      this.toastr.success('Item saved successfully.');
-      this.router.navigate([this.appRoutes.ITEM]);
-    } catch {
-      this.errorMessage.set('Failed to save item. Please try again.');
-    } finally {
-      this.isSaving.set(false);
     }
   }
 

@@ -16,19 +16,35 @@ export interface ItemDropdowns {
   stoneShapes: IStoneMaster[];
 }
 
+// Matches backend MaterialRequestTypeEnum
 export enum MaterialRequestType {
-  PURCHASE = 'Purchase',
-  MATERIAL_TRANSFER = 'Material Transfer',
-  MATERIAL_ISSUE = 'Material Issue',
-  MANUFACTURE = 'Manufacture',
-  CUSTOMER_PROVIDED = 'Customer Provided',
+  PURCHASE = 'purchase',
+  MATERIAL_TRANSFER = 'material_transfer',
+  MATERIAL_ISSUE = 'material_issue',
+  MANUFACTURE = 'manufacture',
+  CUSTOMER_PROVIDED = 'customer_provided',
 }
 
+export const MaterialRequestTypeLabels: Record<MaterialRequestType, string> = {
+  [MaterialRequestType.PURCHASE]: 'Purchase',
+  [MaterialRequestType.MATERIAL_TRANSFER]: 'Material Transfer',
+  [MaterialRequestType.MATERIAL_ISSUE]: 'Material Issue',
+  [MaterialRequestType.MANUFACTURE]: 'Manufacture',
+  [MaterialRequestType.CUSTOMER_PROVIDED]: 'Customer Provided',
+};
+
+// Matches backend ValuationMethodEnum
 export enum ValuationMethod {
-  FIFO = 'FIFO',
-  MOVING_AVERAGE = 'Moving Average',
-  LIFO = 'LIFO',
+  FIFO = 'fifo',
+  MOVING_AVERAGE = 'moving_average',
+  LIFO = 'lifo',
 }
+
+export const ValuationMethodLabels: Record<ValuationMethod, string> = {
+  [ValuationMethod.FIFO]: 'FIFO',
+  [ValuationMethod.MOVING_AVERAGE]: 'Moving Average',
+  [ValuationMethod.LIFO]: 'LIFO',
+};
 
 export enum BarcodeType {
   EAN = 'EAN',
