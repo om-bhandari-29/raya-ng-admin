@@ -7,7 +7,7 @@ import { NavBar } from "../nav-bar/nav-bar";
 
 @Component({
   selector: 'app-side-bar',
-  imports: [CommonModule, FormsModule, RouterModule, NavBar],
+  imports: [CommonModule, FormsModule, RouterModule],
   templateUrl: './side-bar.html',
   styleUrl: './side-bar.scss',
 })

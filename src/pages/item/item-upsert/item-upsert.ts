@@ -50,6 +50,13 @@ export class ItemUpsert extends Base implements OnInit {
 
   setTab(tab: ItemTab): void { this.activeTab.set(tab); }
 
+  private goNextTab(): void {
+    const idx = this.tabs.findIndex(t => t.key === this.activeTab());
+    if (idx < this.tabs.length - 1) {
+      this.activeTab.set(this.tabs[idx + 1].key);
+    }
+  }
+
   // ── Per-tab save handlers ──────────────────────────────────────────────────
 
   async onSaveDetails(payload: ItemDetailsPayload): Promise<void> {
@@ -61,6 +68,7 @@ export class ItemUpsert extends Base implements OnInit {
           this.apiRoutes.item.UPDATE(this.itemId()), payload
         );
         this.toastr.success('Details saved.');
+        this.goNextTab();
       } else {
         const res = await this.httpPostPromise<IGenericResponse<IItem>, ItemDetailsPayload>(
           this.apiRoutes.item.CREATE, payload
@@ -72,7 +80,7 @@ export class ItemUpsert extends Base implements OnInit {
           // Update URL without navigation so the user stays on the page
           this.router.navigate([this.appRoutes.ITEM, res.data.id], { replaceUrl: true });
           this.toastr.success('Item created. You can now fill in the other tabs.');
-          this.setTab(ItemTab.INVENTORY);
+          this.goNextTab();
         }
       }
     } catch {
@@ -95,6 +103,7 @@ export class ItemUpsert extends Base implements OnInit {
         this.apiRoutes.item.UPDATE(this.itemId()), payload
       );
       this.toastr.success('Inventory saved.');
+      this.goNextTab();
     } catch {
       this.errorMessage.set('Failed to save inventory. Please try again.');
     } finally {
@@ -115,6 +124,7 @@ export class ItemUpsert extends Base implements OnInit {
         this.apiRoutes.item.UPDATE(this.itemId()), payload
       );
       this.toastr.success('Variants saved.');
+      this.goNextTab();
     } catch {
       this.errorMessage.set('Failed to save variants. Please try again.');
     } finally {
@@ -135,6 +145,7 @@ export class ItemUpsert extends Base implements OnInit {
         this.apiRoutes.item.UPDATE(this.itemId()), payload
       );
       this.toastr.success('Stone details saved.');
+      this.goNextTab();
     } catch {
       this.errorMessage.set('Failed to save stone details. Please try again.');
     } finally {

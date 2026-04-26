@@ -78,6 +78,10 @@ export class DetailsTab implements OnChanges {
     if (changes['item'] && this.item) {
       this.form.patchValue({
         ...this.item,
+        fixed_qty: +this.item.fixed_qty,
+        valuation_rate: +this.item.valuation_rate,
+        over_delivery_receipt_allowance: +this.item.over_delivery_receipt_allowance,
+        over_billing_allowance: +this.item.over_billing_allowance,
         description: this.item.description ?? '',
       });
     }

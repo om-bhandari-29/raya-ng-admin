@@ -42,7 +42,7 @@ export class StoneDetailsTab implements OnChanges {
         stone_family_id: s.stone_family_id,
         stone_clarity_id: s.stone_clarity_id,
         stone_shape_id: s.stone_shape_id,
-        weight_carat: s.weight_carat,
+        weight_carat: +s.weight_carat,
       })));
     }
   }

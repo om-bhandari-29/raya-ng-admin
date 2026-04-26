@@ -70,12 +70,12 @@ export class VariantsTab implements OnChanges {
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['item'] && this.item) {
       this.weightForm.patchValue({
-        gross_weight: this.item.gross_weight,
-        net_weight: this.item.net_weight,
-        stones_weight_in_gram: this.item.stones_weight_in_gram,
-        stone_carat_wt: this.item.stone_carat_wt,
-        pure_weight_metal: this.item.pure_weight_metal,
-        labor_rate: this.item.labor_rate,
+        gross_weight: +this.item.gross_weight,
+        net_weight: +this.item.net_weight,
+        stones_weight_in_gram: +this.item.stones_weight_in_gram,
+        stone_carat_wt: +this.item.stone_carat_wt,
+        pure_weight_metal: +this.item.pure_weight_metal,
+        labor_rate: +this.item.labor_rate,
         stones: this.item.stones ?? '',
       });
       this.variantRows.set((this.item.variants ?? []).map(v => ({

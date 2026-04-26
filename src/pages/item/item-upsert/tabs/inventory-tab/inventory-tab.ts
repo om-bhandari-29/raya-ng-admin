@@ -72,7 +72,7 @@ export class InventoryTab implements OnChanges {
         default_material_request_type: this.item.default_material_request_type,
         valuation_method: this.item.valuation_method ?? '',
         warranty_period_in_days: this.item.warranty_period_in_days ?? 0,
-        weight_per_unit: this.item.weight_per_unit,
+        weight_per_unit: +this.item.weight_per_unit,
         weight_uom_id: this.item.weight_uom_id,
         allow_negative_stock: this.item.allow_negative_stock,
       });

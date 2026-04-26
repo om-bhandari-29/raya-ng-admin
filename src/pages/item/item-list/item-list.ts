@@ -29,6 +29,22 @@ export class ItemList extends Base implements OnInit {
     this.router.navigate([this.appRoutes.ITEM, id]);
   }
 
+  async deleteItem(id: number): Promise<void> {
+    try {
+      const res = await this.httpDeletePromise<IGenericResponse<null>>(
+        this.apiRoutes.item.DELETE(id)
+      );
+      if (res.status) {
+        this.items.update(list => list.filter(i => i.id !== id));
+        this.toastr.success('Item deleted successfully.');
+      } else {
+        this.toastr.error(res.message);
+      }
+    } catch {
+      this.toastr.error('Failed to delete item. Please try again.');
+    }
+  }
+
   private async loadAll(): Promise<void> {
     this.isLoading.set(true);
     this.errorMessage.set(null);
