@@ -62,7 +62,7 @@
             [class.border-slate-300]="!(f.hsn_sac_id.invalid && f.hsn_sac_id.touched)">
             <option [ngValue]="null" disabled>Select HSN/SAC code</option>
             @for (h of dropdowns?.hsnCodes ?? []; track h.id) {
-              <option [ngValue]="h.id">{{ h.hsn_code }} — {{ h.description }}</option>
+              <option [ngValue]="h.id">{{ h.hsn_code }} — {{ h.gst_rate }}%</option>
             }
           </select>
           <p class="text-xs text-slate-400">You can search code by the description of the category.</p>
