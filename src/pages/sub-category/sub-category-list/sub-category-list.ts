@@ -1,26 +1,50 @@
-import { Component, OnInit, inject, signal } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { HttpErrorResponse } from '@angular/common/http';
-import { Base } from '../../../core/base/base';
+import { ListBase } from '../../../core/base/list-base';
 import { IGenericResponse } from '../../../core/response/genericResponse.interface';
 import { ISubCategory } from '../sub-category.response';
 import { SubCategoryUpsert, SubCategoryDialogData } from '../sub-category-upsert/sub-category-upsert';
+import { TableLayout } from '../../../core/component/table-layout/table-layout';
+import { TableColumn } from '../../../core/models/table-column.interface';
 
 @Component({
   selector: 'app-sub-category-list',
-  imports: [],
+  imports: [TableLayout],
   templateUrl: './sub-category-list.html',
   styleUrl: './sub-category-list.scss',
 })
-export class SubCategoryList extends Base implements OnInit {
+export class SubCategoryList extends ListBase<ISubCategory> implements OnInit {
   private dialog = inject(MatDialog);
 
-  subCategories = signal<ISubCategory[]>([]);
-  isLoading = signal<boolean>(false);
-  errorMessage = signal<string | null>(null);
+  // Define table columns - Simple and clean!
+  columns: TableColumn<ISubCategory>[] = [
+    {
+      key: 'name',
+      header: 'ID',
+      width: '120px',
+      slot: 'id',  // Custom template for clickable ID
+    },
+    {
+      key: 'name',
+      header: 'Sub Category Name',
+      type: 'text',
+      cellClass: 'text-gray-800 font-medium'
+    },
+    {
+      key: 'item_group.name',  // Nested property - automatic!
+      header: 'Item Group',
+      type: 'text'
+    },
+    {
+      key: 'is_active',
+      header: 'Is Active',
+      type: 'boolean'  // Automatic checkmark icon
+    }
+  ];
 
   ngOnInit(): void {
-    this.getAll();
+    this.loadItems();
   }
 
   openAddModal(): void {
@@ -41,7 +65,7 @@ export class SubCategoryList extends Base implements OnInit {
     });
 
     dialogRef.afterClosed().subscribe((saved: boolean) => {
-      if (saved) this.getAll();
+      if (saved) this.loadItems();
     });
   }
 
@@ -53,7 +77,7 @@ export class SubCategoryList extends Base implements OnInit {
         this.apiRoutes.sub_category.DELETE(id)
       );
       if (response.status) {
-        this.getAll();
+        this.loadItems();
       } else {
         this.errorMessage.set(response.message);
       }
@@ -65,7 +89,7 @@ export class SubCategoryList extends Base implements OnInit {
     }
   }
 
-  private async getAll(): Promise<void> {
+  async loadItems(): Promise<void> {
     this.isLoading.set(true);
     this.errorMessage.set(null);
 
@@ -75,7 +99,7 @@ export class SubCategoryList extends Base implements OnInit {
       );
 
       if (response.status) {
-        this.subCategories.set(response.data);
+        this.items.set(response.data);
       } else {
         this.errorMessage.set(response.message);
       }

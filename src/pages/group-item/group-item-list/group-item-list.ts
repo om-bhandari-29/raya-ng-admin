@@ -1,26 +1,51 @@
-import { Component, OnInit, inject, signal } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { HttpErrorResponse } from '@angular/common/http';
-import { Base } from '../../../core/base/base';
+import { ListBase } from '../../../core/base/list-base';
 import { IGenericResponse } from '../../../core/response/genericResponse.interface';
 import { IGroupItem } from '../group-item.response';
 import { GroupItemUpsert, GroupItemDialogData } from '../group-item-upsert/group-item-upsert';
+import { TableLayout } from '../../../core/component/table-layout/table-layout';
+import { TableColumn } from '../../../core/models/table-column.interface';
 
 @Component({
   selector: 'app-group-item-list',
-  imports: [],
+  imports: [TableLayout],
   templateUrl: './group-item-list.html',
   styleUrl: './group-item-list.scss',
 })
-export class GroupItemList extends Base implements OnInit {
+export class GroupItemList extends ListBase<IGroupItem> implements OnInit {
   private dialog = inject(MatDialog);
 
-  groupItems = signal<IGroupItem[]>([]);
-  isLoading = signal<boolean>(false);
-  errorMessage = signal<string | null>(null);
+  // Define table columns
+  columns: TableColumn<IGroupItem>[] = [
+    {
+      key: 'name',
+      header: 'ID',
+      width: '120px',
+      slot: 'id',  // Use custom template for clickable ID
+    },
+    {
+      key: 'name',
+      header: 'Item Group Name',
+      type: 'text',
+      cellClass: 'text-gray-800 font-medium'
+    },
+    {
+      key: 'parent',
+      header: 'Parent Item Group',
+      type: 'text',
+      format: (value) => value || '-'
+    },
+    {
+      key: 'is_active',
+      header: 'Is Group',
+      type: 'boolean'
+    }
+  ];
 
   ngOnInit(): void {
-    this.getAllGroupItems();
+    this.loadItems();
   }
 
   openAddModal(): void {
@@ -42,7 +67,7 @@ export class GroupItemList extends Base implements OnInit {
 
     dialogRef.afterClosed().subscribe((saved: boolean) => {
       if (saved) {
-        this.getAllGroupItems();
+        this.loadItems();
       }
     });
   }
@@ -55,7 +80,7 @@ export class GroupItemList extends Base implements OnInit {
       const response = await this.httpDeletePromise<IGenericResponse<null>>(url);
 
       if (response.status) {
-        this.getAllGroupItems();
+        this.loadItems();
       } else {
         this.errorMessage.set(response.message);
       }
@@ -67,7 +92,7 @@ export class GroupItemList extends Base implements OnInit {
     }
   }
 
-  private async getAllGroupItems(): Promise<void> {
+  async loadItems(): Promise<void> {
     this.isLoading.set(true);
     this.errorMessage.set(null);
 
@@ -77,7 +102,7 @@ export class GroupItemList extends Base implements OnInit {
       );
 
       if (response.status) {
-        this.groupItems.set(response.data);
+        this.items.set(response.data);
       } else {
         this.errorMessage.set(response.message);
       }

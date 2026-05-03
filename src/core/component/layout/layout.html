@@ -1,6 +1,6 @@
 <app-nav-bar></app-nav-bar>
 <app-side-bar></app-side-bar>
 
-<main class="fixed top-[57px] left-0 sm:left-64 right-0 bottom-0 bg-[#f8f9fb] p-4 overflow-auto">
+<main [class]="'fixed top-[48px] right-0 bottom-0 bg-gray-50 p-6 overflow-auto transition-all duration-300 ' + mainContentClass()">
   <router-outlet></router-outlet>
 </main>

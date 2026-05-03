@@ -1,24 +1,59 @@
-import { Component, OnInit, inject, signal } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { Router } from '@angular/router';
-import { Base } from '../../../core/base/base';
+import { ListBase } from '../../../core/base/list-base';
 import { IGenericResponse } from '../../../core/response/genericResponse.interface';
 import { IItemAttribute } from '../item-attribute.response';
+import { TableLayout } from '../../../core/component/table-layout/table-layout';
+import { TableColumn } from '../../../core/models/table-column.interface';
 
 @Component({
   selector: 'app-item-attribute-list',
-  imports: [],
+  imports: [TableLayout],
   templateUrl: './item-attribute-list.html',
   styleUrl: './item-attribute-list.scss',
 })
-export class ItemAttributeList extends Base implements OnInit {
+export class ItemAttributeList extends ListBase<IItemAttribute> implements OnInit {
   private router = inject(Router);
 
-  attributes = signal<IItemAttribute[]>([]);
-  isLoading = signal<boolean>(false);
-  errorMessage = signal<string | null>(null);
+  columns: TableColumn<IItemAttribute>[] = [
+    {
+      key: 'attribute_name',
+      header: 'ID',
+      width: '150px',
+      slot: 'id',
+    },
+    {
+      key: 'attribute_name',
+      header: 'Attribute Name',
+      type: 'text',
+      cellClass: 'text-gray-800 font-medium'
+    },
+    {
+      key: 'numeric_values',
+      header: 'Type',
+      type: 'badge',
+      badgeConfig: {
+        trueLabel: 'Numeric',
+        falseLabel: 'Text',
+        trueClass: 'bg-blue-100 text-blue-700',
+        falseClass: 'bg-purple-100 text-purple-700'
+      }
+    },
+    {
+      key: 'values',
+      header: 'Values',
+      type: 'custom',
+      format: (values) => values?.length ? `${values.length} values` : 'No values'
+    },
+    {
+      key: 'status',
+      header: 'Is Active',
+      type: 'boolean'
+    }
+  ];
 
   ngOnInit(): void {
-    this.loadAll();
+    this.loadItems();
   }
 
   openAdd(): void {
@@ -29,7 +64,7 @@ export class ItemAttributeList extends Base implements OnInit {
     this.router.navigate([this.appRoutes.ITEM_ATTRIBUTE, id]);
   }
 
-  private async loadAll(): Promise<void> {
+  async loadItems(): Promise<void> {
     this.isLoading.set(true);
     this.errorMessage.set(null);
     try {
@@ -37,7 +72,7 @@ export class ItemAttributeList extends Base implements OnInit {
         this.apiRoutes.item_attribute.GET_ALL
       );
       if (response.status) {
-        this.attributes.set(response.data);
+        this.items.set(response.data);
       } else {
         this.errorMessage.set(response.message);
       }

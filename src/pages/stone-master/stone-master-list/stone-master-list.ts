@@ -1,36 +1,59 @@
-import { Component, OnInit, inject, signal } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { MatDialog } from '@angular/material/dialog';
-import { LowerCasePipe } from '@angular/common';
-import { Base } from '../../../core/base/base';
+import { ListBase } from '../../../core/base/list-base';
 import { IGenericResponse } from '../../../core/response/genericResponse.interface';
 import { IStoneMaster } from '../stone-master.response';
 import { StoneMasterType, StoneMasterLabel } from '../../../core/enum/stone-master.enum';
 import { StoneMasterUpsert, StoneMasterDialogData } from '../stone-master-upsert/stone-master-upsert';
+import { TableLayout } from '../../../core/component/table-layout/table-layout';
+import { TableColumn } from '../../../core/models/table-column.interface';
+import { signal } from '@angular/core';
 
 @Component({
   selector: 'app-stone-master-list',
-  imports: [LowerCasePipe],
+  imports: [TableLayout],
   templateUrl: './stone-master-list.html',
   styleUrl: './stone-master-list.scss',
 })
-export class StoneMasterList extends Base implements OnInit {
+export class StoneMasterList extends ListBase<IStoneMaster> implements OnInit {
   private dialog = inject(MatDialog);
   private route = inject(ActivatedRoute);
 
-  items = signal<IStoneMaster[]>([]);
-  isLoading = signal<boolean>(false);
-  errorMessage = signal<string | null>(null);
-
   stoneType = signal<StoneMasterType>(StoneMasterType.FAMILY);
   typeLabel = signal<string>(StoneMasterLabel.FAMILY);
+
+  columns: TableColumn<IStoneMaster>[] = [
+    {
+      key: 'name',
+      header: 'ID',
+      width: '150px',
+      slot: 'id',
+    },
+    {
+      key: 'name',
+      header: 'Name',
+      type: 'text',
+      cellClass: 'text-gray-800 font-medium'
+    },
+    {
+      key: 'description',
+      header: 'Description',
+      type: 'text'
+    },
+    {
+      key: 'is_published',
+      header: 'Is Published',
+      type: 'boolean'
+    }
+  ];
 
   ngOnInit(): void {
     const type = this.route.snapshot.data['stoneType'] as StoneMasterType;
     const label = this.route.snapshot.data['typeLabel'] as string;
     this.stoneType.set(type);
     this.typeLabel.set(label);
-    this.loadAll();
+    this.loadItems();
   }
 
   openAddModal(): void { this.openModal(0); }
@@ -58,7 +81,7 @@ export class StoneMasterList extends Base implements OnInit {
       data,
     });
     dialogRef.afterClosed().subscribe((saved: boolean) => {
-      if (saved) this.loadAll();
+      if (saved) this.loadItems();
     });
   }
 
@@ -69,7 +92,7 @@ export class StoneMasterList extends Base implements OnInit {
          : this.apiRoutes.stone_shape;
   }
 
-  private async loadAll(): Promise<void> {
+  async loadItems(): Promise<void> {
     this.isLoading.set(true);
     this.errorMessage.set(null);
     try {

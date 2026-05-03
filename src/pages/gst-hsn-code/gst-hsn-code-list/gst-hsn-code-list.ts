@@ -1,25 +1,53 @@
-import { Component, OnInit, inject, signal } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
-import { Base } from '../../../core/base/base';
+import { ListBase } from '../../../core/base/list-base';
 import { IGenericResponse } from '../../../core/response/genericResponse.interface';
 import { IGstHsnCode } from '../gst-hsn-code.response';
 import { GstHsnCodeUpsert, GstHsnCodeDialogData } from '../gst-hsn-code-upsert/gst-hsn-code-upsert';
+import { TableLayout } from '../../../core/component/table-layout/table-layout';
+import { TableColumn } from '../../../core/models/table-column.interface';
 
 @Component({
   selector: 'app-gst-hsn-code-list',
-  imports: [],
+  imports: [TableLayout],
   templateUrl: './gst-hsn-code-list.html',
   styleUrl: './gst-hsn-code-list.scss',
 })
-export class GstHsnCodeList extends Base implements OnInit {
+export class GstHsnCodeList extends ListBase<IGstHsnCode> implements OnInit {
   private dialog = inject(MatDialog);
 
-  items = signal<IGstHsnCode[]>([]);
-  isLoading = signal<boolean>(false);
-  errorMessage = signal<string | null>(null);
+  columns: TableColumn<IGstHsnCode>[] = [
+    {
+      key: 'hsn_code',
+      header: 'ID',
+      width: '120px',
+      slot: 'id',
+    },
+    {
+      key: 'hsn_code',
+      header: 'HSN Code',
+      type: 'text',
+      cellClass: 'text-gray-800 font-medium'
+    },
+    {
+      key: 'description',
+      header: 'Description',
+      type: 'text'
+    },
+    {
+      key: 'gst_rate',
+      header: 'GST Rate (%)',
+      type: 'number'
+    },
+    {
+      key: 'is_active',
+      header: 'Is Active',
+      type: 'boolean'
+    }
+  ];
 
   ngOnInit(): void {
-    this.loadAll();
+    this.loadItems();
   }
 
   openAddModal(): void {
@@ -38,11 +66,11 @@ export class GstHsnCodeList extends Base implements OnInit {
       data,
     });
     dialogRef.afterClosed().subscribe((saved: boolean) => {
-      if (saved) this.loadAll();
+      if (saved) this.loadItems();
     });
   }
 
-  private async loadAll(): Promise<void> {
+  async loadItems(): Promise<void> {
     this.isLoading.set(true);
     this.errorMessage.set(null);
     try {

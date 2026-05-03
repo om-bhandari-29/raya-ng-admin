@@ -1,24 +1,57 @@
-import { Component, OnInit, inject, signal } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { Router } from '@angular/router';
-import { Base } from '../../../core/base/base';
+import { ListBase } from '../../../core/base/list-base';
 import { IGenericResponse } from '../../../core/response/genericResponse.interface';
 import { IItem } from '../item.response';
+import { TableLayout } from '../../../core/component/table-layout/table-layout';
+import { TableColumn } from '../../../core/models/table-column.interface';
 
 @Component({
   selector: 'app-item-list',
-  imports: [],
+  imports: [TableLayout],
   templateUrl: './item-list.html',
   styleUrl: './item-list.scss',
 })
-export class ItemList extends Base implements OnInit {
+export class ItemList extends ListBase<IItem> implements OnInit {
   private router = inject(Router);
 
-  items = signal<IItem[]>([]);
-  isLoading = signal<boolean>(false);
-  errorMessage = signal<string | null>(null);
+  columns: TableColumn<IItem>[] = [
+    {
+      key: 'name',
+      header: 'ID',
+      width: '150px',
+      slot: 'id',
+    },
+    {
+      key: 'name',
+      header: 'Item Name',
+      type: 'text',
+      cellClass: 'text-gray-800 font-medium'
+    },
+    {
+      key: 'item_group.name',
+      header: 'Item Group',
+      type: 'text'
+    },
+    {
+      key: 'product_master.name',
+      header: 'Product Master',
+      type: 'text'
+    },
+    {
+      key: 'has_variants',
+      header: 'Has Variants',
+      type: 'boolean'
+    },
+    {
+      key: 'is_disabled',
+      header: 'Is Active',
+      slot: 'is_active'
+    }
+  ];
 
   ngOnInit(): void {
-    this.loadAll();
+    this.loadItems();
   }
 
   openAdd(): void {
@@ -45,7 +78,7 @@ export class ItemList extends Base implements OnInit {
     }
   }
 
-  private async loadAll(): Promise<void> {
+  async loadItems(): Promise<void> {
     this.isLoading.set(true);
     this.errorMessage.set(null);
     try {

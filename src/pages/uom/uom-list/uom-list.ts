@@ -1,25 +1,49 @@
-import { Component, OnInit, inject, signal } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
-import { Base } from '../../../core/base/base';
+import { ListBase } from '../../../core/base/list-base';
 import { IGenericResponse } from '../../../core/response/genericResponse.interface';
 import { IUom } from '../uom.response';
 import { UomUpsert, UomDialogData } from '../uom-upsert/uom-upsert';
+import { TableLayout } from '../../../core/component/table-layout/table-layout';
+import { TableColumn } from '../../../core/models/table-column.interface';
 
 @Component({
   selector: 'app-uom-list',
-  imports: [],
+  imports: [TableLayout],
   templateUrl: './uom-list.html',
   styleUrl: './uom-list.scss',
 })
-export class UomList extends Base implements OnInit {
+export class UomList extends ListBase<IUom> implements OnInit {
   private dialog = inject(MatDialog);
 
-  items = signal<IUom[]>([]);
-  isLoading = signal<boolean>(false);
-  errorMessage = signal<string | null>(null);
+  // Define table columns
+  columns: TableColumn<IUom>[] = [
+    {
+      key: 'name',
+      header: 'ID',
+      width: '120px',
+      slot: 'id',
+    },
+    {
+      key: 'name',
+      header: 'UOM Name',
+      type: 'text',
+      cellClass: 'text-gray-800 font-medium'
+    },
+    {
+      key: 'description',
+      header: 'Description',
+      type: 'text'
+    },
+    {
+      key: 'is_active',
+      header: 'Is Active',
+      type: 'boolean'
+    }
+  ];
 
   ngOnInit(): void {
-    this.loadAll();
+    this.loadItems();
   }
 
   openAddModal(): void {
@@ -38,11 +62,11 @@ export class UomList extends Base implements OnInit {
       data,
     });
     dialogRef.afterClosed().subscribe((saved: boolean) => {
-      if (saved) this.loadAll();
+      if (saved) this.loadItems();
     });
   }
 
-  private async loadAll(): Promise<void> {
+  async loadItems(): Promise<void> {
     this.isLoading.set(true);
     this.errorMessage.set(null);
     try {

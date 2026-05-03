@@ -1,4 +1,5 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
+import { SidebarService } from '../side-bar/sidebar.service';
 
 @Component({
   selector: 'app-nav-bar',
@@ -7,5 +8,9 @@ import { Component } from '@angular/core';
   styleUrl: './nav-bar.scss',
 })
 export class NavBar {
+  private sidebarService = inject(SidebarService);
 
+  toggleSidebar(): void {
+    this.sidebarService.toggleSidebar();
+  }
 }

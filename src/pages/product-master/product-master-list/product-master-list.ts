@@ -1,26 +1,55 @@
-import { Component, OnInit, inject, signal } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { HttpErrorResponse } from '@angular/common/http';
-import { Base } from '../../../core/base/base';
+import { ListBase } from '../../../core/base/list-base';
 import { IGenericResponse } from '../../../core/response/genericResponse.interface';
 import { IProductMaster } from '../product-master.response';
 import { ProductMasterUpsert, ProductMasterDialogData } from '../product-master-upsert/product-master-upsert';
+import { TableLayout } from '../../../core/component/table-layout/table-layout';
+import { TableColumn } from '../../../core/models/table-column.interface';
 
 @Component({
   selector: 'app-product-master-list',
-  imports: [],
+  imports: [TableLayout],
   templateUrl: './product-master-list.html',
   styleUrl: './product-master-list.scss',
 })
-export class ProductMasterList extends Base implements OnInit {
+export class ProductMasterList extends ListBase<IProductMaster> implements OnInit {
   private dialog = inject(MatDialog);
 
-  productMasters = signal<IProductMaster[]>([]);
-  isLoading = signal<boolean>(false);
-  errorMessage = signal<string | null>(null);
+  columns: TableColumn<IProductMaster>[] = [
+    {
+      key: 'name',
+      header: 'ID',
+      width: '150px',
+      slot: 'id',
+    },
+    {
+      key: 'name',
+      header: 'Product Name',
+      type: 'text',
+      cellClass: 'text-gray-800 font-medium'
+    },
+    {
+      key: 'sub_category.name',
+      header: 'Sub Category',
+      type: 'text'
+    },
+    {
+      key: 'labour_rate',
+      header: 'Labour Rate',
+      type: 'custom',
+      format: (value, item) => value ? `${value} (${item.labour_rate_on})` : '-'
+    },
+    {
+      key: 'is_active',
+      header: 'Is Active',
+      type: 'boolean'
+    }
+  ];
 
   ngOnInit(): void {
-    this.getAll();
+    this.loadItems();
   }
 
   openAddModal(): void {
@@ -41,7 +70,7 @@ export class ProductMasterList extends Base implements OnInit {
     });
 
     dialogRef.afterClosed().subscribe((saved: boolean) => {
-      if (saved) this.getAll();
+      if (saved) this.loadItems();
     });
   }
 
@@ -53,7 +82,7 @@ export class ProductMasterList extends Base implements OnInit {
         this.apiRoutes.product_master.DELETE(id)
       );
       if (response.status) {
-        this.getAll();
+        this.loadItems();
       } else {
         this.errorMessage.set(response.message);
       }
@@ -65,7 +94,7 @@ export class ProductMasterList extends Base implements OnInit {
     }
   }
 
-  private async getAll(): Promise<void> {
+  async loadItems(): Promise<void> {
     this.isLoading.set(true);
     this.errorMessage.set(null);
 
@@ -75,7 +104,7 @@ export class ProductMasterList extends Base implements OnInit {
       );
 
       if (response.status) {
-        this.productMasters.set(response.data);
+        this.items.set(response.data);
       } else {
         this.errorMessage.set(response.message);
       }
