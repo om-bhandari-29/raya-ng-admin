@@ -1,1 +1,371 @@
-// item-upsert styles
+// ── Item Upsert Layout ────────────────────────────────────────────────────────
+
+// ── Header ────────────────────────────────────────────────────────────────────
+.iu-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  padding: 0.625rem 1rem;
+  background: #fff;
+  border-bottom: 1px solid #e2e8f0;
+  min-height: 52px;
+
+  &__left {
+    display: flex;
+    align-items: center;
+    gap: 0.625rem;
+    min-width: 0;
+  }
+
+  &__back {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px;
+    height: 28px;
+    border-radius: 6px;
+    color: #94a3b8;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    flex-shrink: 0;
+    transition: background 0.15s, color 0.15s;
+
+    &:hover {
+      background: #f1f5f9;
+      color: #475569;
+    }
+  }
+
+  &__title {
+    font-size: 0.9375rem;
+    font-weight: 600;
+    color: #1e293b;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 380px;
+  }
+
+  &__badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.125rem 0.625rem;
+    border-radius: 9999px;
+    font-size: 0.75rem;
+    font-weight: 500;
+    flex-shrink: 0;
+
+    &--enabled {
+      background: #dcfce7;
+      color: #16a34a;
+    }
+
+    &--disabled {
+      background: #f1f5f9;
+      color: #64748b;
+    }
+  }
+
+  &__actions {
+    display: flex;
+    align-items: center;
+    gap: 0.375rem;
+    flex-shrink: 0;
+  }
+}
+
+// ── Shared button styles ──────────────────────────────────────────────────────
+.iu-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  cursor: pointer;
+  font-size: 0.8125rem;
+  font-weight: 500;
+  border-radius: 6px;
+  transition: background 0.15s, color 0.15s, border-color 0.15s;
+  white-space: nowrap;
+
+  &--ghost {
+    padding: 0.3125rem 0.75rem;
+    background: #fff;
+    color: #475569;
+    border: 1px solid #e2e8f0;
+
+    &:hover {
+      background: #f8fafc;
+      border-color: #cbd5e1;
+    }
+  }
+
+  &--icon {
+    padding: 0.3125rem 0.5rem;
+    background: #fff;
+    color: #64748b;
+    border: 1px solid #e2e8f0;
+
+    &:hover {
+      background: #f8fafc;
+      color: #334155;
+    }
+  }
+
+  &--save {
+    padding: 0.375rem 1.125rem;
+    background: #1e293b;
+    color: #fff;
+    border: 1px solid transparent;
+
+    &:hover:not(:disabled) {
+      background: #0f172a;
+    }
+
+    &:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+  }
+}
+
+.iu-btn-group {
+  display: flex;
+  align-items: center;
+
+  .iu-btn--icon:first-child {
+    border-radius: 6px 0 0 6px;
+    border-right-width: 0;
+  }
+
+  .iu-btn--icon:last-child {
+    border-radius: 0 6px 6px 0;
+  }
+}
+
+// ── Error Banner ──────────────────────────────────────────────────────────────
+.iu-error-banner {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.625rem 1rem;
+  font-size: 0.8125rem;
+  color: #dc2626;
+  background: #fef2f2;
+  border-bottom: 1px solid #fecaca;
+}
+
+// ── Body layout ───────────────────────────────────────────────────────────────
+.iu-body {
+  display: flex;
+  align-items: flex-start;
+  min-height: calc(100vh - 52px);
+  background: #f8fafc;
+}
+
+// ── Left Sidebar ──────────────────────────────────────────────────────────────
+.iu-sidebar {
+  width: 168px;
+  flex-shrink: 0;
+  background: #fff;
+  border-right: 1px solid #e2e8f0;
+  min-height: 100%;
+  padding: 1.25rem 0.75rem 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.iu-avatar {
+  width: 100%;
+  aspect-ratio: 1;
+  max-width: 120px;
+  margin: 0 auto 1.25rem;
+  border-radius: 10px;
+  background: #e2e8f0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+
+  &__initials {
+    font-size: 1.75rem;
+    font-weight: 700;
+    color: #94a3b8;
+    letter-spacing: 0.05em;
+    user-select: none;
+  }
+
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+}
+
+.iu-meta {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+
+  &__item {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    width: 100%;
+    padding: 0.5rem 0.25rem;
+    font-size: 0.8125rem;
+    color: #475569;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    border-radius: 6px;
+    text-align: left;
+    transition: background 0.12s;
+
+    &:hover {
+      background: #f1f5f9;
+    }
+
+    span {
+      flex: 1;
+    }
+  }
+}
+
+.iu-sidebar__divider {
+  height: 1px;
+  background: #e2e8f0;
+  margin: 0.875rem 0;
+}
+
+.iu-social {
+  display: flex;
+  flex-direction: column;
+  gap: 0.625rem;
+
+  &__row {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  &__btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
+    font-size: 0.8125rem;
+    color: #64748b;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    padding: 0.25rem 0.375rem;
+    border-radius: 5px;
+    transition: background 0.12s;
+
+    &:hover {
+      background: #f1f5f9;
+    }
+  }
+
+  &__follow {
+    margin-left: auto;
+    font-size: 0.6875rem;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    color: #3b82f6;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    padding: 0.25rem 0;
+
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+}
+
+.iu-audit {
+  margin-top: 0.25rem;
+
+  &__line {
+    font-size: 0.75rem;
+    color: #94a3b8;
+    line-height: 1.5;
+  }
+
+  &__who {
+    font-weight: 600;
+    color: #64748b;
+  }
+
+  &__when {
+    color: #94a3b8;
+  }
+}
+
+// ── Main Content ──────────────────────────────────────────────────────────────
+.iu-main {
+  flex: 1;
+  min-width: 0;
+  background: #fff;
+  display: flex;
+  flex-direction: column;
+}
+
+// ── Tab Bar ───────────────────────────────────────────────────────────────────
+.iu-tabs {
+  border-bottom: 1px solid #e2e8f0;
+  overflow-x: auto;
+
+  &__nav {
+    display: flex;
+    min-width: max-content;
+  }
+
+  &__btn {
+    padding: 0.75rem 1.125rem;
+    font-size: 0.8125rem;
+    font-weight: 500;
+    color: #64748b;
+    background: transparent;
+    border: none;
+    border-bottom: 2px solid transparent;
+    margin-bottom: -1px;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: color 0.15s, border-color 0.15s;
+
+    &:hover {
+      color: #334155;
+    }
+
+    &--active {
+      color: #2563eb;
+      border-bottom-color: #2563eb;
+    }
+  }
+}
+
+// ── Loading ───────────────────────────────────────────────────────────────────
+.iu-loading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 4rem 1.5rem;
+  font-size: 0.875rem;
+  color: #94a3b8;
+}
+
+// ── Coming Soon ───────────────────────────────────────────────────────────────
+.iu-coming-soon {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 5rem 1.5rem;
+  color: #94a3b8;
+  text-align: center;
+}

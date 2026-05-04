@@ -198,4 +198,13 @@ export class ItemUpsert extends Base implements OnInit {
   }
 
   onCancel(): void { this.router.navigate([this.appRoutes.ITEM]); }
+
+  /** Returns up to 2 uppercase initials from the item name for the avatar. */
+  getInitials(): string {
+    const name = this.item()?.name ?? '';
+    if (!name) return 'IT';
+    const words = name.trim().split(/\s+/);
+    if (words.length === 1) return words[0].substring(0, 2).toUpperCase();
+    return (words[0][0] + words[1][0]).toUpperCase();
+  }
 }
