@@ -11,5 +11,6 @@ export const APPRoutes = {
   ITEM_ATTRIBUTE: 'item-attribute',
   STONE_FAMILY: 'stone-family',
   STONE_CLARITY: 'stone-clarity',
-  STONE_SHAPE: 'stone-shape'
+  STONE_SHAPE: 'stone-shape',
+  STONE_DIMENSION: 'stone-dimension'
 };

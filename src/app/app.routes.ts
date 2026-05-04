@@ -68,6 +68,14 @@ export const routes: Routes = [
                 loadComponent: () => import('../pages/stone-master/stone-master-list/stone-master-list').then((m) => m.StoneMasterList),
                 data: { stoneType: StoneMasterType.SHAPE, typeLabel: StoneMasterLabel.SHAPE },
             },
+            {
+                path: APPRoutes.STONE_DIMENSION,
+                loadComponent: () => import('../pages/stone-dimension/stone-dimension-list/stone-dimension-list').then((m) => m.StoneDimensionList),
+            },
+            {
+                path: `${APPRoutes.STONE_DIMENSION}/:id`,
+                loadComponent: () => import('../pages/stone-dimension/stone-dimension-upsert/stone-dimension-upsert').then((m) => m.StoneDimensionUpsert),
+            },
         ]
     },
 ];

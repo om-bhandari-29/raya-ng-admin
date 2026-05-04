@@ -79,5 +79,13 @@ export const APIRoutes = {
     UPDATE: (id: number | string) => `/stone-master/shape/${id}`,
     DELETE: (id: number | string) => `/stone-master/shape/${id}`,
     COMBO: '/stone-master/shape/combo'
+  },
+  stone_dimension: {
+    GET_ALL: '/stone',
+    GET_BY_ID: (id: number | string) => `/stone/${id}`,
+    CREATE: '/stone',
+    UPDATE: (id: number | string) => `/stone/${id}`,
+    DELETE: (id: number | string) => `/stone/${id}`,
+    COMBO: '/stone/combo'
   }
 };

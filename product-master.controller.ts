@@ -7,54 +7,69 @@ import {
   ParseIntPipe,
   Patch,
   Post,
+  Query,
 } from '@nestjs/common';
-import { ApiTags } from '@nestjs/swagger';
-import { ItemService } from './item.service';
-import { CreateItemDto } from './dto/create-item.dto';
-import { UpdateItemDto } from './dto/update-item.dto';
+import { ApiTags, ApiQuery } from '@nestjs/swagger';
+import { StoneService } from './stone.service';
+import { CreateStoneDto } from './dto/create-stone.dto';
+import { UpdateStoneDto } from './dto/update-stone.dto';
 import {
-  CreateItemSwagger,
-  FindAllItemsSwagger,
-  FindOneItemSwagger,
-  UpdateItemSwagger,
-  RemoveItemSwagger,
-} from './item.swagger';
+  CreateStoneSwagger,
+  FindAllStonesSwagger,
+  FindOneStoneSwagger,
+  UpdateStoneSwagger,
+  RemoveStoneSwagger,
+  ComboStoneSwagger,
+} from './stone.swagger';
 
-@ApiTags('item')
-@Controller('item')
-export class ItemController {
-  constructor(private readonly itemService: ItemService) {}
+@ApiTags('stone')
+@Controller('stone')
+export class StoneController {
+  constructor(private readonly stoneService: StoneService) {}
 
   @Post()
-  @CreateItemSwagger()
-  create(@Body() createItemDto: CreateItemDto) {
-    return this.itemService.create(createItemDto);
+  @CreateStoneSwagger()
+  create(@Body() createStoneDto: CreateStoneDto) {
+    return this.stoneService.create(createStoneDto);
+  }
+
+  @Get('combo')
+  @ComboStoneSwagger()
+  combo() {
+    return this.stoneService.combo();
   }
 
   @Get()
-  @FindAllItemsSwagger()
-  findAll() {
-    return this.itemService.findAll();
+  @FindAllStonesSwagger()
+  @ApiQuery({ name: 'page', required: false, type: Number, example: 1 })
+  @ApiQuery({ name: 'limit', required: false, type: Number, example: 10 })
+  findAll(
+    @Query('page') page: string = '1',
+    @Query('limit') limit: string = '10',
+  ) {
+    const pageNum = parseInt(page, 10) || 1;
+    const limitNum = parseInt(limit, 10) || 10;
+    return this.stoneService.findAll(pageNum, limitNum);
   }
 
   @Get(':id')
-  @FindOneItemSwagger()
+  @FindOneStoneSwagger()
   findOne(@Param('id', ParseIntPipe) id: number) {
-    return this.itemService.findOne(id);
+    return this.stoneService.findOne(id);
   }
 
   @Patch(':id')
-  @UpdateItemSwagger()
+  @UpdateStoneSwagger()
   update(
     @Param('id', ParseIntPipe) id: number,
-    @Body() updateItemDto: UpdateItemDto,
+    @Body() updateStoneDto: UpdateStoneDto,
   ) {
-    return this.itemService.update(id, updateItemDto);
+    return this.stoneService.update(id, updateStoneDto);
   }
 
   @Delete(':id')
-  @RemoveItemSwagger()
+  @RemoveStoneSwagger()
   remove(@Param('id', ParseIntPipe) id: number) {
-    return this.itemService.remove(id);
+    return this.stoneService.remove(id);
   }
 }

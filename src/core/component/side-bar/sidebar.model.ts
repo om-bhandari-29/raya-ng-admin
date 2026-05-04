@@ -85,6 +85,13 @@ export const MenuItems: IMenuSideBarItem[] = [
         child: [],
     },
     {
+        name: 'Stone Dimension',
+        route: APPRoutes.STONE_DIMENSION,
+        icon: 'bx bx-cube',
+        userType: [],
+        child: [],
+    },
+    {
         name: 'Item',
         route: APPRoutes.ITEM,
         icon: 'bx bx-box',

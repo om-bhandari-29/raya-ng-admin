@@ -45,6 +45,10 @@ export class TableLayout<T = any> implements AfterContentInit {
     this.onRefresh.emit();
   }
 
+  handleRowClick(item: T): void {
+    this.onRowClick.emit(item);
+  }
+
   handleEdit(item: T): void {
     this.onEdit.emit(item);
   }
