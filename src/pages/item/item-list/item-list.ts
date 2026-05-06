@@ -5,6 +5,8 @@ import { IGenericResponse } from '../../../core/response/genericResponse.interfa
 import { IItem } from '../item.response';
 import { TableLayout } from '../../../core/component/table-layout/table-layout';
 import { TableColumn } from '../../../core/models/table-column.interface';
+import { BreadcrumbService } from '../../../core/services/breadcrumb.service';
+import { APPRoutes } from '../../../core/constant/app-routes';
 
 @Component({
   selector: 'app-item-list',
@@ -14,6 +16,7 @@ import { TableColumn } from '../../../core/models/table-column.interface';
 })
 export class ItemList extends ListBase<IItem> implements OnInit {
   private router = inject(Router);
+  private breadcrumb = inject(BreadcrumbService);
 
   columns: TableColumn<IItem>[] = [
     {
@@ -51,15 +54,19 @@ export class ItemList extends ListBase<IItem> implements OnInit {
   ];
 
   ngOnInit(): void {
+    this.breadcrumb.set([
+      { label: 'Stock', url: APPRoutes.STOCK },
+      { label: 'Item' }
+    ]);
     this.loadItems();
   }
 
   openAdd(): void {
-    this.router.navigate([this.appRoutes.ITEM, 'new']);
+    this.router.navigate([this.appRoutes.STOCK_ITEM, 'new']);
   }
 
   openEdit(id: number): void {
-    this.router.navigate([this.appRoutes.ITEM, id]);
+    this.router.navigate([this.appRoutes.STOCK_ITEM, id]);
   }
 
   async deleteItem(id: number): Promise<void> {

@@ -22,13 +22,6 @@ export const MenuItems: IMenuSideBarItem[] = [
         child: [],
     },
     {
-        name: 'Item Group',
-        route: APPRoutes.ITEM_GROUP,
-        icon: 'bx bx-category',
-        userType: [],
-        child: [],
-    },
-    {
         name: 'Sub Category',
         route: APPRoutes.SUB_CATEGORY,
         icon: 'bx bx-list-ul',
@@ -92,9 +85,9 @@ export const MenuItems: IMenuSideBarItem[] = [
         child: [],
     },
     {
-        name: 'Item',
-        route: APPRoutes.ITEM,
-        icon: 'bx bx-box',
+        name: 'Stock',
+        route: APPRoutes.STOCK,
+        icon: 'bx bx-store',
         userType: [],
         child: [],
     },

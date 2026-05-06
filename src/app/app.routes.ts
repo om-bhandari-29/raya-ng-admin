@@ -18,10 +18,6 @@ export const routes: Routes = [
                 loadComponent: () => import('./../pages/dashboard/dashboard').then((m) => m.Dashboard),
             },
             {
-                path: APPRoutes.ITEM_GROUP,
-                loadComponent: () => import('../pages/group-item/group-item-list/group-item-list').then((m) => m.GroupItemList),
-            },
-            {
                 path: APPRoutes.SUB_CATEGORY,
                 loadComponent: () => import('../pages/sub-category/sub-category-list/sub-category-list').then((m) => m.SubCategoryList),
             },
@@ -36,14 +32,6 @@ export const routes: Routes = [
             {
                 path: APPRoutes.UOM,
                 loadComponent: () => import('../pages/uom/uom-list/uom-list').then((m) => m.UomList),
-            },
-            {
-                path: APPRoutes.ITEM,
-                loadComponent: () => import('../pages/item/item-list/item-list').then((m) => m.ItemList),
-            },
-            {
-                path: `${APPRoutes.ITEM}/:id`,
-                loadComponent: () => import('../pages/item/item-upsert/item-upsert').then((m) => m.ItemUpsert),
             },
             {
                 path: APPRoutes.ITEM_ATTRIBUTE,
@@ -75,6 +63,22 @@ export const routes: Routes = [
             {
                 path: `${APPRoutes.STONE_DIMENSION}/:id`,
                 loadComponent: () => import('../pages/stone-dimension/stone-dimension-upsert/stone-dimension-upsert').then((m) => m.StoneDimensionUpsert),
+            },
+            {
+                path: APPRoutes.STOCK,
+                loadComponent: () => import('../pages/stock/stock').then((m) => m.Stock),
+            },
+            {
+                path: 'stock/item',
+                loadComponent: () => import('../pages/item/item-list/item-list').then((m) => m.ItemList),
+            },
+            {
+                path: 'stock/item/:id',
+                loadComponent: () => import('../pages/item/item-upsert/item-upsert').then((m) => m.ItemUpsert),
+            },
+            {
+                path: 'stock/item-group',
+                loadComponent: () => import('../pages/group-item/group-item-list/group-item-list').then((m) => m.GroupItemList),
             },
         ]
     },

@@ -7,6 +7,8 @@ import { IGroupItem } from '../group-item.response';
 import { GroupItemUpsert, GroupItemDialogData } from '../group-item-upsert/group-item-upsert';
 import { TableLayout } from '../../../core/component/table-layout/table-layout';
 import { TableColumn } from '../../../core/models/table-column.interface';
+import { BreadcrumbService } from '../../../core/services/breadcrumb.service';
+import { APPRoutes } from '../../../core/constant/app-routes';
 
 @Component({
   selector: 'app-group-item-list',
@@ -16,6 +18,7 @@ import { TableColumn } from '../../../core/models/table-column.interface';
 })
 export class GroupItemList extends ListBase<IGroupItem> implements OnInit {
   private dialog = inject(MatDialog);
+  private breadcrumb = inject(BreadcrumbService);
 
   // Define table columns
   columns: TableColumn<IGroupItem>[] = [
@@ -45,6 +48,10 @@ export class GroupItemList extends ListBase<IGroupItem> implements OnInit {
   ];
 
   ngOnInit(): void {
+    this.breadcrumb.set([
+      { label: 'Stock', url: APPRoutes.STOCK },
+      { label: 'Item Group' }
+    ]);
     this.loadItems();
   }
 

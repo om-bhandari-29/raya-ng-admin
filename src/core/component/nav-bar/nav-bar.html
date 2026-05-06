@@ -13,14 +13,20 @@
           </svg>
         </button>
         
-        <!-- Logo/Brand -->
-        <a href="#" class="flex items-center ms-2 md:me-24">
-          <span class="self-center text-lg font-semibold text-gray-800 whitespace-nowrap">RAYA</span>
-        </a>
-
-        <!-- Page Title -->
-        <div class="ms-4 hidden md:block">
-          <span class="text-base font-medium text-slate-700">{{ pageTitleService.pageTitle() }}</span>
+        <!-- Logo/Brand + Breadcrumb -->
+        <div class="flex items-center ms-2 gap-1.5">
+          <a href="#" class="text-lg font-semibold text-gray-800 whitespace-nowrap">RAYA</a>
+          @if (breadcrumbService.breadcrumbs().length) {
+            <span class="text-slate-400 text-base">›</span>
+            @for (crumb of breadcrumbService.breadcrumbs(); track $index; let last = $last) {
+              @if (!last) {
+                <a [href]="crumb.url ?? '#'" class="text-sm text-slate-500 hover:text-slate-700">{{ crumb.label }}</a>
+                <span class="text-slate-400">›</span>
+              } @else {
+                <span class="text-sm font-medium text-slate-700">{{ crumb.label }}</span>
+              }
+            }
+          }
         </div>
       </div>
       
