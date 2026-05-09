@@ -26,32 +26,29 @@ export class GroupItemList extends ListBase<IGroupItem> implements OnInit {
       key: 'name',
       header: 'ID',
       width: '120px',
-      slot: 'id',  // Use custom template for clickable ID
+      slot: 'id', // Use custom template for clickable ID
     },
     {
       key: 'name',
       header: 'Item Group Name',
       type: 'text',
-      cellClass: 'text-gray-800 font-medium'
+      cellClass: 'text-gray-800 font-medium',
     },
     {
       key: 'parent',
       header: 'Parent Item Group',
       type: 'text',
-      format: (value) => value || '-'
+      format: (value) => value || '-',
     },
     {
       key: 'is_active',
       header: 'Is Group',
-      type: 'boolean'
-    }
+      type: 'boolean',
+    },
   ];
 
   ngOnInit(): void {
-    this.breadcrumb.set([
-      { label: 'Stock', url: APPRoutes.STOCK },
-      { label: 'Item Group' }
-    ]);
+    this.breadcrumb.set([{ label: 'Stock', url: APPRoutes.STOCK.ROOT }, { label: 'Item Group' }]);
     this.loadItems();
   }
 
@@ -92,9 +89,10 @@ export class GroupItemList extends ListBase<IGroupItem> implements OnInit {
         this.errorMessage.set(response.message);
       }
     } catch (err) {
-      const message = err instanceof HttpErrorResponse
-        ? err.error?.message ?? 'Failed to delete item. Please try again.'
-        : 'Failed to delete item. Please try again.';
+      const message =
+        err instanceof HttpErrorResponse
+          ? (err.error?.message ?? 'Failed to delete item. Please try again.')
+          : 'Failed to delete item. Please try again.';
       this.toastr.error(message);
     }
   }
@@ -105,7 +103,7 @@ export class GroupItemList extends ListBase<IGroupItem> implements OnInit {
 
     try {
       const response = await this.httpGetPromise<IGenericResponse<IGroupItem[]>>(
-        this.apiRoutes.item_group.GET_ALL
+        this.apiRoutes.item_group.GET_ALL,
       );
 
       if (response.status) {

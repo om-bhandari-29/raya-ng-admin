@@ -29,53 +29,50 @@ export class ItemList extends ListBase<IItem> implements OnInit {
       key: 'name',
       header: 'Item Name',
       type: 'text',
-      cellClass: 'text-gray-800 font-medium'
+      cellClass: 'text-gray-800 font-medium',
     },
     {
       key: 'item_group.name',
       header: 'Item Group',
-      type: 'text'
+      type: 'text',
     },
     {
       key: 'product_master.name',
       header: 'Product Master',
-      type: 'text'
+      type: 'text',
     },
     {
       key: 'has_variants',
       header: 'Has Variants',
-      type: 'boolean'
+      type: 'boolean',
     },
     {
       key: 'is_disabled',
       header: 'Is Active',
-      slot: 'is_active'
-    }
+      slot: 'is_active',
+    },
   ];
 
   ngOnInit(): void {
-    this.breadcrumb.set([
-      { label: 'Stock', url: APPRoutes.STOCK },
-      { label: 'Item' }
-    ]);
+    this.breadcrumb.set([{ label: 'Stock', url: APPRoutes.STOCK.ITEM }, { label: 'Item' }]);
     this.loadItems();
   }
 
   openAdd(): void {
-    this.router.navigate([this.appRoutes.STOCK_ITEM, 'new']);
+    this.router.navigate([this.appRoutes.STOCK.ITEM, 'new']);
   }
 
   openEdit(id: number): void {
-    this.router.navigate([this.appRoutes.STOCK_ITEM, id]);
+    this.router.navigate([this.appRoutes.STOCK.ITEM, id]);
   }
 
   async deleteItem(id: number): Promise<void> {
     try {
       const res = await this.httpDeletePromise<IGenericResponse<null>>(
-        this.apiRoutes.item.DELETE(id)
+        this.apiRoutes.item.DELETE(id),
       );
       if (res.status) {
-        this.items.update(list => list.filter(i => i.id !== id));
+        this.items.update((list) => list.filter((i) => i.id !== id));
         this.toastr.success('Item deleted successfully.');
       } else {
         this.toastr.error(res.message);
@@ -90,7 +87,7 @@ export class ItemList extends ListBase<IItem> implements OnInit {
     this.errorMessage.set(null);
     try {
       const response = await this.httpGetPromise<IGenericResponse<IItem[]>>(
-        this.apiRoutes.item.GET_ALL
+        this.apiRoutes.item.GET_ALL,
       );
       if (response.status) {
         this.items.set(response.data);
