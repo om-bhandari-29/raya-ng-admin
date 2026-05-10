@@ -1,6 +1,22 @@
-import { Component, Input, Output, EventEmitter, ContentChildren, QueryList, TemplateRef, AfterContentInit } from '@angular/core';
+import {
+  Component,
+  Input,
+  Output,
+  EventEmitter,
+  ContentChildren,
+  QueryList,
+  TemplateRef,
+  AfterContentInit,
+  Directive,
+} from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { TableColumn } from '../../models/table-column.interface';
+
+@Directive({ selector: 'ng-template[slot]', standalone: true })
+export class TableSlot {
+  @Input() slot!: string;
+  constructor(public templateRef: TemplateRef<any>) {}
+}
 
 @Component({
   selector: 'app-table-layout',
@@ -20,21 +36,26 @@ export class TableLayout<T = any> implements AfterContentInit {
   @Input() totalCount: number = 0;
   @Input() showCheckbox: boolean = true;
   @Input() showActions: boolean = true;
-  
+
   @Output() onAdd = new EventEmitter<void>();
   @Output() onRefresh = new EventEmitter<void>();
   @Output() onRowClick = new EventEmitter<T>();
   @Output() onEdit = new EventEmitter<T>();
   @Output() onDelete = new EventEmitter<T>();
+  @Output() onLike = new EventEmitter<T>();
 
-  // Capture all ng-template elements
-  @ContentChildren(TemplateRef) templates!: QueryList<TemplateRef<any>>;
-  
+  @ContentChildren(TableSlot) slotList!: QueryList<TableSlot>;
+
   private templateMap = new Map<string, TemplateRef<any>>();
 
   ngAfterContentInit(): void {
-    // Map templates by their slot names
-    // Note: In actual usage, we'll use template reference variables
+    this.slotList.forEach((slot) => {
+      this.templateMap.set(slot.slot, slot.templateRef);
+    });
+  }
+
+  getSlotTemplate(slotName: string): TemplateRef<any> | null {
+    return this.templateMap.get(slotName) ?? null;
   }
 
   handleAdd(): void {
@@ -47,6 +68,10 @@ export class TableLayout<T = any> implements AfterContentInit {
 
   handleRowClick(item: T): void {
     this.onRowClick.emit(item);
+  }
+
+  handleLike(item: T): void {
+    this.onLike.emit(item);
   }
 
   handleEdit(item: T): void {
@@ -66,12 +91,12 @@ export class TableLayout<T = any> implements AfterContentInit {
   // Render cell based on column type
   renderCell(column: TableColumn<T>, item: T): string {
     const value = this.getNestedValue(item, column.key);
-    
+
     // Use custom format function if provided
     if (column.format) {
       return column.format(value, item);
     }
-    
+
     switch (column.type) {
       case 'boolean':
         return ''; // Will be handled in template with icon
@@ -97,25 +122,25 @@ export class TableLayout<T = any> implements AfterContentInit {
   getBadgeClass(column: TableColumn<T>, item: T): string {
     const value = this.getNestedValue(item, column.key);
     const config = column.badgeConfig;
-    
+
     if (!config) {
       return value ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-600';
     }
-    
-    return value ? (config.trueClass || 'bg-green-100 text-green-700') 
-                 : (config.falseClass || 'bg-red-100 text-red-600');
+
+    return value
+      ? config.trueClass || 'bg-green-100 text-green-700'
+      : config.falseClass || 'bg-red-100 text-red-600';
   }
 
   getBadgeLabel(column: TableColumn<T>, item: T): string {
     const value = this.getNestedValue(item, column.key);
     const config = column.badgeConfig;
-    
+
     if (!config) {
       return value ? 'Active' : 'Inactive';
     }
-    
-    return value ? (config.trueLabel || 'Active') 
-                 : (config.falseLabel || 'Inactive');
+
+    return value ? config.trueLabel || 'Active' : config.falseLabel || 'Inactive';
   }
 
   // Get cell class
@@ -142,7 +167,7 @@ export class TableLayout<T = any> implements AfterContentInit {
   // Get time ago (for actions column)
   getTimeAgo(dateString: string): string {
     if (!dateString) return '-';
-    
+
     const date = new Date(dateString);
     const now = new Date();
     const diffInMs = now.getTime() - date.getTime();
@@ -176,4 +201,3 @@ export class TableLayout<T = any> implements AfterContentInit {
     return item.id || index;
   }
 }
-

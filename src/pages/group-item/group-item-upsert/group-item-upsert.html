@@ -1,103 +1,185 @@
-<!-- Header -->
-<div class="flex items-center justify-between px-6 py-4 border-b border-slate-200">
-  <h2 class="text-base font-semibold text-slate-800">
-    {{ isEditMode() ? 'Edit Group Item' : 'Add Group Item' }}
-  </h2>
-  <button type="button" (click)="onCancel()"
-    class="text-slate-400 hover:text-slate-600 transition-colors rounded-lg p-1">
-    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24"
-      stroke="currentColor" stroke-width="2">
-      <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/>
-    </svg>
-  </button>
+<!-- Page Header -->
+<div class="flex items-center justify-between mb-6">
+  <h1 class="text-xl font-semibold text-slate-800">
+    {{ isEditMode() ? 'Edit Item Group' : 'Add Item Group' }}
+  </h1>
 </div>
 
-<!-- Loading -->
-@if (isLoading()) {
-  <div class="flex items-center justify-center gap-2 px-6 py-10 text-slate-400 text-sm">
-    <svg class="animate-spin h-5 w-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-      <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-      <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z"></path>
-    </svg>
-    Loading...
-  </div>
-}
+<!-- Card -->
+<div class="bg-white rounded-xl border border-slate-200 shadow-sm max-w-lg">
+  <!-- Loading -->
+  @if (isLoading()) {
+    <div class="flex items-center justify-center gap-2 px-6 py-10 text-slate-400 text-sm">
+      <svg
+        class="animate-spin h-5 w-5"
+        xmlns="http://www.w3.org/2000/svg"
+        fill="none"
+        viewBox="0 0 24 24"
+      >
+        <circle
+          class="opacity-25"
+          cx="12"
+          cy="12"
+          r="10"
+          stroke="currentColor"
+          stroke-width="4"
+        ></circle>
+        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z"></path>
+      </svg>
+      Loading...
+    </div>
+  }
 
-<!-- Form -->
-@if (!isLoading()) {
-  <form [formGroup]="form" (ngSubmit)="onSubmit()" novalidate>
-    <div class="px-6 py-5 space-y-5">
+  <!-- Form -->
+  @if (!isLoading()) {
+    <form [formGroup]="form" (ngSubmit)="onSubmit()" novalidate>
+      <div class="px-6 py-5 space-y-5">
+        <!-- Error banner -->
+        @if (errorMessage()) {
+          <div
+            class="flex items-center gap-2 px-4 py-3 rounded-lg text-sm text-red-600 bg-red-50 border border-red-200"
+          >
+            <svg class="h-4 w-4 shrink-0" fill="currentColor" viewBox="0 0 20 20">
+              <path
+                fill-rule="evenodd"
+                d="M10 18a8 8 0 100-16 8 8 0 000 16zm-.75-11.25a.75.75 0 011.5 0v4.5a.75.75 0 01-1.5 0v-4.5zm.75 7.5a.75.75 0 100-1.5.75.75 0 000 1.5z"
+                clip-rule="evenodd"
+              />
+            </svg>
+            {{ errorMessage() }}
+          </div>
+        }
 
-      <!-- Error banner -->
-      @if (errorMessage()) {
-        <div class="flex items-center gap-2 px-4 py-3 rounded-lg text-sm text-red-600 bg-red-50 border border-red-200">
-          <svg class="h-4 w-4 shrink-0" fill="currentColor" viewBox="0 0 20 20">
-            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm-.75-11.25a.75.75 0 011.5 0v4.5a.75.75 0 01-1.5 0v-4.5zm.75 7.5a.75.75 0 100-1.5.75.75 0 000 1.5z" clip-rule="evenodd"/>
-          </svg>
-          {{ errorMessage() }}
-        </div>
-      }
-
-      <!-- Name -->
-      <div class="flex flex-col gap-1.5">
-        <label for="name" class="text-sm font-medium text-slate-700">
-          Name <span class="text-red-500">*</span>
-        </label>
-        <input
-          id="name"
-          type="text"
-          formControlName="name"
-          placeholder="Enter group item name"
-          class="w-full rounded-lg border px-3.5 py-2.5 text-sm text-slate-800 placeholder-slate-400 outline-none transition
-            focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-          [class.border-red-400]="nameControl.invalid && nameControl.touched"
-          [class.border-slate-300]="!(nameControl.invalid && nameControl.touched)"
-        />
-        @if (nameControl.invalid && nameControl.touched) {
-          @if (nameControl.errors?.['required']) {
-            <p class="text-xs text-red-500">Name is required.</p>
-          } @else if (nameControl.errors?.['minlength']) {
-            <p class="text-xs text-red-500">Name must be at least 2 characters.</p>
+        <!-- Item Group Name -->
+        <div class="flex flex-col gap-1.5">
+          <label for="name_frappe_based_id" class="text-sm font-medium text-slate-700">
+            Item Group Name <span class="text-red-500">*</span>
+          </label>
+          <input
+            id="name_frappe_based_id"
+            type="text"
+            formControlName="name_frappe_based_id"
+            placeholder="Enter item group name"
+            class="w-full rounded-lg border px-3.5 py-2.5 text-sm text-slate-800 placeholder-slate-400 outline-none transition focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+            [class.border-red-400]="
+              f.name_frappe_based_id.invalid && f.name_frappe_based_id.touched
+            "
+            [class.border-slate-300]="
+              !(f.name_frappe_based_id.invalid && f.name_frappe_based_id.touched)
+            "
+          />
+          @if (f.name_frappe_based_id.invalid && f.name_frappe_based_id.touched) {
+            @if (f.name_frappe_based_id.errors?.['required']) {
+              <p class="text-xs text-red-500">Item group name is required.</p>
+            } @else if (f.name_frappe_based_id.errors?.['minlength']) {
+              <p class="text-xs text-red-500">Name must be at least 2 characters.</p>
+            }
           }
-        }
+        </div>
+
+        <!-- Parent Item Group -->
+        <div class="flex flex-col gap-1.5">
+          <label for="parent_item_group" class="text-sm font-medium text-slate-700">
+            Parent Item Group
+          </label>
+          <select
+            id="parent_item_group"
+            formControlName="parent_item_group"
+            class="w-full rounded-lg border border-slate-300 px-3.5 py-2.5 text-sm text-slate-800 outline-none transition bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+          >
+            <option value="">— None —</option>
+            @for (group of itemGroupOptions(); track group.id) {
+              <option [value]="group.id">{{ group.name }}</option>
+            }
+          </select>
+        </div>
+
+        <!-- HSN/SAC Code -->
+        <div class="flex flex-col gap-1.5">
+          <label for="gst_hsn_code" class="text-sm font-medium text-slate-700">
+            HSN/SAC Code
+          </label>
+          <select
+            id="gst_hsn_code"
+            formControlName="gst_hsn_code"
+            class="w-full rounded-lg border border-slate-300 px-3.5 py-2.5 text-sm text-slate-800 outline-none transition bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+          >
+            <option value="">— None —</option>
+            @for (hsn of hsnCodeOptions(); track hsn.id) {
+              <option [value]="hsn.hsn_code">{{ hsn.hsn_code }} ({{ hsn.gst_rate }}%)</option>
+            }
+          </select>
+        </div>
+
+        <!-- Is Group checkbox -->
+        <div class="flex items-center gap-3">
+          <input
+            id="is_group"
+            type="checkbox"
+            formControlName="is_group"
+            class="h-4 w-4 rounded border-slate-300 text-blue-600 focus:ring-blue-500 cursor-pointer"
+          />
+          <label for="is_group" class="text-sm font-medium text-slate-700 cursor-pointer">
+            Is Group
+          </label>
+        </div>
+
+        <!-- Is Active toggle -->
+        <div class="flex items-center gap-3">
+          <button
+            type="button"
+            role="switch"
+            [attr.aria-checked]="f.is_active.value"
+            (click)="f.is_active.setValue(!f.is_active.value)"
+            class="relative inline-flex h-6 w-11 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+            [class.bg-blue-600]="f.is_active.value"
+            [class.bg-slate-200]="!f.is_active.value"
+          >
+            <span
+              class="pointer-events-none inline-block h-5 w-5 rounded-full bg-white shadow transform transition duration-200"
+              [class.translate-x-5]="f.is_active.value"
+              [class.translate-x-0]="!f.is_active.value"
+            ></span>
+          </button>
+          <span class="text-sm font-medium text-slate-700">Active</span>
+        </div>
       </div>
 
-      <!-- Is Active toggle -->
-      <div class="flex items-center gap-3">
-        <button type="button" role="switch"
-          [attr.aria-checked]="form.controls.is_active.value"
-          (click)="form.controls.is_active.setValue(!form.controls.is_active.value)"
-          class="relative inline-flex h-6 w-11 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
-          [class.bg-blue-600]="form.controls.is_active.value"
-          [class.bg-slate-200]="!form.controls.is_active.value">
-          <span
-            class="pointer-events-none inline-block h-5 w-5 rounded-full bg-white shadow transform transition duration-200"
-            [class.translate-x-5]="form.controls.is_active.value"
-            [class.translate-x-0]="!form.controls.is_active.value">
-          </span>
+      <!-- Footer -->
+      <div class="flex items-center justify-end gap-3 px-6 py-4 border-t border-slate-200">
+        <button
+          type="button"
+          (click)="onCancel()"
+          class="px-4 py-2 rounded-lg text-sm font-medium text-slate-600 bg-slate-100 hover:bg-slate-200 transition-colors"
+        >
+          Cancel
         </button>
-        <span class="text-sm font-medium text-slate-700">Active</span>
+        <button
+          type="submit"
+          [disabled]="isSaving()"
+          class="inline-flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 disabled:opacity-60 disabled:cursor-not-allowed transition-colors"
+        >
+          @if (isSaving()) {
+            <svg
+              class="animate-spin h-4 w-4"
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+            >
+              <circle
+                class="opacity-25"
+                cx="12"
+                cy="12"
+                r="10"
+                stroke="currentColor"
+                stroke-width="4"
+              ></circle>
+              <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z"></path>
+            </svg>
+          }
+          {{ isEditMode() ? 'Update' : 'Create' }}
+        </button>
       </div>
-
-    </div>
-
-    <!-- Footer -->
-    <div class="flex items-center justify-end gap-3 px-6 py-4 border-t border-slate-200">
-      <button type="button" (click)="onCancel()"
-        class="px-4 py-2 rounded-lg text-sm font-medium text-slate-600 bg-slate-100 hover:bg-slate-200 transition-colors">
-        Cancel
-      </button>
-      <button type="submit" [disabled]="isSaving()"
-        class="inline-flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 disabled:opacity-60 disabled:cursor-not-allowed transition-colors">
-        @if (isSaving()) {
-          <svg class="animate-spin h-4 w-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z"></path>
-          </svg>
-        }
-        {{ isEditMode() ? 'Update' : 'Create' }}
-      </button>
-    </div>
-
-  </form>
-}
+    </form>
+  }
+</div>

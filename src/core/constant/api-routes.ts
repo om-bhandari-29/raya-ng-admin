@@ -5,7 +5,8 @@ export const APIRoutes = {
     CREATE: '/item-group',
     UPDATE: (id: number | string) => `/item-group/${id}`,
     DELETE: (id: number | string) => `/item-group/${id}`,
-    COMBO: '/item-group/combo'
+    COMBO: '/item-group/combo',
+    TOGGLE_LIKED: '/item-group/toggle-liked',
   },
   sub_category: {
     GET_ALL: '/sub-category',
@@ -14,7 +15,7 @@ export const APIRoutes = {
     UPDATE: (id: number | string) => `/sub-category/${id}`,
     DELETE: (id: number | string) => `/sub-category/${id}`,
     COMBO: (item_group_id?: number) =>
-      item_group_id ? `/sub-category/combo?item_group_id=${item_group_id}` : '/sub-category/combo'
+      item_group_id ? `/sub-category/combo?item_group_id=${item_group_id}` : '/sub-category/combo',
   },
   product_master: {
     GET_ALL: '/product-master',
@@ -23,7 +24,9 @@ export const APIRoutes = {
     UPDATE: (id: number | string) => `/product-master/${id}`,
     DELETE: (id: number | string) => `/product-master/${id}`,
     COMBO: (sub_category_id?: number) =>
-      sub_category_id ? `/product-master/combo?sub_category_id=${sub_category_id}` : '/product-master/combo'
+      sub_category_id
+        ? `/product-master/combo?sub_category_id=${sub_category_id}`
+        : '/product-master/combo',
   },
   gst_hsn_code: {
     GET_ALL: '/gst-hsn-code',
@@ -31,7 +34,7 @@ export const APIRoutes = {
     CREATE: '/gst-hsn-code',
     UPDATE: (id: number | string) => `/gst-hsn-code/${id}`,
     DELETE: (id: number | string) => `/gst-hsn-code/${id}`,
-    COMBO: '/gst-hsn-code/combo'
+    COMBO: '/gst-hsn-code/combo',
   },
   uom: {
     GET_ALL: '/uom',
@@ -39,14 +42,14 @@ export const APIRoutes = {
     CREATE: '/uom',
     UPDATE: (id: number | string) => `/uom/${id}`,
     DELETE: (id: number | string) => `/uom/${id}`,
-    COMBO: '/uom/combo'
+    COMBO: '/uom/combo',
   },
   item: {
     GET_ALL: '/item',
     GET_BY_ID: (id: number | string) => `/item/${id}`,
     CREATE: '/item',
     UPDATE: (id: number | string) => `/item/${id}`,
-    DELETE: (id: number | string) => `/item/${id}`
+    DELETE: (id: number | string) => `/item/${id}`,
   },
   item_attribute: {
     GET_ALL: '/item-attribute-master',
@@ -54,7 +57,7 @@ export const APIRoutes = {
     CREATE: '/item-attribute-master',
     UPDATE: (id: number | string) => `/item-attribute-master/${id}`,
     DELETE: (id: number | string) => `/item-attribute-master/${id}`,
-    COMBO: '/item-attribute-master/combo'
+    COMBO: '/item-attribute-master/combo',
   },
   stone_family: {
     GET_ALL: '/stone-master/family',
@@ -62,7 +65,7 @@ export const APIRoutes = {
     CREATE: '/stone-master/family',
     UPDATE: (id: number | string) => `/stone-master/family/${id}`,
     DELETE: (id: number | string) => `/stone-master/family/${id}`,
-    COMBO: '/stone-master/family/combo'
+    COMBO: '/stone-master/family/combo',
   },
   stone_clarity: {
     GET_ALL: '/stone-master/clarity',
@@ -70,7 +73,7 @@ export const APIRoutes = {
     CREATE: '/stone-master/clarity',
     UPDATE: (id: number | string) => `/stone-master/clarity/${id}`,
     DELETE: (id: number | string) => `/stone-master/clarity/${id}`,
-    COMBO: '/stone-master/clarity/combo'
+    COMBO: '/stone-master/clarity/combo',
   },
   stone_shape: {
     GET_ALL: '/stone-master/shape',
@@ -78,7 +81,7 @@ export const APIRoutes = {
     CREATE: '/stone-master/shape',
     UPDATE: (id: number | string) => `/stone-master/shape/${id}`,
     DELETE: (id: number | string) => `/stone-master/shape/${id}`,
-    COMBO: '/stone-master/shape/combo'
+    COMBO: '/stone-master/shape/combo',
   },
   stone_dimension: {
     GET_ALL: '/stone',
@@ -86,6 +89,6 @@ export const APIRoutes = {
     CREATE: '/stone',
     UPDATE: (id: number | string) => `/stone/${id}`,
     DELETE: (id: number | string) => `/stone/${id}`,
-    COMBO: '/stone/combo'
-  }
+    COMBO: '/stone/combo',
+  },
 };

@@ -1,49 +1,50 @@
 import { Component, OnInit, inject } from '@angular/core';
-import { MatDialog } from '@angular/material/dialog';
+import { Router } from '@angular/router';
 import { HttpErrorResponse } from '@angular/common/http';
 import { ListBase } from '../../../core/base/list-base';
 import { IGenericResponse } from '../../../core/response/genericResponse.interface';
 import { IGroupItem } from '../group-item.response';
-import { GroupItemUpsert, GroupItemDialogData } from '../group-item-upsert/group-item-upsert';
-import { TableLayout } from '../../../core/component/table-layout/table-layout';
+import { TableLayout, TableSlot } from '../../../core/component/table-layout/table-layout';
 import { TableColumn } from '../../../core/models/table-column.interface';
 import { BreadcrumbService } from '../../../core/services/breadcrumb.service';
 import { APPRoutes } from '../../../core/constant/app-routes';
 
 @Component({
   selector: 'app-group-item-list',
-  imports: [TableLayout],
+  imports: [TableLayout, TableSlot],
   templateUrl: './group-item-list.html',
   styleUrl: './group-item-list.scss',
 })
 export class GroupItemList extends ListBase<IGroupItem> implements OnInit {
-  private dialog = inject(MatDialog);
+  private router = inject(Router);
   private breadcrumb = inject(BreadcrumbService);
 
-  // Define table columns
   columns: TableColumn<IGroupItem>[] = [
     {
-      key: 'name',
+      key: 'name_frappe_based_id',
       header: 'ID',
-      width: '120px',
-      slot: 'id', // Use custom template for clickable ID
+      width: '220px',
+      slot: 'id',
     },
     {
-      key: 'name',
+      key: 'name_frappe_based_id',
       header: 'Item Group Name',
       type: 'text',
+      width: '280px',
       cellClass: 'text-gray-800 font-medium',
     },
     {
-      key: 'parent',
+      key: 'parent_item_group',
       header: 'Parent Item Group',
       type: 'text',
       format: (value) => value || '-',
     },
     {
-      key: 'is_active',
+      key: 'is_group',
       header: 'Is Group',
       type: 'boolean',
+      width: '90px',
+      align: 'center',
     },
   ];
 
@@ -53,27 +54,29 @@ export class GroupItemList extends ListBase<IGroupItem> implements OnInit {
   }
 
   openAddModal(): void {
-    this.openModal(0);
+    this.router.navigate(['stock/item-group/upsert'], { queryParams: { id: 0 } });
   }
 
   openEditModal(id: number): void {
-    this.openModal(id);
+    this.router.navigate(['stock/item-group/upsert'], { queryParams: { id } });
   }
 
-  private openModal(itemId: number): void {
-    const data: GroupItemDialogData = { itemId };
-
-    const dialogRef = this.dialog.open(GroupItemUpsert, {
-      width: '480px',
-      disableClose: true,
-      data,
-    });
-
-    dialogRef.afterClosed().subscribe((saved: boolean) => {
-      if (saved) {
-        this.loadItems();
-      }
-    });
+  async toggleLiked(item: IGroupItem): Promise<void> {
+    const newLiked = !item.liked;
+    try {
+      await this.httpPostPromise<
+        IGenericResponse<null>,
+        { name_frappe_based_id: string; liked: boolean }
+      >(this.apiRoutes.item_group.TOGGLE_LIKED, {
+        name_frappe_based_id: item.name_frappe_based_id,
+        liked: newLiked,
+      });
+      this.items.update((list) =>
+        list.map((i) => (i.id === item.id ? { ...i, liked: newLiked } : i)),
+      );
+    } catch {
+      this.toastr.error('Failed to update. Please try again.');
+    }
   }
 
   async deleteGroupItem(id: number): Promise<void> {

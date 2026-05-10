@@ -7,13 +7,12 @@
   (onAdd)="openAddModal()"
   (onRefresh)="loadItems()"
   (onEdit)="openEditModal($any($event).id)"
-  (onDelete)="deleteGroupItem($any($event).id)">
-  
-  <!-- Custom template for ID column (clickable link) -->
+  (onDelete)="deleteGroupItem($any($event).id)"
+  (onLike)="toggleLiked($any($event))"
+>
   <ng-template slot="id" let-item>
     <button (click)="openEditModal(item.id)" class="text-blue-600 hover:text-blue-800 font-medium">
-      {{ item.name }}
+      {{ item.name_frappe_based_id }}
     </button>
   </ng-template>
-  
 </app-table-layout>

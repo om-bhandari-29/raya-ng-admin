@@ -114,6 +114,13 @@ export const routes: Routes = [
             (m) => m.GroupItemList,
           ),
       },
+      {
+        path: 'stock/item-group/upsert',
+        loadComponent: () =>
+          import('../pages/group-item/group-item-upsert/group-item-upsert').then(
+            (m) => m.GroupItemUpsert,
+          ),
+      },
     ],
   },
 ];
