@@ -24,8 +24,7 @@
       </svg>
     </button>
     <h1 class="text-xl font-bold text-gray-900 tracking-tight">
-      <!-- {{ title }} -->
-      Stock
+      {{ actionService.title$ | async }}
     </h1>
   </div>
 
@@ -104,12 +103,14 @@
       </svg>
     </button>
 
-    <button
-      class="flex items-center gap-2 ml-2 px-4 py-1 text-sm font-semibold text-white bg-black rounded-lg hover:bg-gray-800 shadow-sm transition-all active:scale-95"
-    >
-      <span class="text-lg leading-none font-light">+</span>
-      <!-- {{ buttonLabel }} -->
-      label
-    </button>
+    @if (actionService.buttonTitle$ | async; as btnTitle) {
+      <button
+        (click)="onButtonClick()"
+        class="flex items-center gap-2 ml-2 px-4 py-1 text-sm font-semibold text-white bg-black rounded-lg hover:bg-gray-800 shadow-sm transition-all active:scale-95"
+      >
+        <span class="text-lg leading-none font-light">+</span>
+        {{ btnTitle }}
+      </button>
+    }
   </div>
 </div>

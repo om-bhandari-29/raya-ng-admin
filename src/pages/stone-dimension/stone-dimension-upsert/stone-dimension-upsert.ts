@@ -104,7 +104,8 @@ export class StoneDimensionUpsert extends Base implements OnInit {
     is_active: new FormControl<boolean>(true, { nonNullable: true }),
   });
 
-  ngOnInit(): void {
+  override ngOnInit(): void {
+    super.ngOnInit();
     const id = this.route.snapshot.paramMap.get('id');
     if (id && id !== '0') {
       this.itemId.set(parseInt(id, 10));
@@ -121,7 +122,7 @@ export class StoneDimensionUpsert extends Base implements OnInit {
     this.errorMessage.set(null);
     try {
       const res = await this.httpGetPromise<IGenericResponse<IStoneDimension>>(
-        this.apiRoutes.stone_dimension.GET_BY_ID(this.itemId())
+        this.apiRoutes.stone_dimension.GET_BY_ID(this.itemId()),
       );
       if (res.status) {
         this.form.patchValue({
@@ -171,13 +172,13 @@ export class StoneDimensionUpsert extends Base implements OnInit {
       if (this.isEditMode()) {
         await this.httpPatchPromise<IGenericResponse<IStoneDimension>, typeof payload>(
           this.apiRoutes.stone_dimension.UPDATE(this.itemId()),
-          payload
+          payload,
         );
         this.toastr.success('Stone dimension updated successfully.');
       } else {
         await this.httpPostPromise<IGenericResponse<IStoneDimension>, typeof payload>(
           this.apiRoutes.stone_dimension.CREATE,
-          payload
+          payload,
         );
         this.toastr.success('Stone dimension created successfully.');
       }
@@ -193,8 +194,16 @@ export class StoneDimensionUpsert extends Base implements OnInit {
     this.router.navigate([`/${APPRoutes.STONE_DIMENSION}`]);
   }
 
-  get shapeControl() { return this.form.controls.shape; }
-  get stoneNameControl() { return this.form.controls.stoneName; }
-  get cutStyleControl() { return this.form.controls.cutStyle; }
-  get stoneTypeControl() { return this.form.controls.stoneType; }
+  get shapeControl() {
+    return this.form.controls.shape;
+  }
+  get stoneNameControl() {
+    return this.form.controls.stoneName;
+  }
+  get cutStyleControl() {
+    return this.form.controls.cutStyle;
+  }
+  get stoneTypeControl() {
+    return this.form.controls.stoneType;
+  }
 }

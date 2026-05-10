@@ -10,7 +10,10 @@ import { ItemTab, ITEM_TABS } from '../../../core/enum/item-tab.enum';
 import { DetailsTab, ItemDetailsPayload } from './tabs/details-tab/details-tab';
 import { InventoryTab, ItemInventoryPayload } from './tabs/inventory-tab/inventory-tab';
 import { VariantsTab, ItemVariantsPayload } from './tabs/variants-tab/variants-tab';
-import { StoneDetailsTab, ItemStoneDetailsPayload } from './tabs/stone-details-tab/stone-details-tab';
+import {
+  StoneDetailsTab,
+  ItemStoneDetailsPayload,
+} from './tabs/stone-details-tab/stone-details-tab';
 
 @Component({
   selector: 'app-item-upsert',
@@ -34,7 +37,8 @@ export class ItemUpsert extends Base implements OnInit {
   item = signal<IItem | null>(null);
   dropdowns = signal<ItemDropdowns | null>(null);
 
-  ngOnInit(): void {
+  override ngOnInit(): void {
+    super.ngOnInit();
     const idParam = this.route.snapshot.paramMap.get('id');
     if (idParam && idParam !== 'new') {
       this.itemId.set(+idParam);
@@ -44,10 +48,12 @@ export class ItemUpsert extends Base implements OnInit {
     this.loadDropdowns();
   }
 
-  setTab(tab: ItemTab): void { this.activeTab.set(tab); }
+  setTab(tab: ItemTab): void {
+    this.activeTab.set(tab);
+  }
 
   private goNextTab(): void {
-    const idx = this.tabs.findIndex(t => t.key === this.activeTab());
+    const idx = this.tabs.findIndex((t) => t.key === this.activeTab());
     if (idx < this.tabs.length - 1) {
       this.activeTab.set(this.tabs[idx + 1].key);
     }
@@ -61,13 +67,15 @@ export class ItemUpsert extends Base implements OnInit {
     try {
       if (this.isEditMode()) {
         await this.httpPatchPromise<IGenericResponse<IItem>, ItemDetailsPayload>(
-          this.apiRoutes.item.UPDATE(this.itemId()), payload
+          this.apiRoutes.item.UPDATE(this.itemId()),
+          payload,
         );
         this.toastr.success('Details saved.');
         this.goNextTab();
       } else {
         const res = await this.httpPostPromise<IGenericResponse<IItem>, ItemDetailsPayload>(
-          this.apiRoutes.item.CREATE, payload
+          this.apiRoutes.item.CREATE,
+          payload,
         );
         if (res.status) {
           this.itemId.set(res.data.id);
@@ -96,7 +104,8 @@ export class ItemUpsert extends Base implements OnInit {
     this.errorMessage.set(null);
     try {
       await this.httpPatchPromise<IGenericResponse<IItem>, ItemInventoryPayload>(
-        this.apiRoutes.item.UPDATE(this.itemId()), payload
+        this.apiRoutes.item.UPDATE(this.itemId()),
+        payload,
       );
       this.toastr.success('Inventory saved.');
       this.goNextTab();
@@ -117,7 +126,8 @@ export class ItemUpsert extends Base implements OnInit {
     this.errorMessage.set(null);
     try {
       await this.httpPatchPromise<IGenericResponse<IItem>, ItemVariantsPayload>(
-        this.apiRoutes.item.UPDATE(this.itemId()), payload
+        this.apiRoutes.item.UPDATE(this.itemId()),
+        payload,
       );
       this.toastr.success('Variants saved.');
       this.goNextTab();
@@ -138,7 +148,8 @@ export class ItemUpsert extends Base implements OnInit {
     this.errorMessage.set(null);
     try {
       await this.httpPatchPromise<IGenericResponse<IItem>, ItemStoneDetailsPayload>(
-        this.apiRoutes.item.UPDATE(this.itemId()), payload
+        this.apiRoutes.item.UPDATE(this.itemId()),
+        payload,
       );
       this.toastr.success('Stone details saved.');
       this.goNextTab();
@@ -158,7 +169,9 @@ export class ItemUpsert extends Base implements OnInit {
         this.httpGetPromise<IGenericResponse<IComboItem[]>>(this.apiRoutes.product_master.COMBO()),
         this.httpGetPromise<IGenericResponse<IComboItem[]>>(this.apiRoutes.uom.COMBO),
         this.httpGetPromise<IGenericResponse<IComboHsnCode[]>>(this.apiRoutes.gst_hsn_code.COMBO),
-        this.httpGetPromise<IGenericResponse<IItemAttribute[]>>(this.apiRoutes.item_attribute.GET_ALL),
+        this.httpGetPromise<IGenericResponse<IItemAttribute[]>>(
+          this.apiRoutes.item_attribute.GET_ALL,
+        ),
         this.httpGetPromise<IGenericResponse<IComboItem[]>>(this.apiRoutes.stone_family.COMBO),
         this.httpGetPromise<IGenericResponse<IComboItem[]>>(this.apiRoutes.stone_clarity.COMBO),
         this.httpGetPromise<IGenericResponse<IComboItem[]>>(this.apiRoutes.stone_shape.COMBO),
@@ -183,7 +196,7 @@ export class ItemUpsert extends Base implements OnInit {
     this.errorMessage.set(null);
     try {
       const res = await this.httpGetPromise<IGenericResponse<IItem>>(
-        this.apiRoutes.item.GET_BY_ID(this.itemId())
+        this.apiRoutes.item.GET_BY_ID(this.itemId()),
       );
       if (res.status) {
         this.item.set(res.data);
@@ -197,7 +210,9 @@ export class ItemUpsert extends Base implements OnInit {
     }
   }
 
-  onCancel(): void { this.router.navigate([this.appRoutes.ITEM]); }
+  onCancel(): void {
+    this.router.navigate([this.appRoutes.ITEM]);
+  }
 
   /** Returns up to 2 uppercase initials from the item name for the avatar. */
   getInitials(): string {

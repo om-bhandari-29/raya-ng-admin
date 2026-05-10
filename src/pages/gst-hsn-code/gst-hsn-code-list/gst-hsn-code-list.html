@@ -1,18 +1,15 @@
 <app-table-layout
   [columns]="columns"
   [data]="items()"
-  [addButtonText]="'Add GST HSN Code'"
   [isLoading]="isLoading()"
   [errorMessage]="errorMessage()"
-  (onAdd)="openAddModal()"
   (onRefresh)="loadItems()"
-  (onEdit)="openEditModal($any($event).id)">
-  
+  (onEdit)="openEditModal($any($event).id)"
+>
   <!-- Custom template for ID column (clickable link) -->
   <ng-template slot="id" let-item>
     <button (click)="openEditModal(item.id)" class="text-blue-600 hover:text-blue-800 font-medium">
       {{ item.hsn_code }}
     </button>
   </ng-template>
-  
 </app-table-layout>

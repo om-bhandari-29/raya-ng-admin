@@ -40,7 +40,8 @@ export class UomUpsert extends Base implements OnInit {
     is_active: new FormControl<boolean>(true, { nonNullable: true }),
   });
 
-  ngOnInit(): void {
+  override ngOnInit(): void {
+    super.ngOnInit();
     if (this.dialogData.itemId !== 0) {
       this.isEditMode.set(true);
       this.loadItem();
@@ -84,7 +85,7 @@ export class UomUpsert extends Base implements OnInit {
       } else {
         await this.httpPostPromise<IGenericResponse<IUom>, typeof payload>(
           this.apiRoutes.uom.CREATE,
-          payload
+          payload,
         );
       }
       this.dialogRef.close(true);
@@ -99,5 +100,7 @@ export class UomUpsert extends Base implements OnInit {
     this.dialogRef.close(false);
   }
 
-  get nameControl() { return this.form.controls.name; }
+  get nameControl() {
+    return this.form.controls.name;
+  }
 }

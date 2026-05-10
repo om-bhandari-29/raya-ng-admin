@@ -26,7 +26,7 @@ export class ItemAttributeList extends ListBase<IItemAttribute> implements OnIni
       key: 'attribute_name',
       header: 'Attribute Name',
       type: 'text',
-      cellClass: 'text-gray-800 font-medium'
+      cellClass: 'text-gray-800 font-medium',
     },
     {
       key: 'numeric_values',
@@ -36,23 +36,24 @@ export class ItemAttributeList extends ListBase<IItemAttribute> implements OnIni
         trueLabel: 'Numeric',
         falseLabel: 'Text',
         trueClass: 'bg-blue-100 text-blue-700',
-        falseClass: 'bg-purple-100 text-purple-700'
-      }
+        falseClass: 'bg-purple-100 text-purple-700',
+      },
     },
     {
       key: 'values',
       header: 'Values',
       type: 'custom',
-      format: (values) => values?.length ? `${values.length} values` : 'No values'
+      format: (values) => (values?.length ? `${values.length} values` : 'No values'),
     },
     {
       key: 'status',
       header: 'Is Active',
-      type: 'boolean'
-    }
+      type: 'boolean',
+    },
   ];
 
-  ngOnInit(): void {
+  override ngOnInit(): void {
+    super.ngOnInit();
     this.loadItems();
   }
 
@@ -69,7 +70,7 @@ export class ItemAttributeList extends ListBase<IItemAttribute> implements OnIni
     this.errorMessage.set(null);
     try {
       const response = await this.httpGetPromise<IGenericResponse<IItemAttribute[]>>(
-        this.apiRoutes.item_attribute.GET_ALL
+        this.apiRoutes.item_attribute.GET_ALL,
       );
       if (response.status) {
         this.items.set(response.data);

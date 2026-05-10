@@ -48,7 +48,8 @@ export class GstHsnCodeUpsert extends Base implements OnInit {
     is_active: new FormControl<boolean>(true, { nonNullable: true }),
   });
 
-  ngOnInit(): void {
+  override ngOnInit(): void {
+    super.ngOnInit();
     if (this.dialogData.itemId !== 0) {
       this.isEditMode.set(true);
       this.loadItem();
@@ -94,7 +95,7 @@ export class GstHsnCodeUpsert extends Base implements OnInit {
       } else {
         await this.httpPostPromise<IGenericResponse<IGstHsnCode>, typeof payload>(
           this.apiRoutes.gst_hsn_code.CREATE,
-          payload
+          payload,
         );
       }
       this.dialogRef.close(true);
@@ -109,7 +110,13 @@ export class GstHsnCodeUpsert extends Base implements OnInit {
     this.dialogRef.close(false);
   }
 
-  get hsnCodeControl() { return this.form.controls.hsn_code; }
-  get descriptionControl() { return this.form.controls.description; }
-  get gstRateControl() { return this.form.controls.gst_rate; }
+  get hsnCodeControl() {
+    return this.form.controls.hsn_code;
+  }
+  get descriptionControl() {
+    return this.form.controls.description;
+  }
+  get gstRateControl() {
+    return this.form.controls.gst_rate;
+  }
 }

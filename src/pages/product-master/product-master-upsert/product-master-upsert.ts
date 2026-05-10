@@ -35,16 +35,19 @@ export class ProductMasterUpsert extends Base implements OnInit {
   isLoading = signal<boolean>(false);
   isSaving = signal<boolean>(false);
   errorMessage = signal<string | null>(null);
-  
+
   // Category (Group Item) related
   itemGroups = signal<IComboItem[]>([]);
-  
+
   // Sub Category related
   subCategories = signal<IComboItem[]>([]);
 
   form = new FormGroup<ProductMasterForm>({
     item_group_id: new FormControl<number | null>(null),
-    sub_category_id: new FormControl<number | null>({ value: null, disabled: true }, { validators: [Validators.required] }),
+    sub_category_id: new FormControl<number | null>(
+      { value: null, disabled: true },
+      { validators: [Validators.required] },
+    ),
     name: new FormControl<string>('', {
       nonNullable: true,
       validators: [Validators.required, Validators.minLength(2)],
@@ -64,7 +67,8 @@ export class ProductMasterUpsert extends Base implements OnInit {
     is_active: new FormControl<boolean>(true, { nonNullable: true }),
   });
 
-  ngOnInit(): void {
+  override ngOnInit(): void {
+    super.ngOnInit();
     this.loadItemGroups();
     if (this.dialogData.itemId !== 0) {
       this.isEditMode.set(true);
@@ -80,7 +84,7 @@ export class ProductMasterUpsert extends Base implements OnInit {
   private async loadItemGroups(): Promise<void> {
     try {
       const response = await this.httpGetPromise<IGenericResponse<IComboItem[]>>(
-        this.apiRoutes.item_group.COMBO
+        this.apiRoutes.item_group.COMBO,
       );
       if (response.status) this.itemGroups.set(response.data);
     } catch {
@@ -91,7 +95,7 @@ export class ProductMasterUpsert extends Base implements OnInit {
   private async loadSubCategories(item_group_id?: number): Promise<void> {
     try {
       const response = await this.httpGetPromise<IGenericResponse<IComboItem[]>>(
-        this.apiRoutes.sub_category.COMBO(item_group_id)
+        this.apiRoutes.sub_category.COMBO(item_group_id),
       );
       if (response.status) this.subCategories.set(response.data);
     } catch {
@@ -162,7 +166,7 @@ export class ProductMasterUpsert extends Base implements OnInit {
       } else {
         await this.httpPostPromise<IGenericResponse<IProductMaster>, typeof payload>(
           this.apiRoutes.product_master.CREATE,
-          payload
+          payload,
         );
       }
 
@@ -178,9 +182,19 @@ export class ProductMasterUpsert extends Base implements OnInit {
     this.dialogRef.close(false);
   }
 
-  get subCategoryIdControl() { return this.form.controls.sub_category_id; }
-  get nameControl() { return this.form.controls.name; }
-  get labourRateControl() { return this.form.controls.labour_rate; }
-  get labourRateOnControl() { return this.form.controls.labour_rate_on; }
-  get productDescriptionControl() { return this.form.controls.product_description; }
+  get subCategoryIdControl() {
+    return this.form.controls.sub_category_id;
+  }
+  get nameControl() {
+    return this.form.controls.name;
+  }
+  get labourRateControl() {
+    return this.form.controls.labour_rate;
+  }
+  get labourRateOnControl() {
+    return this.form.controls.labour_rate_on;
+  }
+  get productDescriptionControl() {
+    return this.form.controls.product_description;
+  }
 }

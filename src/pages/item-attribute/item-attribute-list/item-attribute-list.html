@@ -1,18 +1,15 @@
 <app-table-layout
   [columns]="columns"
   [data]="items()"
-  [addButtonText]="'Add Item Attribute'"
   [isLoading]="isLoading()"
   [errorMessage]="errorMessage()"
-  (onAdd)="openAdd()"
   (onRefresh)="loadItems()"
-  (onEdit)="openEdit($any($event).id)">
-  
+  (onEdit)="openEdit($any($event).id)"
+>
   <!-- Custom template for ID column (clickable link) -->
   <ng-template slot="id" let-item>
     <button (click)="openEdit(item.id)" class="text-blue-600 hover:text-blue-800 font-medium">
       {{ item.attribute_name }}
     </button>
   </ng-template>
-  
 </app-table-layout>

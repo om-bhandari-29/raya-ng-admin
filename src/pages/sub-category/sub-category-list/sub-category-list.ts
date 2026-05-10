@@ -4,7 +4,10 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { ListBase } from '../../../core/base/list-base';
 import { IGenericResponse } from '../../../core/response/genericResponse.interface';
 import { ISubCategory } from '../sub-category.response';
-import { SubCategoryUpsert, SubCategoryDialogData } from '../sub-category-upsert/sub-category-upsert';
+import {
+  SubCategoryUpsert,
+  SubCategoryDialogData,
+} from '../sub-category-upsert/sub-category-upsert';
 import { TableLayout } from '../../../core/component/table-layout/table-layout';
 import { TableColumn } from '../../../core/models/table-column.interface';
 
@@ -23,27 +26,28 @@ export class SubCategoryList extends ListBase<ISubCategory> implements OnInit {
       key: 'name',
       header: 'ID',
       width: '120px',
-      slot: 'id',  // Custom template for clickable ID
+      slot: 'id', // Custom template for clickable ID
     },
     {
       key: 'name',
       header: 'Sub Category Name',
       type: 'text',
-      cellClass: 'text-gray-800 font-medium'
+      cellClass: 'text-gray-800 font-medium',
     },
     {
-      key: 'item_group.name',  // Nested property - automatic!
+      key: 'item_group.name', // Nested property - automatic!
       header: 'Item Group',
-      type: 'text'
+      type: 'text',
     },
     {
       key: 'is_active',
       header: 'Is Active',
-      type: 'boolean'  // Automatic checkmark icon
-    }
+      type: 'boolean', // Automatic checkmark icon
+    },
   ];
 
-  ngOnInit(): void {
+  override ngOnInit(): void {
+    super.ngOnInit();
     this.loadItems();
   }
 
@@ -74,7 +78,7 @@ export class SubCategoryList extends ListBase<ISubCategory> implements OnInit {
 
     try {
       const response = await this.httpDeletePromise<IGenericResponse<null>>(
-        this.apiRoutes.sub_category.DELETE(id)
+        this.apiRoutes.sub_category.DELETE(id),
       );
       if (response.status) {
         this.loadItems();
@@ -82,9 +86,10 @@ export class SubCategoryList extends ListBase<ISubCategory> implements OnInit {
         this.errorMessage.set(response.message);
       }
     } catch (err) {
-      const message = err instanceof HttpErrorResponse
-        ? err.error?.message ?? 'Failed to delete. Please try again.'
-        : 'Failed to delete. Please try again.';
+      const message =
+        err instanceof HttpErrorResponse
+          ? (err.error?.message ?? 'Failed to delete. Please try again.')
+          : 'Failed to delete. Please try again.';
       this.toastr.error(message);
     }
   }
@@ -95,7 +100,7 @@ export class SubCategoryList extends ListBase<ISubCategory> implements OnInit {
 
     try {
       const response = await this.httpGetPromise<IGenericResponse<ISubCategory[]>>(
-        this.apiRoutes.sub_category.GET_ALL
+        this.apiRoutes.sub_category.GET_ALL,
       );
 
       if (response.status) {

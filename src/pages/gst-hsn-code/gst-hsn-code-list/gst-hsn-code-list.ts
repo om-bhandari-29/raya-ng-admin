@@ -27,26 +27,27 @@ export class GstHsnCodeList extends ListBase<IGstHsnCode> implements OnInit {
       key: 'hsn_code',
       header: 'HSN Code',
       type: 'text',
-      cellClass: 'text-gray-800 font-medium'
+      cellClass: 'text-gray-800 font-medium',
     },
     {
       key: 'description',
       header: 'Description',
-      type: 'text'
+      type: 'text',
     },
     {
       key: 'gst_rate',
       header: 'GST Rate (%)',
-      type: 'number'
+      type: 'number',
     },
     {
       key: 'is_active',
       header: 'Is Active',
-      type: 'boolean'
-    }
+      type: 'boolean',
+    },
   ];
 
-  ngOnInit(): void {
+  override ngOnInit(): void {
+    super.ngOnInit();
     this.loadItems();
   }
 
@@ -75,7 +76,7 @@ export class GstHsnCodeList extends ListBase<IGstHsnCode> implements OnInit {
     this.errorMessage.set(null);
     try {
       const response = await this.httpGetPromise<IGenericResponse<IGstHsnCode[]>>(
-        this.apiRoutes.gst_hsn_code.GET_ALL
+        this.apiRoutes.gst_hsn_code.GET_ALL,
       );
       if (response.status) {
         this.items.set(response.data);

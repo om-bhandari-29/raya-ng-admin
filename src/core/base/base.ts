@@ -7,6 +7,7 @@ import { APPRoutes } from '../constant/app-routes';
 import { APIRoutes } from '../constant/api-routes';
 import { environment } from '../../environment/dev.env';
 import { variable } from '../enum/variable.enum';
+import { ActionService } from '../services/action.service';
 
 @Component({
   selector: 'app-base',
@@ -15,6 +16,7 @@ import { variable } from '../enum/variable.enum';
 })
 export class Base {
   public toastr: ToastrService = inject(ToastrService);
+  private actionService: ActionService = inject(ActionService);
   // public toastService: ToastService = inject(ToastService);
 
   public subscriptionArray: Array<Subscription> = [];
@@ -24,6 +26,10 @@ export class Base {
   public readonly appRoutes = APPRoutes;
 
   private httpClient: HttpClient = inject(HttpClient);
+
+  ngOnInit(): void {
+    this.listenToActionButton();
+  }
 
   public httpGetPromise<RType>(url: string, showLoader: boolean = true): Promise<RType> {
     const getPromise: Promise<RType> = new Promise((resolve, reject) => {
@@ -48,7 +54,7 @@ export class Base {
   public httpPostPromise<RType, PType>(
     url: string,
     payload: PType,
-    showLoader: boolean = true
+    showLoader: boolean = true,
   ): Promise<RType> {
     return new Promise((resolve, reject) => {
       this.httpClient
@@ -65,7 +71,7 @@ export class Base {
   public httpPostObservable<RType, PType>(
     url: string,
     payload: PType,
-    showLoader: boolean = true
+    showLoader: boolean = true,
   ): Observable<RType> {
     return this.httpClient.post<RType>(this.apiBaseUrl + url, payload, {
       headers: this.getHeaderWithLoaderConfigure(showLoader),
@@ -75,7 +81,7 @@ export class Base {
   public httpPutPromise<RType, PType>(
     url: string,
     payload: PType,
-    showLoader: boolean = true
+    showLoader: boolean = true,
   ): Promise<RType> {
     return new Promise((resolve, reject) => {
       this.httpClient
@@ -92,7 +98,7 @@ export class Base {
   public httpPatchPromise<RType, PType>(
     url: string,
     payload: PType,
-    showLoader: boolean = true
+    showLoader: boolean = true,
   ): Promise<RType> {
     return new Promise((resolve, reject) => {
       this.httpClient
@@ -117,6 +123,21 @@ export class Base {
           error: (err: HttpErrorResponse) => reject(err),
         });
     });
+  }
+
+  public setHeaderConfig(title: string, buttonTitle: string): void {
+    this.actionService.setHeaderConfig(title, buttonTitle);
+  }
+
+  protected onActionButtonClick(): void {
+    // override in child component to handle the header button click
+  }
+
+  private listenToActionButton(): void {
+    const sub = this.actionService.buttonClick$.subscribe(() => {
+      this.onActionButtonClick();
+    });
+    this.subscriptionArray.push(sub);
   }
 
   public getDecodedToken(): any {

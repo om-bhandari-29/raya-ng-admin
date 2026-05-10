@@ -23,23 +23,24 @@ export class StoneDimensionList extends ListBase<IStoneDimension> implements OnI
       key: 'generatedKey',
       header: 'ID',
       type: 'text',
-      cellClass: 'text-blue-600 font-medium cursor-pointer hover:text-blue-800'
+      cellClass: 'text-blue-600 font-medium cursor-pointer hover:text-blue-800',
     },
     {
       key: 'cutStyle',
       header: 'Cut Style',
       type: 'text',
-      cellClass: 'text-gray-700'
+      cellClass: 'text-gray-700',
     },
     {
       key: 'pricePerCt',
       header: 'Price per ct',
       type: 'text',
-      cellClass: 'text-gray-700 font-medium'
-    }
+      cellClass: 'text-gray-700 font-medium',
+    },
   ];
 
-  ngOnInit(): void {
+  override ngOnInit(): void {
+    super.ngOnInit();
     this.pageTitleService.setTitle('Stone Dimension');
     this.loadItems();
   }
@@ -55,10 +56,10 @@ export class StoneDimensionList extends ListBase<IStoneDimension> implements OnI
   async deleteItem(id: number): Promise<void> {
     try {
       const res = await this.httpDeletePromise<IGenericResponse<null>>(
-        this.apiRoutes.stone_dimension.DELETE(id)
+        this.apiRoutes.stone_dimension.DELETE(id),
       );
       if (res.status) {
-        this.items.update(list => list.filter(i => i.id !== id));
+        this.items.update((list) => list.filter((i) => i.id !== id));
         this.toastr.success('Stone dimension deleted successfully.');
       } else {
         this.toastr.error(res.message);
@@ -73,7 +74,7 @@ export class StoneDimensionList extends ListBase<IStoneDimension> implements OnI
     this.errorMessage.set(null);
     try {
       const res = await this.httpGetPromise<IGenericResponse<IStoneDimensionListResponse>>(
-        this.apiRoutes.stone_dimension.GET_ALL
+        this.apiRoutes.stone_dimension.GET_ALL,
       );
       if (res.status && res.data) {
         this.items.set(res.data.stones || []);

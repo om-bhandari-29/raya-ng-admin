@@ -1,19 +1,16 @@
 <app-table-layout
   [columns]="columns"
   [data]="items()"
-  [addButtonText]="'Add Sub Category'"
   [isLoading]="isLoading()"
   [errorMessage]="errorMessage()"
-  (onAdd)="openAddModal()"
   (onRefresh)="loadItems()"
   (onEdit)="openEditModal($any($event).id)"
-  (onDelete)="delete($any($event).id)">
-  
+  (onDelete)="delete($any($event).id)"
+>
   <!-- Custom template for ID column (clickable link) -->
   <ng-template slot="id" let-item>
     <button (click)="openEditModal(item.id)" class="text-blue-600 hover:text-blue-800 font-medium">
       {{ item.name }}
     </button>
   </ng-template>
-  
 </app-table-layout>

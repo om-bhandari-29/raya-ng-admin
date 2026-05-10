@@ -32,7 +32,9 @@ export class StoneMasterUpsert extends Base implements OnInit {
   isSaving = signal<boolean>(false);
   errorMessage = signal<string | null>(null);
 
-  get typeLabel() { return this.dialogData.typeLabel; }
+  get typeLabel() {
+    return this.dialogData.typeLabel;
+  }
 
   form = new FormGroup<StoneMasterForm>({
     name: new FormControl<string>('', {
@@ -42,7 +44,8 @@ export class StoneMasterUpsert extends Base implements OnInit {
     is_published: new FormControl<boolean>(true, { nonNullable: true }),
   });
 
-  ngOnInit(): void {
+  override ngOnInit(): void {
+    super.ngOnInit();
     if (this.dialogData.itemId !== 0) {
       this.isEditMode.set(true);
       this.loadItem();
@@ -51,9 +54,11 @@ export class StoneMasterUpsert extends Base implements OnInit {
 
   private get routes() {
     const t = this.dialogData.type;
-    return t === StoneMasterType.FAMILY ? this.apiRoutes.stone_family
-         : t === StoneMasterType.CLARITY ? this.apiRoutes.stone_clarity
-         : this.apiRoutes.stone_shape;
+    return t === StoneMasterType.FAMILY
+      ? this.apiRoutes.stone_family
+      : t === StoneMasterType.CLARITY
+        ? this.apiRoutes.stone_clarity
+        : this.apiRoutes.stone_shape;
   }
 
   private async loadItem(): Promise<void> {
@@ -61,7 +66,7 @@ export class StoneMasterUpsert extends Base implements OnInit {
     this.errorMessage.set(null);
     try {
       const res = await this.httpGetPromise<IGenericResponse<IStoneMaster>>(
-        this.routes.GET_BY_ID(this.dialogData.itemId)
+        this.routes.GET_BY_ID(this.dialogData.itemId),
       );
       if (res.status) {
         this.form.patchValue({ name: res.data.name, is_published: res.data.is_published });
@@ -76,18 +81,23 @@ export class StoneMasterUpsert extends Base implements OnInit {
   }
 
   async onSubmit(): Promise<void> {
-    if (this.form.invalid) { this.form.markAllAsTouched(); return; }
+    if (this.form.invalid) {
+      this.form.markAllAsTouched();
+      return;
+    }
     this.isSaving.set(true);
     this.errorMessage.set(null);
     try {
       const payload = this.form.getRawValue();
       if (this.isEditMode()) {
         await this.httpPatchPromise<IGenericResponse<IStoneMaster>, typeof payload>(
-          this.routes.UPDATE(this.dialogData.itemId), payload
+          this.routes.UPDATE(this.dialogData.itemId),
+          payload,
         );
       } else {
         await this.httpPostPromise<IGenericResponse<IStoneMaster>, typeof payload>(
-          this.routes.CREATE, payload
+          this.routes.CREATE,
+          payload,
         );
       }
       this.dialogRef.close(true);
@@ -98,7 +108,11 @@ export class StoneMasterUpsert extends Base implements OnInit {
     }
   }
 
-  onCancel(): void { this.dialogRef.close(false); }
+  onCancel(): void {
+    this.dialogRef.close(false);
+  }
 
-  get nameControl() { return this.form.controls.name; }
+  get nameControl() {
+    return this.form.controls.name;
+  }
 }

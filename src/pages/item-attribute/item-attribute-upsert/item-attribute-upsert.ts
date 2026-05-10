@@ -41,7 +41,8 @@ export class ItemAttributeUpsert extends Base implements OnInit {
     numeric_values: new FormControl<boolean>(false, { nonNullable: true }),
   });
 
-  ngOnInit(): void {
+  override ngOnInit(): void {
+    super.ngOnInit();
     const idParam = this.route.snapshot.paramMap.get('id');
     if (idParam && idParam !== 'new') {
       this.attributeId.set(+idParam);
@@ -55,7 +56,7 @@ export class ItemAttributeUpsert extends Base implements OnInit {
     this.errorMessage.set(null);
     try {
       const response = await this.httpGetPromise<IGenericResponse<IItemAttribute>>(
-        this.apiRoutes.item_attribute.GET_BY_ID(this.attributeId())
+        this.apiRoutes.item_attribute.GET_BY_ID(this.attributeId()),
       );
       if (response.status) {
         this.form.patchValue({
@@ -84,7 +85,7 @@ export class ItemAttributeUpsert extends Base implements OnInit {
       abbreviation: null,
       purity_factor: 0,
     };
-    this.values.update(v => [...v, newValue]);
+    this.values.update((v) => [...v, newValue]);
     this.editingValueId.set(0);
   }
 
@@ -93,13 +94,11 @@ export class ItemAttributeUpsert extends Base implements OnInit {
   }
 
   deleteValue(id: number): void {
-    this.values.update(v => v.filter(val => val.id !== id));
+    this.values.update((v) => v.filter((val) => val.id !== id));
   }
 
   updateValueField(id: number, field: keyof IItemAttributeValue, value: any): void {
-    this.values.update(vals =>
-      vals.map(v => v.id === id ? { ...v, [field]: value } : v)
-    );
+    this.values.update((vals) => vals.map((v) => (v.id === id ? { ...v, [field]: value } : v)));
   }
 
   cancelEdit(): void {
@@ -120,11 +119,13 @@ export class ItemAttributeUpsert extends Base implements OnInit {
       };
       if (this.isEditMode()) {
         await this.httpPatchPromise<IGenericResponse<IItemAttribute>, typeof payload>(
-          this.apiRoutes.item_attribute.UPDATE(this.attributeId()), payload
+          this.apiRoutes.item_attribute.UPDATE(this.attributeId()),
+          payload,
         );
       } else {
         await this.httpPostPromise<IGenericResponse<IItemAttribute>, typeof payload>(
-          this.apiRoutes.item_attribute.CREATE, payload
+          this.apiRoutes.item_attribute.CREATE,
+          payload,
         );
       }
       this.toastr.success('Item attribute saved successfully.');
@@ -140,5 +141,7 @@ export class ItemAttributeUpsert extends Base implements OnInit {
     this.router.navigate([this.appRoutes.ITEM_ATTRIBUTE]);
   }
 
-  get f() { return this.form.controls; }
+  get f() {
+    return this.form.controls;
+  }
 }

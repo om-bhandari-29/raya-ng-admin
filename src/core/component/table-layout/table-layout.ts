@@ -29,15 +29,12 @@ export class TableLayout<T = any> implements AfterContentInit {
   @Input() columns: TableColumn<T>[] = [];
   @Input() data: T[] = [];
   @Input() title: string = '';
-  @Input() showAddButton: boolean = true;
-  @Input() addButtonText: string = 'Add Item';
   @Input() isLoading: boolean = false;
   @Input() errorMessage: string | null = null;
   @Input() totalCount: number = 0;
   @Input() showCheckbox: boolean = true;
   @Input() showActions: boolean = true;
 
-  @Output() onAdd = new EventEmitter<void>();
   @Output() onRefresh = new EventEmitter<void>();
   @Output() onRowClick = new EventEmitter<T>();
   @Output() onEdit = new EventEmitter<T>();
@@ -56,10 +53,6 @@ export class TableLayout<T = any> implements AfterContentInit {
 
   getSlotTemplate(slotName: string): TemplateRef<any> | null {
     return this.templateMap.get(slotName) ?? null;
-  }
-
-  handleAdd(): void {
-    this.onAdd.emit();
   }
 
   handleRefresh(): void {

@@ -42,7 +42,8 @@ export class SubCategoryUpsert extends Base implements OnInit {
     is_active: new FormControl<boolean>(true, { nonNullable: true }),
   });
 
-  ngOnInit(): void {
+  override ngOnInit(): void {
+    super.ngOnInit();
     this.loadItemGroups();
     if (this.dialogData.itemId !== 0) {
       this.isEditMode.set(true);
@@ -53,7 +54,7 @@ export class SubCategoryUpsert extends Base implements OnInit {
   private async loadItemGroups(): Promise<void> {
     try {
       const response = await this.httpGetPromise<IGenericResponse<IComboItem[]>>(
-        this.apiRoutes.item_group.COMBO
+        this.apiRoutes.item_group.COMBO,
       );
       if (response.status) this.itemGroups.set(response.data);
     } catch {
@@ -103,7 +104,7 @@ export class SubCategoryUpsert extends Base implements OnInit {
       } else {
         await this.httpPostPromise<IGenericResponse<ISubCategory>, typeof payload>(
           this.apiRoutes.sub_category.CREATE,
-          payload
+          payload,
         );
       }
 
@@ -119,6 +120,10 @@ export class SubCategoryUpsert extends Base implements OnInit {
     this.dialogRef.close(false);
   }
 
-  get itemGroupIdControl() { return this.form.controls.item_group_id; }
-  get nameControl() { return this.form.controls.name; }
+  get itemGroupIdControl() {
+    return this.form.controls.item_group_id;
+  }
+  get nameControl() {
+    return this.form.controls.name;
+  }
 }

@@ -7,7 +7,6 @@ import { IGroupItem } from '../group-item.response';
 import { TableLayout, TableSlot } from '../../../core/component/table-layout/table-layout';
 import { TableColumn } from '../../../core/models/table-column.interface';
 import { BreadcrumbService } from '../../../core/services/breadcrumb.service';
-import { PageTitleService } from '../../../core/services/page-title.service';
 import { APPRoutes } from '../../../core/constant/app-routes';
 
 @Component({
@@ -19,7 +18,6 @@ import { APPRoutes } from '../../../core/constant/app-routes';
 export class GroupItemList extends ListBase<IGroupItem> implements OnInit {
   private router = inject(Router);
   private breadcrumb = inject(BreadcrumbService);
-  private pageTitle = inject(PageTitleService);
 
   columns: TableColumn<IGroupItem>[] = [
     {
@@ -33,7 +31,6 @@ export class GroupItemList extends ListBase<IGroupItem> implements OnInit {
       header: 'Item Group Name',
       type: 'text',
       width: '280px',
-      cellClass: 'text-gray-800 font-medium',
     },
     {
       key: 'parent_item_group',
@@ -50,14 +47,15 @@ export class GroupItemList extends ListBase<IGroupItem> implements OnInit {
     },
   ];
 
-  ngOnInit(): void {
+  override ngOnInit(): void {
+    super.ngOnInit();
     this.breadcrumb.set([{ label: 'Stock', url: APPRoutes.STOCK.ROOT }, { label: 'Item Group' }]);
-    this.pageTitle.setNavBar({
-      title: 'Item Group',
-      addButtonText: 'Add Item Group',
-      onAdd: () => this.openAddModal(),
-    });
+    this.setHeaderConfig('Item Group', 'Add Item Group');
     this.loadItems();
+  }
+
+  override onActionButtonClick(): void {
+    this.openAddModal();
   }
 
   openAddModal(): void {

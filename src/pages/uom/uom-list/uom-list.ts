@@ -28,21 +28,22 @@ export class UomList extends ListBase<IUom> implements OnInit {
       key: 'name',
       header: 'UOM Name',
       type: 'text',
-      cellClass: 'text-gray-800 font-medium'
+      cellClass: 'text-gray-800 font-medium',
     },
     {
       key: 'description',
       header: 'Description',
-      type: 'text'
+      type: 'text',
     },
     {
       key: 'is_active',
       header: 'Is Active',
-      type: 'boolean'
-    }
+      type: 'boolean',
+    },
   ];
 
-  ngOnInit(): void {
+  override ngOnInit(): void {
+    super.ngOnInit();
     this.loadItems();
   }
 
@@ -71,7 +72,7 @@ export class UomList extends ListBase<IUom> implements OnInit {
     this.errorMessage.set(null);
     try {
       const response = await this.httpGetPromise<IGenericResponse<IUom[]>>(
-        this.apiRoutes.uom.GET_ALL
+        this.apiRoutes.uom.GET_ALL,
       );
       if (response.status) {
         this.items.set(response.data);

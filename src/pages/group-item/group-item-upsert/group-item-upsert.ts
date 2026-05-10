@@ -47,7 +47,8 @@ export class GroupItemUpsert extends Base implements OnInit {
     is_active: new FormControl<boolean>(true, { nonNullable: true }),
   });
 
-  ngOnInit(): void {
+  override ngOnInit(): void {
+    super.ngOnInit();
     const idParam = this.route.snapshot.queryParamMap.get('id');
     if (idParam && idParam !== '0') {
       this.itemId.set(+idParam);

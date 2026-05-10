@@ -4,7 +4,10 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { ListBase } from '../../../core/base/list-base';
 import { IGenericResponse } from '../../../core/response/genericResponse.interface';
 import { IProductMaster } from '../product-master.response';
-import { ProductMasterUpsert, ProductMasterDialogData } from '../product-master-upsert/product-master-upsert';
+import {
+  ProductMasterUpsert,
+  ProductMasterDialogData,
+} from '../product-master-upsert/product-master-upsert';
 import { TableLayout } from '../../../core/component/table-layout/table-layout';
 import { TableColumn } from '../../../core/models/table-column.interface';
 
@@ -28,27 +31,28 @@ export class ProductMasterList extends ListBase<IProductMaster> implements OnIni
       key: 'name',
       header: 'Product Name',
       type: 'text',
-      cellClass: 'text-gray-800 font-medium'
+      cellClass: 'text-gray-800 font-medium',
     },
     {
       key: 'sub_category.name',
       header: 'Sub Category',
-      type: 'text'
+      type: 'text',
     },
     {
       key: 'labour_rate',
       header: 'Labour Rate',
       type: 'custom',
-      format: (value, item) => value ? `${value} (${item.labour_rate_on})` : '-'
+      format: (value, item) => (value ? `${value} (${item.labour_rate_on})` : '-'),
     },
     {
       key: 'is_active',
       header: 'Is Active',
-      type: 'boolean'
-    }
+      type: 'boolean',
+    },
   ];
 
-  ngOnInit(): void {
+  override ngOnInit(): void {
+    super.ngOnInit();
     this.loadItems();
   }
 
@@ -79,7 +83,7 @@ export class ProductMasterList extends ListBase<IProductMaster> implements OnIni
 
     try {
       const response = await this.httpDeletePromise<IGenericResponse<null>>(
-        this.apiRoutes.product_master.DELETE(id)
+        this.apiRoutes.product_master.DELETE(id),
       );
       if (response.status) {
         this.loadItems();
@@ -87,9 +91,10 @@ export class ProductMasterList extends ListBase<IProductMaster> implements OnIni
         this.errorMessage.set(response.message);
       }
     } catch (err) {
-      const message = err instanceof HttpErrorResponse
-        ? err.error?.message ?? 'Failed to delete. Please try again.'
-        : 'Failed to delete. Please try again.';
+      const message =
+        err instanceof HttpErrorResponse
+          ? (err.error?.message ?? 'Failed to delete. Please try again.')
+          : 'Failed to delete. Please try again.';
       this.toastr.error(message);
     }
   }
@@ -100,7 +105,7 @@ export class ProductMasterList extends ListBase<IProductMaster> implements OnIni
 
     try {
       const response = await this.httpGetPromise<IGenericResponse<IProductMaster[]>>(
-        this.apiRoutes.product_master.GET_ALL
+        this.apiRoutes.product_master.GET_ALL,
       );
 
       if (response.status) {
