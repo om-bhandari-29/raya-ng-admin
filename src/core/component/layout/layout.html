@@ -1,6 +1,13 @@
 <app-nav-bar></app-nav-bar>
-<app-side-bar></app-side-bar>
 
-<main [class]="'fixed top-[48px] right-0 bottom-0 bg-gray-50 p-6 overflow-auto transition-all duration-300 ' + mainContentClass()">
-  <router-outlet></router-outlet>
-</main>
+<!-- Action header spans full width above sidebar + content -->
+<app-action-header-component></app-action-header-component>
+
+<!-- Below action header: sidebar + main content side by side -->
+<div class="layout-body">
+  <app-side-bar></app-side-bar>
+
+  <main class="layout-content p-6 bg-white overflow-auto">
+    <router-outlet></router-outlet>
+  </main>
+</div>

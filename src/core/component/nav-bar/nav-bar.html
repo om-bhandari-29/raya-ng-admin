@@ -1,26 +1,17 @@
-<nav class="fixed top-0 z-50 w-full bg-white border-b border-slate-200 shadow-sm">
-  <div class="px-3 py-2 lg:px-5 lg:pl-3">
+<nav class="sticky top-0 z-50 w-full bg-white border-b border-slate-200">
+  <div class="px-3 py-1 lg:px-20">
     <div class="flex items-center justify-between">
       <div class="flex items-center justify-start rtl:justify-end">
-        <!-- Sidebar Toggle Button -->
-        <button 
-          (click)="toggleSidebar()"
-          type="button" 
-          class="inline-flex items-center p-1.5 text-gray-600 rounded-lg hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-200 transition-colors">
-          <span class="sr-only">Toggle sidebar</span>
-          <svg class="w-5 h-5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-            <path stroke="currentColor" stroke-linecap="round" stroke-width="2" d="M5 7h14M5 12h14M5 17h14"/>
-          </svg>
-        </button>
-        
         <!-- Logo/Brand + Breadcrumb -->
-        <div class="flex items-center ms-2 gap-1.5">
+        <div class="flex items-center gap-1.5">
           <a href="#" class="text-lg font-semibold text-gray-800 whitespace-nowrap">RAYA</a>
           @if (breadcrumbService.breadcrumbs().length) {
             <span class="text-slate-400 text-base">›</span>
             @for (crumb of breadcrumbService.breadcrumbs(); track $index; let last = $last) {
               @if (!last) {
-                <a [href]="crumb.url ?? '#'" class="text-sm text-slate-500 hover:text-slate-700">{{ crumb.label }}</a>
+                <a [href]="crumb.url ?? '#'" class="text-sm text-slate-500 hover:text-slate-700">{{
+                  crumb.label
+                }}</a>
                 <span class="text-slate-400">›</span>
               } @else {
                 <span class="text-sm font-medium text-slate-700">{{ crumb.label }}</span>
@@ -29,41 +20,69 @@
           }
         </div>
       </div>
-      
+
       <div class="flex items-center">
-          <div class="flex items-center ms-3">
-            <div>
-              <button type="button" class="flex text-sm bg-slate-200 rounded-full focus:ring-4 focus:ring-slate-300" aria-expanded="false" data-dropdown-toggle="dropdown-user">
-                <span class="sr-only">Open user menu</span>
-                <img class="w-7 h-7 rounded-full" src="https://flowbite.com/docs/images/people/profile-picture-5.jpg" alt="user photo">
-              </button>
+        <div class="flex items-center ms-3">
+          <div>
+            <button
+              type="button"
+              class="flex text-sm bg-slate-200 rounded-full focus:ring-4 focus:ring-slate-300"
+              aria-expanded="false"
+              data-dropdown-toggle="dropdown-user"
+            >
+              <span class="sr-only">Open user menu</span>
+              <img
+                class="w-7 h-7 rounded-full"
+                src="https://flowbite.com/docs/images/people/profile-picture-5.jpg"
+                alt="user photo"
+              />
+            </button>
+          </div>
+          <div
+            class="z-50 hidden bg-white border border-slate-200 rounded-base shadow-lg w-44"
+            id="dropdown-user"
+          >
+            <div class="px-4 py-3 border-b border-slate-200" role="none">
+              <p class="text-sm font-medium text-heading" role="none">Neil Sims</p>
+              <p class="text-sm text-body truncate" role="none">neil.sims@flowbite.com</p>
             </div>
-            <div class="z-50 hidden bg-white border border-slate-200 rounded-base shadow-lg w-44" id="dropdown-user">
-              <div class="px-4 py-3 border-b border-slate-200" role="none">
-                <p class="text-sm font-medium text-heading" role="none">
-                  Neil Sims
-                </p>
-                <p class="text-sm text-body truncate" role="none">
-                  neil.sims@flowbite.com
-                </p>
-              </div>
-              <ul class="p-2 text-sm text-body font-medium" role="none">
-                <li>
-                  <a href="#" class="inline-flex items-center w-full p-2 hover:bg-slate-100 hover:text-heading rounded" role="menuitem">Dashboard</a>
-                </li>
-                <li>
-                  <a href="#" class="inline-flex items-center w-full p-2 hover:bg-slate-100 hover:text-heading rounded" role="menuitem">Settings</a>
-                </li>
-                <li>
-                  <a href="#" class="inline-flex items-center w-full p-2 hover:bg-slate-100 hover:text-heading rounded" role="menuitem">Earnings</a>
-                </li>
-                <li>
-                  <a href="#" class="inline-flex items-center w-full p-2 hover:bg-slate-100 hover:text-heading rounded" role="menuitem">Sign out</a>
-                </li>
-              </ul>
-            </div>
+            <ul class="p-2 text-sm text-body font-medium" role="none">
+              <li>
+                <a
+                  href="#"
+                  class="inline-flex items-center w-full p-2 hover:bg-slate-100 hover:text-heading rounded"
+                  role="menuitem"
+                  >Dashboard</a
+                >
+              </li>
+              <li>
+                <a
+                  href="#"
+                  class="inline-flex items-center w-full p-2 hover:bg-slate-100 hover:text-heading rounded"
+                  role="menuitem"
+                  >Settings</a
+                >
+              </li>
+              <li>
+                <a
+                  href="#"
+                  class="inline-flex items-center w-full p-2 hover:bg-slate-100 hover:text-heading rounded"
+                  role="menuitem"
+                  >Earnings</a
+                >
+              </li>
+              <li>
+                <a
+                  href="#"
+                  class="inline-flex items-center w-full p-2 hover:bg-slate-100 hover:text-heading rounded"
+                  role="menuitem"
+                  >Sign out</a
+                >
+              </li>
+            </ul>
           </div>
         </div>
+      </div>
     </div>
   </div>
 </nav>

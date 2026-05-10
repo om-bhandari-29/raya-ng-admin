@@ -1,6 +1,6 @@
 import { Component, inject } from '@angular/core';
-import { SidebarService } from '../side-bar/sidebar.service';
 import { BreadcrumbService } from '../../services/breadcrumb.service';
+import { PageTitleService } from '../../services/page-title.service';
 
 @Component({
   selector: 'app-nav-bar',
@@ -9,10 +9,11 @@ import { BreadcrumbService } from '../../services/breadcrumb.service';
   styleUrl: './nav-bar.scss',
 })
 export class NavBar {
-  private sidebarService = inject(SidebarService);
   public breadcrumbService = inject(BreadcrumbService);
+  public pageTitleService = inject(PageTitleService);
 
-  toggleSidebar(): void {
-    this.sidebarService.toggleSidebar();
+  handleAdd(): void {
+    const cb = this.pageTitleService.onAddCallback();
+    if (cb) cb();
   }
 }

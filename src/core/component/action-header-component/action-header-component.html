@@ -1,0 +1,115 @@
+<div
+  class="flex flex-col sm:flex-row sm:items-center justify-between px-20 py-1 bg-white gap-4 mt-3"
+>
+  <div class="flex items-center gap-3">
+    <button
+      (click)="toggleSidebar()"
+      type="button"
+      class="inline-flex items-center p-1.5 text-gray-600 rounded-lg hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-200 transition-colors"
+      aria-label="Toggle sidebar"
+    >
+      <svg
+        class="w-5 h-5"
+        aria-hidden="true"
+        xmlns="http://www.w3.org/2000/svg"
+        fill="none"
+        viewBox="0 0 24 24"
+      >
+        <path
+          stroke="currentColor"
+          stroke-linecap="round"
+          stroke-width="2"
+          d="M5 7h14M5 12h14M5 17h14"
+        />
+      </svg>
+    </button>
+    <h1 class="text-xl font-bold text-gray-900 tracking-tight">
+      <!-- {{ title }} -->
+      Stock
+    </h1>
+  </div>
+
+  <div class="flex items-center gap-2">
+    <div class="relative">
+      <button
+        class="flex items-center gap-2 px-3 py-1 text-sm text-[#383838] bg-[#f3f3f3] rounded-lg hover:bg-gray-100"
+      >
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          class="h-4 w-4"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke="currentColor"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M4 6h16M4 10h16M4 14h16M4 18h16"
+          />
+        </svg>
+        List View
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          class="h-3 w-3 text-gray-400"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke="currentColor"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M19 9l-7 7-7-7"
+          />
+        </svg>
+      </button>
+    </div>
+
+    <button
+      class="p-1.5 text-[#383838] bg-[#f3f3f3] rounded-md hover:bg-gray-200 transition-colors"
+    >
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        class="h-4 w-4"
+        fill="none"
+        viewBox="0 0 24 24"
+        stroke="currentColor"
+        stroke-width="1.4"
+      >
+        <path
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"
+        />
+      </svg>
+    </button>
+
+    <button
+      class="p-1.5 text-[#383838] bg-[#f3f3f3] rounded-md hover:bg-gray-200 transition-colors"
+    >
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        class="h-4 w-4"
+        fill="none"
+        viewBox="0 0 24 24"
+        stroke="currentColor"
+        stroke-width="1.2"
+      >
+        <path
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          d="M5 12h.01M12 12h.01M19 12h.01M6 12a1 1 0 11-2 0 1 1 0 012 0zm7 0a1 1 0 11-2 0 1 1 0 012 0zm7 0a1 1 0 11-2 0 1 1 0 012 0z"
+        />
+      </svg>
+    </button>
+
+    <button
+      class="flex items-center gap-2 ml-2 px-4 py-1 text-sm font-semibold text-white bg-black rounded-lg hover:bg-gray-800 shadow-sm transition-all active:scale-95"
+    >
+      <span class="text-lg leading-none font-light">+</span>
+      <!-- {{ buttonLabel }} -->
+      label
+    </button>
+  </div>
+</div>

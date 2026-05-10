@@ -1,68 +1,82 @@
-<aside id="top-bar-sidebar"
-    [class]="'fixed top-[48px] left-0 z-40 h-[calc(100vh-48px)] transition-all duration-300 ' + (isCollapsed() ? 'w-14' : 'w-52')"
-    aria-label="Sidebar">
-    <div class="h-full py-3 bg-white border-e border-gray-200 overflow-y-auto">
+<aside
+  id="top-bar-sidebar"
+  [class]="
+    'sticky top-0 self-start z-40 h-[calc(100vh-96px)] transition-all duration-300 flex-shrink-0 ml-20 ' +
+    (isCollapsed() ? 'w-px' : 'w-44')
+  "
+  aria-label="Sidebar"
+>
+  <!-- Border is always visible; content only shown when expanded -->
+  <div
+    class="h-full bg-white border-e border-gray-200 overflow-y-auto text-[13px] text-[#383838] font-medium"
+  >
+    @if (!isCollapsed()) {
+      <div class="py-3">
         <!-- PUBLIC Section Header -->
-        @if (!isCollapsed()) {
-            <div class="px-4 mb-2">
-                <button 
-                    (click)="toggleSection()"
-                    class="flex items-center text-gray-600 text-xs font-semibold uppercase tracking-wide hover:text-gray-800 transition-colors section-header">
-                    <i class="text-base mr-1 transition-transform" [ngClass]="sectionCollapsed() ? 'bx bx-chevron-right' : 'bx bx-chevron-down'"></i>
-                    <span>PUBLIC</span>
-                </button>
-            </div>
-        }
-        
-        @if (!sectionCollapsed() || isCollapsed()) {
-            <ul class="space-y-0.5 px-2">
-                @for (item of menuItems(); track $index) {
-                <li>
-                    <!-- Main menu item -->
-                    @if (item.child && item.child.length > 0) {
-                        <!-- Menu item with children -->
-                        <div>
-                            <button 
-                                (click)="toggleSubmenu(item)"
-                                [class]="'flex items-center w-full px-3 py-2 text-gray-700 rounded-md hover:bg-gray-50 group transition-colors text-[15px] ' + (isCollapsed() ? 'justify-center' : '')"
-                                [attr.title]="isCollapsed() ? item.name : null">
-                                <i class="text-[22px] flex-shrink-0 text-gray-600" [ngClass]="item.icon"></i>
-                                @if (!isCollapsed()) {
-                                    <span class="flex-1 ms-3 text-left whitespace-nowrap font-normal">{{item.name}}</span>
-                                    <i class="text-lg transition-transform text-gray-500" [ngClass]="item.expanded ? 'bx bx-chevron-up' : 'bx bx-chevron-down'"></i>
-                                }
-                            </button>
-                            
-                            <!-- Submenu items -->
-                            @if (item.expanded && !isCollapsed()) {
-                                <ul class="mt-1 space-y-0.5">
-                                    @for (child of item.child; track $index) {
-                                        <li>
-                                            <a [routerLink]="child.route" 
-                                               routerLinkActive="bg-gray-100 text-gray-800"
-                                               class="flex items-center w-full px-3 py-2 pl-12 text-gray-700 rounded-md hover:bg-gray-50 group transition-colors text-[15px]">
-                                                <span class="font-normal">{{child.name}}</span>
-                                            </a>
-                                        </li>
-                                    }
-                                </ul>
-                            }
-                        </div>
-                    } @else {
-                        <!-- Simple menu item without children -->
-                        <a [routerLink]="item.route" 
-                           routerLinkActive="bg-gray-100 text-gray-800"
-                           [class]="'flex items-center px-3 py-2 text-gray-700 rounded-md hover:bg-gray-50 group transition-colors text-[15px] ' + (isCollapsed() ? 'justify-center' : '')"
-                           [attr.title]="isCollapsed() ? item.name : null">
-                            <i class="text-[22px] flex-shrink-0 text-gray-600" [ngClass]="item.icon"></i>
-                            @if (!isCollapsed()) {
-                                <span class="ms-3 font-normal">{{item.name}}</span>
-                            }
-                        </a>
+        <div class="px-2 mb-2">
+          <button
+            (click)="toggleSection()"
+            class="flex items-center text-xs font-semibold uppercase tracking-wide hover:opacity-70 transition-colors section-header"
+          >
+            <i
+              class="text-base mr-1 transition-transform"
+              [ngClass]="sectionCollapsed() ? 'bx bx-chevron-right' : 'bx bx-chevron-down'"
+            ></i>
+            <span>PUBLIC</span>
+          </button>
+        </div>
+
+        @if (!sectionCollapsed()) {
+          <ul class="space-y-0.5 ps-1 pe-4">
+            @for (item of menuItems(); track $index) {
+              <li>
+                @if (item.child && item.child.length > 0) {
+                  <div>
+                    <button
+                      (click)="toggleSubmenu(item)"
+                      class="flex items-center w-full px-3 py-1 rounded-md hover:bg-gray-50 group transition-colors"
+                      [attr.title]="item.name"
+                    >
+                      <i class="text-[18px] flex-shrink-0" [ngClass]="item.icon"></i>
+                      <span class="flex-1 ms-1.5 text-left whitespace-nowrap">{{ item.name }}</span>
+                      <i
+                        class="text-base transition-transform"
+                        [ngClass]="item.expanded ? 'bx bx-chevron-up' : 'bx bx-chevron-down'"
+                      ></i>
+                    </button>
+
+                    @if (item.expanded) {
+                      <ul class="mt-1 space-y-0.5">
+                        @for (child of item.child; track $index) {
+                          <li>
+                            <a
+                              [routerLink]="child.route"
+                              routerLinkActive="active-link"
+                              class="flex items-center w-full px-3 py-1 pl-12 rounded-md hover:bg-gray-50 group transition-colors"
+                            >
+                              <span class="font-normal">{{ child.name }}</span>
+                            </a>
+                          </li>
+                        }
+                      </ul>
                     }
-                </li>
+                  </div>
+                } @else {
+                  <a
+                    [routerLink]="item.route"
+                    routerLinkActive="active-link"
+                    class="flex items-center px-3 py-1 rounded-md hover:bg-gray-50 group transition-colors"
+                    [attr.title]="item.name"
+                  >
+                    <i class="text-[18px] flex-shrink-0" [ngClass]="item.icon"></i>
+                    <span class="ms-1.5">{{ item.name }}</span>
+                  </a>
                 }
-            </ul>
+              </li>
+            }
+          </ul>
         }
-    </div>
+      </div>
+    }
+  </div>
 </aside>
