@@ -1,334 +1,255 @@
-<!-- Page Header -->
-<div class="flex items-center justify-end mb-6">
-  <div class="flex items-center gap-3">
-    <!-- View Selector -->
-    <div
-      class="flex items-center gap-2 px-3 py-1.5 bg-white border border-gray-200 rounded-lg text-sm"
-    >
-      <i class="bx bx-list-ul text-gray-600"></i>
-      <span class="text-gray-700">List View</span>
-      <i class="bx bx-chevron-down text-gray-500"></i>
-    </div>
+<!-- Top Bar -->
+<div class="flex items-center justify-between mb-4">
+  <!-- Left: search input -->
+  <div class="flex items-center gap-2">
+    <input
+      type="text"
+      placeholder="ID"
+      class="w-40 px-3 py-1.5 text-sm border border-gray-200 rounded-md bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500"
+    />
+  </div>
 
-    <!-- Refresh Button -->
+  <!-- Right: actions -->
+  <div class="flex items-center gap-2">
     <button
       type="button"
-      (click)="handleRefresh()"
-      class="p-2 text-gray-600 hover:bg-gray-100 rounded-lg transition-colors"
+      class="inline-flex items-center gap-1.5 px-3 py-1.5 text-sm text-gray-600 border border-gray-200 rounded-md bg-white hover:bg-gray-50 transition-colors"
     >
-      <i class="bx bx-refresh text-xl"></i>
+      <i class="bx bx-filter-alt text-base"></i>
+      Filter
     </button>
-
-    <!-- More Options -->
-    <button type="button" class="p-2 text-gray-600 hover:bg-gray-100 rounded-lg transition-colors">
-      <i class="bx bx-dots-horizontal-rounded text-xl"></i>
+    <button type="button" class="p-1.5 text-gray-400 hover:text-gray-600 transition-colors">
+      <i class="bx bx-x text-lg"></i>
     </button>
-
-    <!-- Add Button -->
+    <div class="w-px h-4 bg-gray-200"></div>
+    <button
+      type="button"
+      class="inline-flex items-center gap-1.5 px-3 py-1.5 text-sm text-gray-600 border border-gray-200 rounded-md bg-white hover:bg-gray-50 transition-colors"
+    >
+      <i class="bx bx-sort-alt-2 text-base"></i>
+      ID
+    </button>
     @if (showAddButton) {
       <button
         type="button"
         (click)="handleAdd()"
-        class="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-gray-800 hover:bg-gray-900 text-white text-sm font-medium transition-colors"
+        class="inline-flex items-center gap-1.5 px-4 py-1.5 rounded-md bg-gray-800 hover:bg-gray-900 text-white text-sm font-medium transition-colors"
       >
-        <i class="bx bx-plus text-lg"></i>
+        <i class="bx bx-plus text-base"></i>
         {{ addButtonText }}
       </button>
     }
   </div>
 </div>
 
-<div class="flex gap-6">
-  <!-- Left Sidebar - Filters -->
-  <aside class="w-48 flex-shrink-0 hidden">
-    <div class="bg-white rounded-lg border border-gray-200 p-4">
-      <h3 class="text-sm font-semibold text-gray-700 mb-4">Filter By</h3>
-
-      <div class="space-y-4">
-        <!-- Assigned To -->
-        <div>
-          <button
-            class="flex items-center justify-between w-full text-sm text-gray-700 hover:text-gray-900"
-          >
-            <span>Assigned To</span>
-            <i class="bx bx-chevron-down text-gray-400"></i>
-          </button>
-        </div>
-
-        <!-- Created By -->
-        <div>
-          <button
-            class="flex items-center justify-between w-full text-sm text-gray-700 hover:text-gray-900"
-          >
-            <span>Created By</span>
-            <i class="bx bx-chevron-down text-gray-400"></i>
-          </button>
-        </div>
-
-        <!-- Edit Filters -->
-        <div>
-          <button class="text-sm text-gray-600 hover:text-gray-800">Edit Filters</button>
-        </div>
-
-        <!-- Tags -->
-        <div>
-          <button
-            class="flex items-center justify-between w-full text-sm text-gray-700 hover:text-gray-900"
-          >
-            <span>Tags</span>
-            <i class="bx bx-chevron-down text-gray-400"></i>
-          </button>
-        </div>
-
-        <!-- Show Tags -->
-        <div>
-          <button class="text-sm text-gray-600 hover:text-gray-800">Show Tags</button>
-        </div>
-      </div>
-
-      <!-- Save Filter -->
-      <div class="mt-6 pt-4 border-t border-gray-200">
-        <input
-          type="text"
-          placeholder="Filter Name"
-          class="w-full px-3 py-2 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-gray-50"
+<!-- Table Card -->
+<div class="bg-white border border-gray-200 rounded-lg overflow-hidden">
+  <!-- Error State -->
+  @if (errorMessage) {
+    <div
+      class="flex items-center gap-2 px-5 py-3 text-sm text-red-600 bg-red-50 border-b border-red-100"
+    >
+      <svg class="h-4 w-4 shrink-0" fill="currentColor" viewBox="0 0 20 20">
+        <path
+          fill-rule="evenodd"
+          d="M10 18a8 8 0 100-16 8 8 0 000 16zm-.75-11.25a.75.75 0 011.5 0v4.5a.75.75 0 01-1.5 0v-4.5zm.75 7.5a.75.75 0 100-1.5.75.75 0 000 1.5z"
+          clip-rule="evenodd"
         />
-      </div>
+      </svg>
+      {{ errorMessage }}
     </div>
-  </aside>
+  }
 
-  <!-- Main Content -->
-  <div class="flex-1 min-w-0">
-    <!-- Search and Filter Bar -->
-    <div class="bg-white rounded-lg border border-gray-200 mb-4">
-      <div class="flex items-center gap-3 px-4 py-3 border-b border-gray-200">
-        <input
-          type="text"
-          placeholder="ID"
-          class="flex-1 px-3 py-1.5 text-sm border border-gray-200 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 bg-gray-50"
-        />
+  <!-- Loading State -->
+  @if (isLoading) {
+    <div class="flex items-center justify-center py-16 text-gray-400 text-sm gap-2">
+      <svg
+        class="animate-spin h-4 w-4"
+        xmlns="http://www.w3.org/2000/svg"
+        fill="none"
+        viewBox="0 0 24 24"
+      >
+        <circle
+          class="opacity-25"
+          cx="12"
+          cy="12"
+          r="10"
+          stroke="currentColor"
+          stroke-width="4"
+        ></circle>
+        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z"></path>
+      </svg>
+      Loading...
+    </div>
+  }
 
-        <button
-          class="inline-flex items-center gap-2 px-3 py-1.5 text-sm text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50"
-        >
-          <i class="bx bx-filter text-base"></i>
-          Filter
-        </button>
+  @if (!isLoading) {
+    <div class="overflow-x-auto">
+      <table class="w-full text-sm">
+        <!-- Header -->
+        <thead>
+          <tr class="border-b border-gray-200 bg-white">
+            @if (showCheckbox) {
+              <th scope="col" class="w-9 pl-4 pr-2 py-3">
+                <input
+                  type="checkbox"
+                  class="rounded border-gray-300 text-blue-600 focus:ring-blue-500 cursor-pointer"
+                />
+              </th>
+            }
 
-        <button class="p-1.5 text-gray-500 hover:text-gray-700">
-          <i class="bx bx-x text-xl"></i>
-        </button>
-
-        <button
-          class="inline-flex items-center gap-2 px-3 py-1.5 text-sm text-gray-700 hover:text-gray-900"
-        >
-          <i class="bx bx-sort text-base"></i>
-          Last Updated On
-        </button>
-      </div>
-
-      <!-- Loading State -->
-      @if (isLoading) {
-        <div class="flex items-center justify-center py-12 text-gray-500 text-sm">
-          <svg
-            class="animate-spin h-5 w-5 mr-2 text-gray-400"
-            xmlns="http://www.w3.org/2000/svg"
-            fill="none"
-            viewBox="0 0 24 24"
-          >
-            <circle
-              class="opacity-25"
-              cx="12"
-              cy="12"
-              r="10"
-              stroke="currentColor"
-              stroke-width="4"
-            ></circle>
-            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z"></path>
-          </svg>
-          Loading...
-        </div>
-      }
-
-      <!-- Error State -->
-      @if (errorMessage) {
-        <div
-          class="flex items-center gap-2 px-5 py-4 text-sm text-red-600 bg-red-50 border-b border-red-100"
-        >
-          <svg class="h-4 w-4 shrink-0" fill="currentColor" viewBox="0 0 20 20">
-            <path
-              fill-rule="evenodd"
-              d="M10 18a8 8 0 100-16 8 8 0 000 16zm-.75-11.25a.75.75 0 011.5 0v4.5a.75.75 0 01-1.5 0v-4.5zm.75 7.5a.75.75 0 100-1.5.75.75 0 000 1.5z"
-              clip-rule="evenodd"
-            />
-          </svg>
-          {{ errorMessage }}
-        </div>
-      }
-
-      <!-- Table Content -->
-      @if (!isLoading) {
-        <div class="overflow-x-auto">
-          <table class="w-full text-sm">
-            <thead class="bg-gray-50 border-b border-gray-200">
-              <tr>
-                <!-- Checkbox Column -->
-                @if (showCheckbox) {
-                  <th scope="col" class="w-10 px-4 py-3">
-                    <input
-                      type="checkbox"
-                      class="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
-                    />
-                  </th>
-                }
-
-                <!-- Dynamic Columns -->
-                @for (column of columns; track trackByKey($index, column)) {
-                  @if (!column.hidden) {
-                    <th
-                      scope="col"
-                      [style.width]="column.width"
-                      [class]="
-                        'px-4 py-3 text-xs font-medium text-gray-600 uppercase tracking-wider text-' +
-                        (column.align || 'left')
-                      "
-                    >
-                      {{ column.header }}
-                    </th>
-                  }
-                }
-
-                <!-- Actions Column -->
-                @if (showActions) {
-                  <th
-                    scope="col"
-                    class="px-4 py-3 text-right text-xs font-medium text-gray-600 uppercase tracking-wider"
-                  >
-                    <div class="flex items-center justify-end gap-2">
-                      <span>{{ data.length }} of {{ data.length }}</span>
-                      <i class="bx bx-heart text-base"></i>
-                    </div>
-                  </th>
-                }
-              </tr>
-            </thead>
-
-            <tbody class="bg-white divide-y divide-gray-100">
-              @for (item of data; track trackById($index, item)) {
-                <tr
-                  class="hover:bg-gray-50 transition-colors group cursor-pointer"
-                  (click)="handleRowClick(item)"
+            @for (column of columns; track trackByKey($index, column)) {
+              @if (!column.hidden) {
+                <th
+                  scope="col"
+                  [style.width]="column.width"
+                  class="px-3 py-3 text-left text-xs font-medium text-gray-500 whitespace-nowrap"
+                  [class.text-center]="column.align === 'center'"
+                  [class.text-right]="column.align === 'right'"
                 >
-                  <!-- Checkbox Cell -->
-                  @if (showCheckbox) {
-                    <td class="px-4 py-3" (click)="$event.stopPropagation()">
+                  {{ column.header }}
+                </th>
+              }
+            }
+
+            @if (showActions) {
+              <th scope="col" class="pl-3 pr-4 py-3 text-right">
+                <div
+                  class="flex items-center justify-end gap-1.5 text-xs text-gray-500 font-medium whitespace-nowrap"
+                >
+                  <span>{{ data.length }} of {{ data.length }}</span>
+                  <i class="bx bx-heart text-sm"></i>
+                </div>
+              </th>
+            }
+          </tr>
+        </thead>
+
+        <!-- Body -->
+        <tbody class="divide-y divide-gray-100">
+          @for (item of data; track trackById($index, item)) {
+            <tr
+              class="hover:bg-gray-50 transition-colors group cursor-pointer"
+              (click)="handleRowClick(item)"
+            >
+              <!-- Checkbox -->
+              @if (showCheckbox) {
+                <td class="w-9 pl-4 pr-2 py-3" (click)="$event.stopPropagation()">
+                  <input
+                    type="checkbox"
+                    class="rounded border-gray-300 text-blue-600 focus:ring-blue-500 cursor-pointer"
+                  />
+                </td>
+              }
+
+              <!-- Data Cells -->
+              @for (column of columns; track trackByKey($index, column)) {
+                @if (!column.hidden) {
+                  <td
+                    class="px-3 py-3 whitespace-nowrap"
+                    [class.text-center]="column.align === 'center'"
+                    [class.text-right]="column.align === 'right'"
+                    [ngClass]="getCellClass(column, item)"
+                  >
+                    @if (column.slot) {
+                      @if (getSlotTemplate(column.slot); as tpl) {
+                        <ng-container
+                          *ngTemplateOutlet="tpl; context: { $implicit: item }"
+                        ></ng-container>
+                      }
+                    } @else if (column.type === 'boolean') {
                       <input
                         type="checkbox"
-                        class="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+                        [checked]="getNestedValue(item, column.key)"
+                        disabled
+                        class="rounded border-gray-300 text-blue-600 focus:ring-blue-500 cursor-default"
                       />
-                    </td>
-                  }
-
-                  <!-- Dynamic Cells -->
-                  @for (column of columns; track trackByKey($index, column)) {
-                    @if (!column.hidden) {
-                      <td [class]="'px-4 py-3 ' + getCellClass(column, item)">
-                        <!-- Custom Slot Template -->
-                        @if (column.slot) {
-                          @if (getSlotTemplate(column.slot); as tpl) {
-                            <ng-container
-                              *ngTemplateOutlet="tpl; context: { $implicit: item }"
-                            ></ng-container>
-                          }
-                        }
-                        <!-- Boolean Type with Icon -->
-                        @else if (column.type === 'boolean') {
-                          @if (shouldRenderBooleanIcon(column, item)) {
-                            <i class="bx bx-check text-xl text-green-600"></i>
-                          } @else {
-                            <span class="text-gray-400">-</span>
-                          }
-                        }
-                        <!-- Badge Type -->
-                        @else if (column.type === 'badge') {
-                          <span
-                            [class]="
-                              'inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium ' +
-                              getBadgeClass(column, item)
-                            "
-                          >
-                            {{ getBadgeLabel(column, item) }}
-                          </span>
-                        }
-                        <!-- Default Text -->
-                        @else {
-                          <span [class]="column.type === 'number' ? 'font-medium' : ''">
-                            {{ renderCell(column, item) }}
-                          </span>
-                        }
-                      </td>
+                    } @else if (column.type === 'badge') {
+                      <span
+                        [class]="
+                          'inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium ' +
+                          getBadgeClass(column, item)
+                        "
+                      >
+                        {{ getBadgeLabel(column, item) }}
+                      </span>
+                    } @else {
+                      <span [class]="column.type === 'number' ? 'font-medium tabular-nums' : ''">
+                        {{ renderCell(column, item) }}
+                      </span>
                     }
-                  }
-
-                  <!-- Actions Cell -->
-                  @if (showActions) {
-                    <td class="px-4 py-3" (click)="$event.stopPropagation()">
-                      <div class="flex items-center justify-end gap-4 text-gray-500">
-                        <span class="text-xs">{{ getTimeAgo($any(item).updated_at) }}</span>
-                        <button class="hover:text-blue-600">
-                          <i class="bx bx-comment text-base"></i>
-                          <span class="text-xs ml-1">0</span>
-                        </button>
-                        <button
-                          type="button"
-                          (click)="handleLike(item); $event.stopPropagation()"
-                          class="hover:text-red-600"
-                        >
-                          <i
-                            class="bx text-base"
-                            [class.bxs-heart]="$any(item).liked"
-                            [class.bx-heart]="!$any(item).liked"
-                            [class.text-red-500]="$any(item).liked"
-                            [class.text-gray-400]="!$any(item).liked"
-                          >
-                          </i>
-                        </button>
-                        <div
-                          class="opacity-0 group-hover:opacity-100 transition-opacity flex items-center gap-2"
-                        >
-                          <button
-                            type="button"
-                            (click)="handleEdit(item)"
-                            class="text-gray-400 hover:text-blue-600"
-                          >
-                            <i class="bx bx-edit text-base"></i>
-                          </button>
-                          <button
-                            type="button"
-                            (click)="handleDelete(item)"
-                            class="text-gray-400 hover:text-red-600"
-                          >
-                            <i class="bx bx-trash text-base"></i>
-                          </button>
-                        </div>
-                      </div>
-                    </td>
-                  }
-                </tr>
-              } @empty {
-                <tr>
-                  <td
-                    [attr.colspan]="columns.length + (showCheckbox ? 1 : 0) + (showActions ? 1 : 0)"
-                    class="px-4 py-10 text-center text-gray-400 text-sm"
-                  >
-                    No items found.
                   </td>
-                </tr>
+                }
               }
-            </tbody>
-          </table>
-        </div>
-      }
+
+              <!-- Actions Cell -->
+              @if (showActions) {
+                <td class="pl-3 pr-4 py-3" (click)="$event.stopPropagation()">
+                  <div class="flex items-center justify-end gap-3 text-gray-400">
+                    <!-- Time ago -->
+                    <span class="text-xs text-gray-400 tabular-nums">{{
+                      getTimeAgo($any(item).updated_at)
+                    }}</span>
+
+                    <!-- Comment -->
+                    <button
+                      type="button"
+                      class="flex items-center gap-0.5 hover:text-gray-600 transition-colors"
+                    >
+                      <i class="bx bx-comment text-sm"></i>
+                      <span class="text-xs">0</span>
+                    </button>
+
+                    <!-- Heart -->
+                    <button
+                      type="button"
+                      (click)="handleLike(item); $event.stopPropagation()"
+                      class="transition-colors hover:text-red-500"
+                      [class.text-red-500]="$any(item).liked"
+                      [class.text-gray-400]="!$any(item).liked"
+                    >
+                      <i
+                        class="bx text-sm"
+                        [class.bxs-heart]="$any(item).liked"
+                        [class.bx-heart]="!$any(item).liked"
+                      ></i>
+                    </button>
+
+                    <!-- Edit / Delete (hover only) -->
+                    <div
+                      class="opacity-0 group-hover:opacity-100 transition-opacity flex items-center gap-2"
+                    >
+                      <button
+                        type="button"
+                        (click)="handleEdit(item); $event.stopPropagation()"
+                        class="hover:text-blue-600 transition-colors"
+                      >
+                        <i class="bx bx-edit text-sm"></i>
+                      </button>
+                      <button
+                        type="button"
+                        (click)="handleDelete(item); $event.stopPropagation()"
+                        class="hover:text-red-600 transition-colors"
+                      >
+                        <i class="bx bx-trash text-sm"></i>
+                      </button>
+                    </div>
+                  </div>
+                </td>
+              }
+            </tr>
+          } @empty {
+            <tr>
+              <td
+                [attr.colspan]="columns.length + (showCheckbox ? 1 : 0) + (showActions ? 1 : 0)"
+                class="px-4 py-14 text-center text-gray-400 text-sm"
+              >
+                No items found.
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
     </div>
-  </div>
+  }
 </div>
