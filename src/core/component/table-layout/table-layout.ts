@@ -35,11 +35,18 @@ export class TableLayout<T = any> implements AfterContentInit {
   @Input() showCheckbox: boolean = true;
   @Input() showActions: boolean = true;
 
+  // Pagination
+  @Input() currentPage: number = 1;
+  @Input() pageSize: number = 20;
+  @Input() totalPages: number = 0;
+  @Input() showPagination: boolean = false;
+
   @Output() onRefresh = new EventEmitter<void>();
   @Output() onRowClick = new EventEmitter<T>();
   @Output() onEdit = new EventEmitter<T>();
   @Output() onDelete = new EventEmitter<T>();
   @Output() onLike = new EventEmitter<T>();
+  @Output() onPageChange = new EventEmitter<number>();
 
   @ContentChildren(TableSlot) slotList!: QueryList<TableSlot>;
 
@@ -192,5 +199,26 @@ export class TableLayout<T = any> implements AfterContentInit {
 
   trackById(index: number, item: any): any {
     return item.id || index;
+  }
+
+  // Pagination helpers
+  goToPage(page: number): void {
+    if (page >= 1 && page <= this.totalPages) {
+      this.onPageChange.emit(page);
+    }
+  }
+
+  getPageNumbers(): number[] {
+    const pages: number[] = [];
+    const maxVisible = 5;
+    let start = Math.max(1, this.currentPage - Math.floor(maxVisible / 2));
+    let end = Math.min(this.totalPages, start + maxVisible - 1);
+    if (end - start + 1 < maxVisible) {
+      start = Math.max(1, end - maxVisible + 1);
+    }
+    for (let i = start; i <= end; i++) {
+      pages.push(i);
+    }
+    return pages;
   }
 }

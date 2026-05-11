@@ -8,25 +8,31 @@ export interface BadgeConfig {
 }
 
 export interface TableColumn<T = any> {
-  key: string;                          // Property key (supports nested like 'parent.name')
-  header: string;                       // Column header text
-  type?: ColumnType;                    // Column type (default: 'text')
-  width?: string;                       // Column width (e.g., '100px', '20%')
-  sortable?: boolean;                   // Enable sorting (future feature)
+  key: string; // Property key (supports nested like 'parent.name')
+  header: string; // Column header text
+  type?: ColumnType; // Column type (default: 'text')
+  width?: string; // Column width (e.g., '100px', '20%')
+  sortable?: boolean; // Enable sorting (future feature)
   align?: 'left' | 'center' | 'right'; // Text alignment
-  
+
   // For custom rendering via template
-  slot?: string;                        // Template slot name
-  
+  slot?: string; // Template slot name
+
   // For simple transformations
   format?: (value: any, item: T) => string;
-  
+
   // For badge type
   badgeConfig?: BadgeConfig;
-  
+
   // Conditional styling
   cellClass?: string | ((item: T) => string);
-  
+
   // Hide column on certain conditions
   hidden?: boolean;
+
+  // Allow text to wrap (overrides default whitespace-nowrap)
+  wrap?: boolean;
+
+  // Truncate with ellipsis (requires a max-width or width to be set)
+  ellipsis?: boolean;
 }

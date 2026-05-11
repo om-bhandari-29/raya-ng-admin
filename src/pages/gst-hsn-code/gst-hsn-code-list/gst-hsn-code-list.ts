@@ -1,9 +1,8 @@
 import { Component, OnInit, inject } from '@angular/core';
-import { MatDialog } from '@angular/material/dialog';
+import { Router } from '@angular/router';
 import { ListBase } from '../../../core/base/list-base';
 import { IGenericResponse } from '../../../core/response/genericResponse.interface';
 import { IGstHsnCode } from '../gst-hsn-code.response';
-import { GstHsnCodeUpsert, GstHsnCodeDialogData } from '../gst-hsn-code-upsert/gst-hsn-code-upsert';
 import { TableLayout } from '../../../core/component/table-layout/table-layout';
 import { TableColumn } from '../../../core/models/table-column.interface';
 
@@ -14,61 +13,48 @@ import { TableColumn } from '../../../core/models/table-column.interface';
   styleUrl: './gst-hsn-code-list.scss',
 })
 export class GstHsnCodeList extends ListBase<IGstHsnCode> implements OnInit {
-  private dialog = inject(MatDialog);
+  private router = inject(Router);
 
   columns: TableColumn<IGstHsnCode>[] = [
     {
-      key: 'hsn_code',
+      key: 'name',
       header: 'ID',
-      width: '120px',
-      slot: 'id',
+      width: '180px',
+      type: 'text',
+      cellClass: 'font-medium',
     },
     {
       key: 'hsn_code',
       header: 'HSN Code',
       type: 'text',
-      cellClass: 'text-gray-800 font-medium',
+      width: '180px',
     },
     {
       key: 'description',
       header: 'Description',
       type: 'text',
-    },
-    {
-      key: 'gst_rate',
-      header: 'GST Rate (%)',
-      type: 'number',
-    },
-    {
-      key: 'is_active',
-      header: 'Is Active',
-      type: 'boolean',
+      width: '300px',
+      ellipsis: true,
     },
   ];
 
   override ngOnInit(): void {
     super.ngOnInit();
     this.loadItems();
+
+    this.setHeaderConfig('GST HSN Code', 'Add GST HSN Code');
   }
 
   openAddModal(): void {
-    this.openModal(0);
+    this.router.navigate([this.appRoutes.GST_HSN_CODE_UPSERT], { queryParams: { id: 0 } });
   }
 
   openEditModal(id: number): void {
-    this.openModal(id);
+    this.router.navigate([this.appRoutes.GST_HSN_CODE_UPSERT], { queryParams: { id } });
   }
 
-  private openModal(itemId: number): void {
-    const data: GstHsnCodeDialogData = { itemId };
-    const dialogRef = this.dialog.open(GstHsnCodeUpsert, {
-      width: '520px',
-      disableClose: true,
-      data,
-    });
-    dialogRef.afterClosed().subscribe((saved: boolean) => {
-      if (saved) this.loadItems();
-    });
+  public override onActionButtonClick(): void {
+    this.router.navigate([this.appRoutes.GST_HSN_CODE_UPSERT], { queryParams: { id: 0 } });
   }
 
   async loadItems(): Promise<void> {
@@ -76,10 +62,14 @@ export class GstHsnCodeList extends ListBase<IGstHsnCode> implements OnInit {
     this.errorMessage.set(null);
     try {
       const response = await this.httpGetPromise<IGenericResponse<IGstHsnCode[]>>(
-        this.apiRoutes.gst_hsn_code.GET_ALL,
+        this.apiRoutes.gst_hsn_code.GET_ALL(this.currentPage(), this.pageSize()),
       );
       if (response.status) {
         this.items.set(response.data);
+        if (response.meta) {
+          this.totalItems.set(response.meta.total);
+          this.totalPages.set(response.meta.totalPages);
+        }
       } else {
         this.errorMessage.set(response.message);
       }

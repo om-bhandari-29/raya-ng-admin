@@ -6,7 +6,24 @@ export abstract class ListBase<T> extends Base {
   isLoading = signal<boolean>(false);
   errorMessage = signal<string | null>(null);
 
+  // Pagination state
+  currentPage = signal<number>(1);
+  pageSize = signal<number>(20);
+  totalItems = signal<number>(0);
+  totalPages = signal<number>(0);
+
   abstract loadItems(): Promise<void>;
+
+  onPageChange(page: number): void {
+    this.currentPage.set(page);
+    this.loadItems();
+  }
+
+  onPageSizeChange(size: number): void {
+    this.pageSize.set(size);
+    this.currentPage.set(1);
+    this.loadItems();
+  }
 
   getTimeAgo(dateString: string): string {
     const date = new Date(dateString);

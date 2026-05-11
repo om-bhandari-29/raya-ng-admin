@@ -39,6 +39,13 @@ export const routes: Routes = [
           ),
       },
       {
+        path: `${APPRoutes.GST_HSN_CODE}/upsert`,
+        loadComponent: () =>
+          import('../pages/gst-hsn-code/gst-hsn-code-upsert/gst-hsn-code-upsert').then(
+            (m) => m.GstHsnCodeUpsert,
+          ),
+      },
+      {
         path: APPRoutes.UOM,
         loadComponent: () => import('../pages/uom/uom-list/uom-list').then((m) => m.UomList),
       },

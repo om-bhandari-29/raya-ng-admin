@@ -29,7 +29,7 @@ export const APIRoutes = {
         : '/product-master/combo',
   },
   gst_hsn_code: {
-    GET_ALL: '/gst-hsn-code',
+    GET_ALL: (page: number = 1, limit: number = 20) => `/gst-hsn-code?page=${page}&limit=${limit}`,
     GET_BY_ID: (id: number | string) => `/gst-hsn-code/${id}`,
     CREATE: '/gst-hsn-code',
     UPDATE: (id: number | string) => `/gst-hsn-code/${id}`,

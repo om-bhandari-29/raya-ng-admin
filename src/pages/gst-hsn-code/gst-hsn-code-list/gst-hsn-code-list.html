@@ -3,13 +3,12 @@
   [data]="items()"
   [isLoading]="isLoading()"
   [errorMessage]="errorMessage()"
+  [showPagination]="true"
+  [currentPage]="currentPage()"
+  [pageSize]="pageSize()"
+  [totalPages]="totalPages()"
   (onRefresh)="loadItems()"
   (onEdit)="openEditModal($any($event).id)"
+  (onPageChange)="onPageChange($event)"
 >
-  <!-- Custom template for ID column (clickable link) -->
-  <ng-template slot="id" let-item>
-    <button (click)="openEditModal(item.id)" class="text-blue-600 hover:text-blue-800 font-medium">
-      {{ item.hsn_code }}
-    </button>
-  </ng-template>
 </app-table-layout>

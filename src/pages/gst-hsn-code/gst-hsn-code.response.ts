@@ -1,5 +1,5 @@
 export interface IGstHsnCode {
-  id: number;
+  name: string;
   hsn_code: string;
   description: string;
   gst_rate: number;

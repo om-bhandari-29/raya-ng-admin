@@ -1,20 +1,13 @@
 import { Component, OnInit, inject, signal } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
+import { ActivatedRoute, Router } from '@angular/router';
 import { Base } from '../../../core/base/base';
 import { IGenericResponse } from '../../../core/response/genericResponse.interface';
 import { IGstHsnCode } from '../gst-hsn-code.response';
 
-export interface GstHsnCodeDialogData {
-  /** 0 for create, positive id for edit */
-  itemId: number;
-}
-
 export interface GstHsnCodeForm {
   hsn_code: FormControl<string>;
   description: FormControl<string>;
-  gst_rate: FormControl<number>;
-  is_active: FormControl<boolean>;
 }
 
 @Component({
@@ -24,13 +17,14 @@ export interface GstHsnCodeForm {
   styleUrl: './gst-hsn-code-upsert.scss',
 })
 export class GstHsnCodeUpsert extends Base implements OnInit {
-  private dialogRef = inject(MatDialogRef<GstHsnCodeUpsert>);
-  private dialogData = inject<GstHsnCodeDialogData>(MAT_DIALOG_DATA);
+  private route = inject(ActivatedRoute);
+  private router = inject(Router);
 
   isEditMode = signal<boolean>(false);
   isLoading = signal<boolean>(false);
   isSaving = signal<boolean>(false);
   errorMessage = signal<string | null>(null);
+  itemId = signal<number>(0);
 
   form = new FormGroup<GstHsnCodeForm>({
     hsn_code: new FormControl<string>('', {
@@ -41,33 +35,35 @@ export class GstHsnCodeUpsert extends Base implements OnInit {
       nonNullable: true,
       validators: [Validators.required],
     }),
-    gst_rate: new FormControl<number>(0, {
-      nonNullable: true,
-      validators: [Validators.required, Validators.min(0), Validators.max(100)],
-    }),
-    is_active: new FormControl<boolean>(true, { nonNullable: true }),
   });
 
   override ngOnInit(): void {
     super.ngOnInit();
-    if (this.dialogData.itemId !== 0) {
+    const idParam = this.route.snapshot.queryParamMap.get('id');
+    if (idParam && +idParam !== 0) {
+      this.itemId.set(+idParam);
       this.isEditMode.set(true);
+      this.setHeaderConfig('Edit GST HSN Code', 'Update');
       this.loadItem();
+    } else {
+      this.setHeaderConfig('New GST HSN Code', 'Save');
     }
+  }
+
+  public override onActionButtonClick(): void {
+    this.onSubmit();
   }
 
   private async loadItem(): Promise<void> {
     this.isLoading.set(true);
     this.errorMessage.set(null);
     try {
-      const url = this.apiRoutes.gst_hsn_code.GET_BY_ID(this.dialogData.itemId);
+      const url = this.apiRoutes.gst_hsn_code.GET_BY_ID(this.itemId());
       const response = await this.httpGetPromise<IGenericResponse<IGstHsnCode>>(url);
       if (response.status) {
         this.form.patchValue({
           hsn_code: response.data.hsn_code,
           description: response.data.description,
-          gst_rate: Number(response.data.gst_rate),
-          is_active: response.data.is_active,
         });
       } else {
         this.errorMessage.set(response.message);
@@ -88,17 +84,20 @@ export class GstHsnCodeUpsert extends Base implements OnInit {
     this.isSaving.set(true);
     this.errorMessage.set(null);
     try {
-      const payload = this.form.getRawValue();
+      const payload = { ...this.form.getRawValue(), gst_rate: null, is_active: true };
       if (this.isEditMode()) {
-        const url = this.apiRoutes.gst_hsn_code.UPDATE(this.dialogData.itemId);
-        await this.httpPatchPromise<IGenericResponse<IGstHsnCode>, typeof payload>(url, payload);
+        await this.httpPatchPromise<IGenericResponse<IGstHsnCode>, typeof payload>(
+          this.apiRoutes.gst_hsn_code.UPDATE(this.itemId()),
+          payload,
+        );
       } else {
         await this.httpPostPromise<IGenericResponse<IGstHsnCode>, typeof payload>(
           this.apiRoutes.gst_hsn_code.CREATE,
           payload,
         );
       }
-      this.dialogRef.close(true);
+      this.toastr.success('GST HSN Code saved successfully.');
+      this.router.navigate([this.appRoutes.GST_HSN_CODE]);
     } catch {
       this.errorMessage.set('Failed to save. Please try again.');
     } finally {
@@ -107,7 +106,7 @@ export class GstHsnCodeUpsert extends Base implements OnInit {
   }
 
   onCancel(): void {
-    this.dialogRef.close(false);
+    this.router.navigate([this.appRoutes.GST_HSN_CODE]);
   }
 
   get hsnCodeControl() {
@@ -115,8 +114,5 @@ export class GstHsnCodeUpsert extends Base implements OnInit {
   }
   get descriptionControl() {
     return this.form.controls.description;
-  }
-  get gstRateControl() {
-    return this.form.controls.gst_rate;
   }
 }
