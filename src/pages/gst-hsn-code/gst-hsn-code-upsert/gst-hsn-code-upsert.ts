@@ -4,6 +4,8 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { Base } from '../../../core/base/base';
 import { IGenericResponse } from '../../../core/response/genericResponse.interface';
 import { IGstHsnCode } from '../gst-hsn-code.response';
+import { BreadcrumbService } from '../../../core/services/breadcrumb.service';
+import { APPRoutes } from '../../../core/constant/app-routes';
 
 export interface GstHsnCodeForm {
   hsn_code: FormControl<string>;
@@ -19,6 +21,7 @@ export interface GstHsnCodeForm {
 export class GstHsnCodeUpsert extends Base implements OnInit {
   private route = inject(ActivatedRoute);
   private router = inject(Router);
+  private breadcrumb = inject(BreadcrumbService);
 
   isEditMode = signal<boolean>(false);
   isLoading = signal<boolean>(false);
@@ -43,9 +46,17 @@ export class GstHsnCodeUpsert extends Base implements OnInit {
     if (idParam && +idParam !== 0) {
       this.itemId.set(+idParam);
       this.isEditMode.set(true);
+      this.breadcrumb.set([
+        { label: 'GST HSN Code', url: APPRoutes.GST_HSN_CODE },
+        { label: 'Edit GST HSN Code' },
+      ]);
       this.setHeaderConfig('Edit GST HSN Code', 'Update');
       this.loadItem();
     } else {
+      this.breadcrumb.set([
+        { label: 'GST HSN Code', url: APPRoutes.GST_HSN_CODE },
+        { label: 'Add GST HSN Code' },
+      ]);
       this.setHeaderConfig('New GST HSN Code', 'Save');
     }
   }
