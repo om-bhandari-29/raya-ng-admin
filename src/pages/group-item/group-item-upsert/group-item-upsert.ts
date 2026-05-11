@@ -3,7 +3,11 @@ import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angula
 import { ActivatedRoute, Router } from '@angular/router';
 import { Base } from '../../../core/base/base';
 import { IGenericResponse } from '../../../core/response/genericResponse.interface';
-import { IComboItem, IComboHsnCode } from '../../../core/response/combo.interface';
+import {
+  IComboItem,
+  IComboHsnCode,
+  IComboItemFrappeBased,
+} from '../../../core/response/combo.interface';
 import { IGroupItem } from '../group-item.response';
 import { BreadcrumbService } from '../../../core/services/breadcrumb.service';
 import { APPRoutes } from '../../../core/constant/app-routes';
@@ -33,7 +37,7 @@ export class GroupItemUpsert extends Base implements OnInit {
   errorMessage = signal<string | null>(null);
   itemId = signal<number>(0);
 
-  itemGroupOptions = signal<IComboItem[]>([]);
+  itemGroupOptions = signal<IComboItemFrappeBased[]>([]);
   hsnCodeOptions = signal<IComboHsnCode[]>([]);
 
   form = new FormGroup<GroupItemForm>({
@@ -67,12 +71,16 @@ export class GroupItemUpsert extends Base implements OnInit {
       ]);
     }
     this.loadDropdowns();
+
+    this.setHeaderConfig('New Item Group', 'Save');
   }
 
   private async loadDropdowns(): Promise<void> {
     try {
       const [groups, hsn] = await Promise.all([
-        this.httpGetPromise<IGenericResponse<IComboItem[]>>(this.apiRoutes.item_group.COMBO),
+        this.httpGetPromise<IGenericResponse<IComboItemFrappeBased[]>>(
+          this.apiRoutes.item_group.COMBO,
+        ),
         this.httpGetPromise<IGenericResponse<IComboHsnCode[]>>(this.apiRoutes.gst_hsn_code.COMBO),
       ]);
       this.itemGroupOptions.set(groups.status ? groups.data : []);
@@ -106,6 +114,10 @@ export class GroupItemUpsert extends Base implements OnInit {
     } finally {
       this.isLoading.set(false);
     }
+  }
+
+  public override onActionButtonClick(): void {
+    this.onSubmit();
   }
 
   async onSubmit(): Promise<void> {

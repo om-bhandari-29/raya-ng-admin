@@ -1,12 +1,5 @@
-<!-- Page Header -->
-<div class="flex items-center justify-between mb-6">
-  <h1 class="text-xl font-semibold text-slate-800">
-    {{ isEditMode() ? 'Edit Item Group' : 'Add Item Group' }}
-  </h1>
-</div>
-
 <!-- Card -->
-<div class="bg-white rounded-xl border border-slate-200 shadow-sm max-w-lg">
+<div class="bg-white rounded-xl border border-slate-200">
   <!-- Loading -->
   @if (isLoading()) {
     <div class="flex items-center justify-center gap-2 px-6 py-10 text-slate-400 text-sm">
@@ -33,7 +26,7 @@
   <!-- Form -->
   @if (!isLoading()) {
     <form [formGroup]="form" (ngSubmit)="onSubmit()" novalidate>
-      <div class="px-6 py-5 space-y-5">
+      <div class="px-6 py-5 space-y-5 max-w-lg">
         <!-- Error banner -->
         @if (errorMessage()) {
           <div
@@ -52,7 +45,11 @@
 
         <!-- Item Group Name -->
         <div class="flex flex-col gap-1.5">
-          <label for="name_frappe_based_id" class="text-sm font-medium text-slate-700">
+          <label
+            for="name_frappe_based_id"
+            class="font-medium"
+            style="font-size: 13px; color: #525252"
+          >
             Item Group Name <span class="text-red-500">*</span>
           </label>
           <input
@@ -60,7 +57,7 @@
             type="text"
             formControlName="name_frappe_based_id"
             placeholder="Enter item group name"
-            class="w-full rounded-lg border px-3.5 py-2.5 text-sm text-slate-800 placeholder-slate-400 outline-none transition focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+            class="w-full rounded-lg px-2 py-1 text-sm text-slate-800 placeholder-slate-400 outline-none transition focus:ring-2 focus:ring-gray-200 focus:border-gray-200 bg-[#f3f3f3]"
             [class.border-red-400]="
               f.name_frappe_based_id.invalid && f.name_frappe_based_id.touched
             "
@@ -79,32 +76,38 @@
 
         <!-- Parent Item Group -->
         <div class="flex flex-col gap-1.5">
-          <label for="parent_item_group" class="text-sm font-medium text-slate-700">
+          <label
+            for="parent_item_group"
+            class="font-medium"
+            style="font-size: 13px; color: #525252"
+          >
             Parent Item Group
           </label>
           <select
             id="parent_item_group"
             formControlName="parent_item_group"
-            class="w-full rounded-lg border border-slate-300 px-3.5 py-2.5 text-sm text-slate-800 outline-none transition bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+            class="w-full rounded-lg px-2 py-1 text-sm text-slate-800 placeholder-slate-400 outline-none transition focus:ring-2 focus:ring-gray-200 focus:border-gray-200 bg-[#f3f3f3]"
           >
-            <option value="">— None —</option>
+            <option value="" class="text-gray-900">— None —</option>
             @for (group of itemGroupOptions(); track group.id) {
-              <option [value]="group.id">{{ group.name }}</option>
+              <option [value]="group.id" class="text-gray-900">
+                {{ group.name_frappe_based_id }}
+              </option>
             }
           </select>
         </div>
 
         <!-- HSN/SAC Code -->
         <div class="flex flex-col gap-1.5">
-          <label for="gst_hsn_code" class="text-sm font-medium text-slate-700">
+          <label for="gst_hsn_code" class="font-medium" style="font-size: 13px; color: #525252">
             HSN/SAC Code
           </label>
           <select
             id="gst_hsn_code"
             formControlName="gst_hsn_code"
-            class="w-full rounded-lg border border-slate-300 px-3.5 py-2.5 text-sm text-slate-800 outline-none transition bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+            class="w-full rounded-lg px-2 py-1 text-sm text-slate-800 placeholder-slate-400 outline-none transition focus:ring-2 focus:ring-gray-200 focus:border-gray-200 bg-[#f3f3f3]"
           >
-            <option value="">— None —</option>
+            <option value="" class="text-gray-900">— None —</option>
             @for (hsn of hsnCodeOptions(); track hsn.id) {
               <option [value]="hsn.hsn_code">{{ hsn.hsn_code }} ({{ hsn.gst_rate }}%)</option>
             }
@@ -119,13 +122,17 @@
             formControlName="is_group"
             class="h-4 w-4 rounded border-slate-300 text-blue-600 focus:ring-blue-500 cursor-pointer"
           />
-          <label for="is_group" class="text-sm font-medium text-slate-700 cursor-pointer">
+          <label
+            for="is_group"
+            class="font-medium cursor-pointer"
+            style="font-size: 13px; color: #525252"
+          >
             Is Group
           </label>
         </div>
 
         <!-- Is Active toggle -->
-        <div class="flex items-center gap-3">
+        <div class="flex items-center gap-3 hidden">
           <button
             type="button"
             role="switch"
@@ -141,12 +148,12 @@
               [class.translate-x-0]="!f.is_active.value"
             ></span>
           </button>
-          <span class="text-sm font-medium text-slate-700">Active</span>
+          <span class="font-medium" style="font-size: 13px; color: #525252">Active</span>
         </div>
       </div>
 
       <!-- Footer -->
-      <div class="flex items-center justify-end gap-3 px-6 py-4 border-t border-slate-200">
+      <div class="hidden flex items-center justify-end gap-3 px-6 py-4 border-t border-slate-200">
         <button
           type="button"
           (click)="onCancel()"
