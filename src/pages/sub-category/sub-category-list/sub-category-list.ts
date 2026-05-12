@@ -8,12 +8,12 @@ import {
   SubCategoryUpsert,
   SubCategoryDialogData,
 } from '../sub-category-upsert/sub-category-upsert';
-import { TableLayout } from '../../../core/component/table-layout/table-layout';
+import { TableLayout, TableSlot } from '../../../core/component/table-layout/table-layout';
 import { TableColumn } from '../../../core/models/table-column.interface';
 
 @Component({
   selector: 'app-sub-category-list',
-  imports: [TableLayout],
+  imports: [TableLayout, TableSlot],
   templateUrl: './sub-category-list.html',
   styleUrl: './sub-category-list.scss',
 })
@@ -25,30 +25,29 @@ export class SubCategoryList extends ListBase<ISubCategory> implements OnInit {
     {
       key: 'name',
       header: 'ID',
-      width: '120px',
+      // width: '120px',
       slot: 'id', // Custom template for clickable ID
     },
     {
-      key: 'name',
-      header: 'Sub Category Name',
-      type: 'text',
-      cellClass: 'text-gray-800 font-medium',
-    },
-    {
-      key: 'item_group.name', // Nested property - automatic!
+      key: 'item_group.name_frappe_based_id', // Nested property - automatic!
       header: 'Item Group',
       type: 'text',
     },
-    {
-      key: 'is_active',
-      header: 'Is Active',
-      type: 'boolean', // Automatic checkmark icon
-    },
+    // {
+    //   key: 'is_active',
+    //   header: 'Is Active',
+    //   type: 'boolean', // Automatic checkmark icon
+    // },
   ];
 
   override ngOnInit(): void {
     super.ngOnInit();
     this.loadItems();
+    this.setHeaderConfig('Item Sub-Category', 'Add Item Sub-Category');
+  }
+
+  protected override onActionButtonClick(): void {
+    this.openAddModal();
   }
 
   openAddModal(): void {

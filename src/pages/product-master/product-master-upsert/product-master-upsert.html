@@ -1,218 +1,224 @@
-<!-- Header -->
-<div class="flex items-center justify-between px-6 py-4 border-b border-slate-200">
-  <h2 class="text-base font-semibold text-slate-800">
-    {{ isEditMode() ? 'Edit Product Master' : 'Add Product Master' }}
-  </h2>
-  <button type="button" (click)="onCancel()"
-    class="text-slate-400 hover:text-slate-600 transition-colors rounded-lg p-1">
-    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24"
-      stroke="currentColor" stroke-width="2">
-      <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/>
+<!-- Error Banner -->
+@if (errorMessage()) {
+  <div
+    class="flex items-center gap-2 px-4 py-3 mb-4 rounded-lg text-sm text-red-600 bg-red-50 border border-red-200"
+  >
+    <svg class="h-4 w-4 shrink-0" fill="currentColor" viewBox="0 0 20 20">
+      <path
+        fill-rule="evenodd"
+        d="M10 18a8 8 0 100-16 8 8 0 000 16zm-.75-11.25a.75.75 0 011.5 0v4.5a.75.75 0 01-1.5 0v-4.5zm.75 7.5a.75.75 0 100-1.5.75.75 0 000 1.5z"
+        clip-rule="evenodd"
+      />
     </svg>
-  </button>
-</div>
-
-<!-- Loading -->
-@if (isLoading()) {
-  <div class="flex items-center justify-center gap-2 px-6 py-10 text-slate-400 text-sm">
-    <svg class="animate-spin h-5 w-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-      <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-      <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z"></path>
-    </svg>
-    Loading...
+    {{ errorMessage() }}
   </div>
 }
 
-<!-- Form -->
-@if (!isLoading()) {
-  <form [formGroup]="form" (ngSubmit)="onSubmit()" novalidate>
-    <div class="px-6 py-5 space-y-5">
+<!-- Card -->
+<div class="bg-white rounded-xl border border-slate-200">
+  <!-- Tabs -->
+  <div class="flex border-b border-slate-200 px-6">
+    <button
+      type="button"
+      (click)="activeTab.set('details')"
+      class="py-3 px-1 mr-6 text-sm font-medium border-b-2 transition-colors"
+      [class.border-slate-800]="activeTab() === 'details'"
+      [class.text-slate-800]="activeTab() === 'details'"
+      [class.border-transparent]="activeTab() !== 'details'"
+      [class.text-slate-400]="activeTab() !== 'details'"
+    >
+      Details
+    </button>
+    <button
+      type="button"
+      (click)="activeTab.set('metal')"
+      class="py-3 px-1 mr-6 text-sm font-medium border-b-2 transition-colors"
+      [class.border-slate-800]="activeTab() === 'metal'"
+      [class.text-slate-800]="activeTab() === 'metal'"
+      [class.border-transparent]="activeTab() !== 'metal'"
+      [class.text-slate-400]="activeTab() !== 'metal'"
+    >
+      Metal
+    </button>
+    <button
+      type="button"
+      (click)="activeTab.set('rule_set_mapping')"
+      class="py-3 px-1 mr-6 text-sm font-medium border-b-2 transition-colors"
+      [class.border-slate-800]="activeTab() === 'rule_set_mapping'"
+      [class.text-slate-800]="activeTab() === 'rule_set_mapping'"
+      [class.border-transparent]="activeTab() !== 'rule_set_mapping'"
+      [class.text-slate-400]="activeTab() !== 'rule_set_mapping'"
+    >
+      Rule set mapping
+    </button>
+    <button
+      type="button"
+      (click)="activeTab.set('product_description')"
+      class="py-3 px-1 text-sm font-medium border-b-2 transition-colors"
+      [class.border-slate-800]="activeTab() === 'product_description'"
+      [class.text-slate-800]="activeTab() === 'product_description'"
+      [class.border-transparent]="activeTab() !== 'product_description'"
+      [class.text-slate-400]="activeTab() !== 'product_description'"
+    >
+      Product Description
+    </button>
+  </div>
 
-      <!-- Error banner -->
-      @if (errorMessage()) {
-        <div class="flex items-center gap-2 px-4 py-3 rounded-lg text-sm text-red-600 bg-red-50 border border-red-200">
-          <svg class="h-4 w-4 shrink-0" fill="currentColor" viewBox="0 0 20 20">
-            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm-.75-11.25a.75.75 0 011.5 0v4.5a.75.75 0 01-1.5 0v-4.5zm.75 7.5a.75.75 0 100-1.5.75.75 0 000 1.5z" clip-rule="evenodd"/>
-          </svg>
-          {{ errorMessage() }}
+  <!-- Loading -->
+  @if (isLoading()) {
+    <div class="flex items-center justify-center gap-2 px-6 py-10 text-slate-400 text-sm">
+      <svg
+        class="animate-spin h-5 w-5"
+        xmlns="http://www.w3.org/2000/svg"
+        fill="none"
+        viewBox="0 0 24 24"
+      >
+        <circle
+          class="opacity-25"
+          cx="12"
+          cy="12"
+          r="10"
+          stroke="currentColor"
+          stroke-width="4"
+        ></circle>
+        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z"></path>
+      </svg>
+      Loading...
+    </div>
+  }
+
+  @if (!isLoading()) {
+    <form [formGroup]="form" (ngSubmit)="onSubmit()" novalidate>
+      <!-- ── Details Tab ── -->
+      @if (activeTab() === 'details') {
+        <div class="px-6 py-5 space-y-5 max-w-lg">
+          <!-- Name of Product -->
+          <div class="flex flex-col gap-1.5">
+            <label for="name" class="font-medium" style="font-size: 13px; color: #525252">
+              Name of Product <span class="text-red-500">*</span>
+            </label>
+            <input
+              id="name"
+              type="text"
+              formControlName="name"
+              placeholder="Enter product name"
+              class="w-full rounded-lg px-2 py-1 text-sm text-slate-800 placeholder-slate-400 outline-none transition focus:ring-2 focus:ring-gray-200 focus:border-gray-200 bg-[#f3f3f3]"
+              [class.border-red-400]="nameControl.invalid && nameControl.touched"
+              [class.border-slate-300]="!(nameControl.invalid && nameControl.touched)"
+            />
+            @if (nameControl.invalid && nameControl.touched) {
+              @if (nameControl.errors?.['required']) {
+                <p class="text-xs text-red-500">Name is required.</p>
+              } @else if (nameControl.errors?.['minlength']) {
+                <p class="text-xs text-red-500">Name must be at least 2 characters.</p>
+              }
+            }
+          </div>
+
+          <!-- Category -->
+          <div class="flex flex-col gap-1.5">
+            <label for="category_id" class="font-medium" style="font-size: 13px; color: #525252">
+              Category
+            </label>
+            <select
+              id="category_id"
+              formControlName="item_group_id"
+              (change)="onCategoryChange()"
+              class="w-full rounded-lg px-2 py-1 text-sm text-slate-800 placeholder-slate-400 outline-none transition focus:ring-2 focus:ring-gray-200 focus:border-gray-200 bg-[#f3f3f3]"
+            >
+              <option [ngValue]="null" [value]="''">Select category</option>
+              @for (group of itemGroups(); track group.name_frappe_based_id) {
+                <option [value]="group.name_frappe_based_id">
+                  {{ group.name_frappe_based_id }}
+                </option>
+              }
+            </select>
+          </div>
+
+          <!-- Item Sub Category -->
+          <div class="flex flex-col gap-1.5">
+            <label
+              for="sub_category_name"
+              class="font-medium"
+              style="font-size: 13px; color: #525252"
+            >
+              Item Sub Category <span class="text-red-500">*</span>
+            </label>
+            <select
+              id="sub_category_name"
+              formControlName="sub_category_name"
+              class="w-full rounded-lg px-2 py-1 text-sm text-slate-800 placeholder-slate-400 outline-none transition focus:ring-2 focus:ring-gray-200 focus:border-gray-200 bg-[#f3f3f3] disabled:text-slate-400 disabled:cursor-not-allowed"
+              [class.border-red-400]="subCategoryIdControl.invalid && subCategoryIdControl.touched"
+              [class.border-slate-300]="
+                !(subCategoryIdControl.invalid && subCategoryIdControl.touched)
+              "
+            >
+              <option [ngValue]="null" disabled>
+                {{
+                  form.controls.item_group_id.value
+                    ? 'Select sub category'
+                    : 'Select category first'
+                }}
+              </option>
+              @for (category of subCategories(); track category.id) {
+                <option [ngValue]="category.name">{{ category.name }}</option>
+              }
+            </select>
+            @if (subCategoryIdControl.invalid && subCategoryIdControl.touched) {
+              <p class="text-xs text-red-500">Sub category is required.</p>
+            }
+          </div>
         </div>
       }
 
-      <!-- Row 1: Category and Sub Category -->
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <!-- Category (Item Group) Dropdown -->
-        <div class="flex flex-col gap-1.5">
-          <label for="category_id" class="text-sm font-medium text-slate-700">
-            Category <span class="text-red-500">*</span>
-          </label>
-          <select
-            id="category_id"
-            formControlName="item_group_id"
-            (change)="onCategoryChange($any($event.target).value ? +$any($event.target).value : null)"
-            class="w-full rounded-lg border border-slate-300 px-3.5 py-2.5 text-sm text-slate-800 outline-none transition bg-white
-              focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
-            <option [ngValue]="null" [value]="''">Select category</option>
-            @for (group of itemGroups(); track group.id) {
-              <option [value]="group.id">{{ group.name }}</option>
-            }
-          </select>
-          @if (!form.controls.item_group_id.value) {
-            <p class="text-xs text-slate-500">Please select a category first</p>
-          }
+      <!-- ── Metal Tab ── -->
+      @if (activeTab() === 'metal') {
+        <div class="px-6 py-6 text-sm text-slate-400">Metal configuration coming soon.</div>
+      }
+
+      <!-- ── Rule Set Mapping Tab ── -->
+      @if (activeTab() === 'rule_set_mapping') {
+        <div class="px-6 py-6 text-sm text-slate-400">Rule set mapping coming soon.</div>
+      }
+
+      <!-- ── Product Description Tab ── -->
+      @if (activeTab() === 'product_description') {
+        <div class="px-6 py-5">
+          <div class="flex flex-col gap-1.5">
+            <label
+              for="product_description"
+              class="font-medium"
+              style="font-size: 13px; color: #525252"
+            >
+              Product Description
+            </label>
+            <textarea
+              id="product_description"
+              formControlName="product_description"
+              placeholder="Enter product description"
+              rows="5"
+              maxlength="400"
+              class="w-full rounded-lg px-2 py-1 text-sm text-slate-800 placeholder-slate-400 outline-none transition focus:ring-2 focus:ring-gray-200 focus:border-gray-200 bg-[#f3f3f3] resize-none"
+              [class.border-red-400]="
+                productDescriptionControl.invalid && productDescriptionControl.touched
+              "
+              [class.border-slate-300]="
+                !(productDescriptionControl.invalid && productDescriptionControl.touched)
+              "
+            ></textarea>
+            <div class="flex justify-between items-center">
+              @if (
+                productDescriptionControl.errors?.['maxlength'] && productDescriptionControl.touched
+              ) {
+                <p class="text-xs text-red-500">Description cannot exceed 400 characters.</p>
+              } @else {
+                <span></span>
+              }
+              <p class="text-xs text-slate-400">{{ productDescriptionControl.value.length }}/400</p>
+            </div>
+          </div>
         </div>
-
-        <!-- Sub Category Dropdown -->
-        <div class="flex flex-col gap-1.5">
-          <label for="sub_category_id" class="text-sm font-medium text-slate-700">
-            Sub Category <span class="text-red-500">*</span>
-          </label>
-          <select
-            id="sub_category_id"
-            formControlName="sub_category_id"
-            class="w-full rounded-lg border px-3.5 py-2.5 text-sm text-slate-800 outline-none transition bg-white
-              focus:ring-2 focus:ring-blue-500 focus:border-blue-500 disabled:bg-slate-50 disabled:text-slate-400 disabled:cursor-not-allowed"
-            [class.border-red-400]="subCategoryIdControl.invalid && subCategoryIdControl.touched"
-            [class.border-slate-300]="!(subCategoryIdControl.invalid && subCategoryIdControl.touched)">
-            <option [ngValue]="null" disabled>
-              {{ form.controls.item_group_id.value ? 'Select sub category' : 'Select category first' }}
-            </option>
-            @for (category of subCategories(); track category.id) {
-              <option [ngValue]="category.id">{{ category.name }}</option>
-            }
-          </select>
-          @if (subCategoryIdControl.invalid && subCategoryIdControl.touched) {
-            <p class="text-xs text-red-500">Sub category is required.</p>
-          }
-        </div>
-      </div>
-
-      <!-- Row 2: Product Name and Labour Rate -->
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <!-- Name -->
-        <div class="flex flex-col gap-1.5">
-          <label for="name" class="text-sm font-medium text-slate-700">
-            Product Name <span class="text-red-500">*</span>
-          </label>
-          <input
-            id="name"
-            type="text"
-            formControlName="name"
-            placeholder="Enter product name"
-            class="w-full rounded-lg border px-3.5 py-2.5 text-sm text-slate-800 placeholder-slate-400 outline-none transition
-              focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-            [class.border-red-400]="nameControl.invalid && nameControl.touched"
-            [class.border-slate-300]="!(nameControl.invalid && nameControl.touched)"
-          />
-          @if (nameControl.invalid && nameControl.touched) {
-            @if (nameControl.errors?.['required']) {
-              <p class="text-xs text-red-500">Name is required.</p>
-            } @else if (nameControl.errors?.['minlength']) {
-              <p class="text-xs text-red-500">Name must be at least 2 characters.</p>
-            }
-          }
-        </div>
-
-        <!-- Labour Rate -->
-        <div class="flex flex-col gap-1.5">
-          <label for="labour_rate" class="text-sm font-medium text-slate-700">
-            Labour Rate <span class="text-red-500">*</span>
-          </label>
-          <input
-            id="labour_rate"
-            type="text"
-            formControlName="labour_rate"
-            placeholder="Enter labour rate (e.g., 150.50)"
-            class="w-full rounded-lg border px-3.5 py-2.5 text-sm text-slate-800 placeholder-slate-400 outline-none transition
-              focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-            [class.border-red-400]="labourRateControl.invalid && labourRateControl.touched"
-            [class.border-slate-300]="!(labourRateControl.invalid && labourRateControl.touched)"
-          />
-          @if (labourRateControl.invalid && labourRateControl.touched) {
-            @if (labourRateControl.errors?.['required']) {
-              <p class="text-xs text-red-500">Labour rate is required.</p>
-            } @else if (labourRateControl.errors?.['pattern']) {
-              <p class="text-xs text-red-500">Please enter a valid number (e.g., 150.50).</p>
-            }
-          }
-        </div>
-      </div>
-
-      <!-- Row 3: Labour Rate On (full width) -->
-      <div class="flex flex-col gap-1.5">
-        <label for="labour_rate_on" class="text-sm font-medium text-slate-700">
-          Labour Rate On <span class="text-red-500">*</span>
-        </label>
-        <select
-          id="labour_rate_on"
-          formControlName="labour_rate_on"
-          class="w-full rounded-lg border px-3.5 py-2.5 text-sm text-slate-800 outline-none transition bg-white
-            focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-          [class.border-red-400]="labourRateOnControl.invalid && labourRateOnControl.touched"
-          [class.border-slate-300]="!(labourRateOnControl.invalid && labourRateOnControl.touched)">
-          <option value="Net">Net</option>
-          <option value="Gross">Gross</option>
-        </select>
-        @if (labourRateOnControl.invalid && labourRateOnControl.touched) {
-          <p class="text-xs text-red-500">Labour rate on is required.</p>
-        }
-      </div>
-
-      <!-- Row 4: Product Description (full width) -->
-      <div class="flex flex-col gap-1.5">
-        <label for="product_description" class="text-sm font-medium text-slate-700">
-          Product Description <span class="text-red-500">*</span>
-        </label>
-        <textarea
-          id="product_description"
-          formControlName="product_description"
-          placeholder="Enter product description"
-          rows="3"
-          class="w-full rounded-lg border px-3.5 py-2.5 text-sm text-slate-800 placeholder-slate-400 outline-none transition resize-none
-            focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-          [class.border-red-400]="productDescriptionControl.invalid && productDescriptionControl.touched"
-          [class.border-slate-300]="!(productDescriptionControl.invalid && productDescriptionControl.touched)"
-        ></textarea>
-        @if (productDescriptionControl.invalid && productDescriptionControl.touched) {
-          <p class="text-xs text-red-500">Product description is required.</p>
-        }
-      </div>
-
-      <!-- Row 5: Is Active toggle -->
-      <div class="flex items-center gap-3">
-        <button type="button" role="switch"
-          [attr.aria-checked]="form.controls.is_active.value"
-          (click)="form.controls.is_active.setValue(!form.controls.is_active.value)"
-          class="relative inline-flex h-6 w-11 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
-          [class.bg-blue-600]="form.controls.is_active.value"
-          [class.bg-slate-200]="!form.controls.is_active.value">
-          <span
-            class="pointer-events-none inline-block h-5 w-5 rounded-full bg-white shadow transform transition duration-200"
-            [class.translate-x-5]="form.controls.is_active.value"
-            [class.translate-x-0]="!form.controls.is_active.value">
-          </span>
-        </button>
-        <span class="text-sm font-medium text-slate-700">Active</span>
-      </div>
-
-    </div>
-
-    <!-- Footer -->
-    <div class="flex items-center justify-end gap-3 px-6 py-4 border-t border-slate-200">
-      <button type="button" (click)="onCancel()"
-        class="px-4 py-2 rounded-lg text-sm font-medium text-slate-600 bg-slate-100 hover:bg-slate-200 transition-colors">
-        Cancel
-      </button>
-      <button type="submit" [disabled]="isSaving()"
-        class="inline-flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 disabled:opacity-60 disabled:cursor-not-allowed transition-colors">
-        @if (isSaving()) {
-          <svg class="animate-spin h-4 w-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z"></path>
-          </svg>
-        }
-        {{ isEditMode() ? 'Update' : 'Create' }}
-      </button>
-    </div>
-
-  </form>
-}
+      }
+    </form>
+  }
+</div>

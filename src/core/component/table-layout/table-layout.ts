@@ -8,6 +8,7 @@ import {
   TemplateRef,
   AfterContentInit,
   Directive,
+  ChangeDetectionStrategy,
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { TableColumn } from '../../models/table-column.interface';
@@ -21,9 +22,10 @@ export class TableSlot {
 @Component({
   selector: 'app-table-layout',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, TableSlot],
   templateUrl: './table-layout.html',
   styleUrl: './table-layout.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class TableLayout<T = any> implements AfterContentInit {
   @Input() columns: TableColumn<T>[] = [];

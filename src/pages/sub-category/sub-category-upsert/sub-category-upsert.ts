@@ -3,8 +3,9 @@ import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angula
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { Base } from '../../../core/base/base';
 import { IGenericResponse } from '../../../core/response/genericResponse.interface';
-import { IComboItem } from '../../../core/response/combo.interface';
+import { IComboItem, IComboItemFrappeBased } from '../../../core/response/combo.interface';
 import { ISubCategory } from '../sub-category.response';
+import { HttpErrorResponse } from '@angular/common/http';
 
 export interface SubCategoryDialogData {
   /** 0 for create, positive id for edit */
@@ -12,7 +13,7 @@ export interface SubCategoryDialogData {
 }
 
 export interface SubCategoryForm {
-  item_group_id: FormControl<number | null>;
+  item_group_name: FormControl<number | null>;
   name: FormControl<string>;
   is_active: FormControl<boolean>;
 }
@@ -31,10 +32,10 @@ export class SubCategoryUpsert extends Base implements OnInit {
   isLoading = signal<boolean>(false);
   isSaving = signal<boolean>(false);
   errorMessage = signal<string | null>(null);
-  itemGroups = signal<IComboItem[]>([]);
+  itemGroups = signal<IComboItemFrappeBased[]>([]);
 
   form = new FormGroup<SubCategoryForm>({
-    item_group_id: new FormControl<number | null>(null, { validators: [Validators.required] }),
+    item_group_name: new FormControl<number | null>(null, { validators: [Validators.required] }),
     name: new FormControl<string>('', {
       nonNullable: true,
       validators: [Validators.required, Validators.minLength(2)],
@@ -53,7 +54,7 @@ export class SubCategoryUpsert extends Base implements OnInit {
 
   private async loadItemGroups(): Promise<void> {
     try {
-      const response = await this.httpGetPromise<IGenericResponse<IComboItem[]>>(
+      const response = await this.httpGetPromise<IGenericResponse<IComboItemFrappeBased[]>>(
         this.apiRoutes.item_group.COMBO,
       );
       if (response.status) this.itemGroups.set(response.data);
@@ -72,7 +73,7 @@ export class SubCategoryUpsert extends Base implements OnInit {
 
       if (response.status) {
         this.form.patchValue({
-          item_group_id: response.data.item_group_id,
+          item_group_name: response.data.item_group_id,
           name: response.data.name,
           is_active: response.data.is_active,
         });
@@ -109,8 +110,8 @@ export class SubCategoryUpsert extends Base implements OnInit {
       }
 
       this.dialogRef.close(true);
-    } catch {
-      this.errorMessage.set('Failed to save. Please try again.');
+    } catch (err) {
+      this.errorMessage.set((err as HttpErrorResponse).error.message);
     } finally {
       this.isSaving.set(false);
     }
@@ -121,7 +122,7 @@ export class SubCategoryUpsert extends Base implements OnInit {
   }
 
   get itemGroupIdControl() {
-    return this.form.controls.item_group_id;
+    return this.form.controls.item_group_name;
   }
   get nameControl() {
     return this.form.controls.name;

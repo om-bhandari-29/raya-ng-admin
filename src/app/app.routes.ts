@@ -32,6 +32,13 @@ export const routes: Routes = [
           ),
       },
       {
+        path: APPRoutes.PRODUCT_MASTER_UPSERT,
+        loadComponent: () =>
+          import('../pages/product-master/product-master-upsert/product-master-upsert').then(
+            (m) => m.ProductMasterUpsert,
+          ),
+      },
+      {
         path: APPRoutes.GST_HSN_CODE,
         loadComponent: () =>
           import('../pages/gst-hsn-code/gst-hsn-code-list/gst-hsn-code-list').then(

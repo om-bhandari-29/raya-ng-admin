@@ -5,6 +5,7 @@ export const APPRoutes = {
   ITEM_GROUP: 'item-group',
   SUB_CATEGORY: 'sub-category',
   PRODUCT_MASTER: 'product-master',
+  PRODUCT_MASTER_UPSERT: 'product-master/upsert',
   GST_HSN_CODE: 'gst-hsn-code',
   GST_HSN_CODE_UPSERT: 'gst-hsn-code/upsert',
   UOM: 'uom',

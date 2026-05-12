@@ -14,8 +14,10 @@ export const APIRoutes = {
     CREATE: '/sub-category',
     UPDATE: (id: number | string) => `/sub-category/${id}`,
     DELETE: (id: number | string) => `/sub-category/${id}`,
-    COMBO: (item_group_id?: number) =>
-      item_group_id ? `/sub-category/combo?item_group_id=${item_group_id}` : '/sub-category/combo',
+    COMBO: (item_group_id: string | null) =>
+      item_group_id
+        ? `/sub-category/combo?item_group_name=${item_group_id}`
+        : '/sub-category/combo',
   },
   product_master: {
     GET_ALL: '/product-master',

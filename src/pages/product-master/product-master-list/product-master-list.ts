@@ -1,15 +1,12 @@
 import { Component, OnInit, inject } from '@angular/core';
-import { MatDialog } from '@angular/material/dialog';
+import { Router } from '@angular/router';
 import { HttpErrorResponse } from '@angular/common/http';
 import { ListBase } from '../../../core/base/list-base';
 import { IGenericResponse } from '../../../core/response/genericResponse.interface';
 import { IProductMaster } from '../product-master.response';
-import {
-  ProductMasterUpsert,
-  ProductMasterDialogData,
-} from '../product-master-upsert/product-master-upsert';
 import { TableLayout } from '../../../core/component/table-layout/table-layout';
 import { TableColumn } from '../../../core/models/table-column.interface';
+import { APPRoutes } from '../../../core/constant/app-routes';
 
 @Component({
   selector: 'app-product-master-list',
@@ -18,7 +15,7 @@ import { TableColumn } from '../../../core/models/table-column.interface';
   styleUrl: './product-master-list.scss',
 })
 export class ProductMasterList extends ListBase<IProductMaster> implements OnInit {
-  private dialog = inject(MatDialog);
+  private router = inject(Router);
 
   columns: TableColumn<IProductMaster>[] = [
     {
@@ -54,28 +51,19 @@ export class ProductMasterList extends ListBase<IProductMaster> implements OnIni
   override ngOnInit(): void {
     super.ngOnInit();
     this.loadItems();
+    this.setHeaderConfig('Product Master', 'Add Product Master');
   }
 
-  openAddModal(): void {
-    this.openModal(0);
+  protected override onActionButtonClick(): void {
+    this.navigateToUpsert(0);
   }
 
   openEditModal(id: number): void {
-    this.openModal(id);
+    this.navigateToUpsert(id);
   }
 
-  private openModal(itemId: number): void {
-    const data: ProductMasterDialogData = { itemId };
-
-    const dialogRef = this.dialog.open(ProductMasterUpsert, {
-      width: '480px',
-      disableClose: true,
-      data,
-    });
-
-    dialogRef.afterClosed().subscribe((saved: boolean) => {
-      if (saved) this.loadItems();
-    });
+  private navigateToUpsert(id: number): void {
+    this.router.navigate([APPRoutes.PRODUCT_MASTER_UPSERT], { queryParams: { id } });
   }
 
   async delete(id: number): Promise<void> {
