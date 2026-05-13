@@ -20,31 +20,14 @@ export class ProductMasterList extends ListBase<IProductMaster> implements OnIni
   columns: TableColumn<IProductMaster>[] = [
     {
       key: 'name',
-      header: 'ID',
-      width: '150px',
-      slot: 'id',
-    },
-    {
-      key: 'name',
-      header: 'Product Name',
+      header: 'Id',
       type: 'text',
-      cellClass: 'text-gray-800 font-medium',
+      cellClass: 'font-medium cursor-pointer',
     },
     {
       key: 'sub_category.name',
       header: 'Sub Category',
       type: 'text',
-    },
-    {
-      key: 'labour_rate',
-      header: 'Labour Rate',
-      type: 'custom',
-      format: (value, item) => (value ? `${value} (${item.labour_rate_on})` : '-'),
-    },
-    {
-      key: 'is_active',
-      header: 'Is Active',
-      type: 'boolean',
     },
   ];
 
@@ -62,8 +45,8 @@ export class ProductMasterList extends ListBase<IProductMaster> implements OnIni
     this.navigateToUpsert(id);
   }
 
-  private navigateToUpsert(id: number): void {
-    this.router.navigate([APPRoutes.PRODUCT_MASTER_UPSERT], { queryParams: { id } });
+  private navigateToUpsert(name: number): void {
+    this.router.navigate([APPRoutes.PRODUCT_MASTER_UPSERT], { queryParams: { name } });
   }
 
   async delete(id: number): Promise<void> {

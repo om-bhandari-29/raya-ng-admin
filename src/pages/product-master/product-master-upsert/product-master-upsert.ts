@@ -9,7 +9,7 @@ import { BreadcrumbService } from '../../../core/services/breadcrumb.service';
 import { APPRoutes } from '../../../core/constant/app-routes';
 
 export interface ProductMasterForm {
-  item_group_id: FormControl<string | null>;
+  item_group_name: FormControl<string | null>;
   sub_category_name: FormControl<number | null>;
   name: FormControl<string>;
   product_description: FormControl<string>;
@@ -31,7 +31,7 @@ export class ProductMasterUpsert extends Base implements OnInit {
   isLoading = signal<boolean>(false);
   isSaving = signal<boolean>(false);
   errorMessage = signal<string | null>(null);
-  itemId = signal<number>(0);
+  itemName = signal<string>('');
   activeTab = signal<'details' | 'metal' | 'rule_set_mapping' | 'product_description'>('details');
 
   // Category (Group Item) related
@@ -41,7 +41,7 @@ export class ProductMasterUpsert extends Base implements OnInit {
   subCategories = signal<IComboItem[]>([]);
 
   form = new FormGroup<ProductMasterForm>({
-    item_group_id: new FormControl<string | null>(null),
+    item_group_name: new FormControl<string | null>(null),
     sub_category_name: new FormControl<number | null>(
       { value: null, disabled: true },
       { validators: [Validators.required] },
@@ -59,9 +59,9 @@ export class ProductMasterUpsert extends Base implements OnInit {
 
   override ngOnInit(): void {
     super.ngOnInit();
-    const idParam = this.route.snapshot.queryParamMap.get('id');
-    if (idParam && +idParam !== 0) {
-      this.itemId.set(+idParam);
+    const nameParam = this.route.snapshot.queryParamMap.get('name');
+    if (nameParam && +nameParam !== 0) {
+      this.itemName.set(nameParam);
       this.isEditMode.set(true);
       this.breadcrumb.set([
         { label: 'Product Master', url: APPRoutes.PRODUCT_MASTER },
@@ -94,10 +94,10 @@ export class ProductMasterUpsert extends Base implements OnInit {
     }
   }
 
-  private async loadSubCategoriesByItemName(item_group_id: string | null): Promise<void> {
+  private async loadSubCategoriesByItemGrpName(item_group_name: string | null): Promise<void> {
     try {
       const response = await this.httpGetPromise<IGenericResponse<IComboItem[]>>(
-        this.apiRoutes.sub_category.COMBO(item_group_id),
+        this.apiRoutes.sub_category.COMBO(item_group_name),
       );
       if (response.status) this.subCategories.set(response.data);
     } catch {
@@ -107,14 +107,14 @@ export class ProductMasterUpsert extends Base implements OnInit {
 
   onCategoryChange(): void {
     this.form.controls.sub_category_name.setValue(null);
-    console.log(this.form.controls.item_group_id.value);
+    console.log(this.form.controls.item_group_name.value);
 
-    const item_group_id: string | null = this.form.controls.item_group_id.value ?? null;
+    const item_group_id: string | null = this.form.controls.item_group_name.value ?? null;
 
     this.subCategories.set([]);
     if (item_group_id) {
       this.form.controls.sub_category_name.enable();
-      this.loadSubCategoriesByItemName(item_group_id);
+      this.loadSubCategoriesByItemGrpName(item_group_id);
     } else {
       this.form.controls.sub_category_name.disable();
     }
@@ -125,24 +125,21 @@ export class ProductMasterUpsert extends Base implements OnInit {
     this.errorMessage.set(null);
 
     try {
-      const url = this.apiRoutes.product_master.GET_BY_ID(this.itemId());
-      const response = await this.httpGetPromise<IGenericResponse<IProductMaster>>(url);
+      const url = this.apiRoutes.product_master.GET_BY_NAME(this.itemName());
+      const response: IGenericResponse<IProductMaster> =
+        await this.httpGetPromise<IGenericResponse<IProductMaster>>(url);
 
       if (response.status) {
-        const itemGroupId = response.data.sub_category?.item_group_id ?? null;
+        await this.loadSubCategoriesByItemGrpName(response.data.sub_category.item_group_name ?? '');
+        this.form.controls.sub_category_name.enable();
 
-        // await this.loadSubCategoriesByItemName(itemGroupId ?? null);
-        // this.form.controls.sub_category_id.enable();
-
-        // this.form.patchValue({
-        //   item_group_id: itemGroupId,
-        //   sub_category_id: response.data.sub_category_id,
-        //   name: response.data.name,
-        //   labour_rate: response.data.labour_rate,
-        //   labour_rate_on: response.data.labour_rate_on,
-        //   product_description: response.data.product_description,
-        //   is_active: response.data.is_active,
-        // });
+        this.form.patchValue({
+          item_group_name: response.data.sub_category.item_group_name,
+          sub_category_name: response.data.sub_category_name,
+          name: response.data.name,
+          product_description: response.data.product_description,
+          is_active: response.data.is_active,
+        });
       } else {
         this.errorMessage.set(response.message);
       }
@@ -163,11 +160,11 @@ export class ProductMasterUpsert extends Base implements OnInit {
     this.errorMessage.set(null);
 
     try {
-      const { item_group_id, ...payload } = this.form.getRawValue();
+      const { item_group_name: item_group_id, ...payload } = this.form.getRawValue();
 
       if (this.isEditMode()) {
         await this.httpPatchPromise<IGenericResponse<IProductMaster>, typeof payload>(
-          this.apiRoutes.product_master.UPDATE(this.itemId()),
+          this.apiRoutes.product_master.UPDATE(this.itemName()),
           payload,
         );
       } else {

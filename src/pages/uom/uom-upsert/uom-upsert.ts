@@ -4,15 +4,17 @@ import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { Base } from '../../../core/base/base';
 import { IGenericResponse } from '../../../core/response/genericResponse.interface';
 import { IUom } from '../uom.response';
+import { HttpErrorResponse } from '@angular/common/http';
 
 export interface UomDialogData {
-  /** 0 for create, positive id for edit */
-  itemId: number;
+  /** empty string for create, name string for edit */
+  itemName: string;
 }
 
 export interface UomForm {
   name: FormControl<string>;
-  description: FormControl<string>;
+  must_be_whole_number: FormControl<boolean>;
+  enabled: FormControl<boolean>;
   is_active: FormControl<boolean>;
 }
 
@@ -36,13 +38,14 @@ export class UomUpsert extends Base implements OnInit {
       nonNullable: true,
       validators: [Validators.required, Validators.maxLength(50)],
     }),
-    description: new FormControl<string>('', { nonNullable: true }),
+    must_be_whole_number: new FormControl<boolean>(false, { nonNullable: true }),
+    enabled: new FormControl<boolean>(true, { nonNullable: true }),
     is_active: new FormControl<boolean>(true, { nonNullable: true }),
   });
 
   override ngOnInit(): void {
     super.ngOnInit();
-    if (this.dialogData.itemId !== 0) {
+    if (this.dialogData.itemName !== '') {
       this.isEditMode.set(true);
       this.loadItem();
     }
@@ -52,12 +55,13 @@ export class UomUpsert extends Base implements OnInit {
     this.isLoading.set(true);
     this.errorMessage.set(null);
     try {
-      const url = this.apiRoutes.uom.GET_BY_ID(this.dialogData.itemId);
+      const url = this.apiRoutes.uom.GET_BY_ID(this.dialogData.itemName);
       const response = await this.httpGetPromise<IGenericResponse<IUom>>(url);
       if (response.status) {
         this.form.patchValue({
           name: response.data.name,
-          description: response.data.description ?? '',
+          must_be_whole_number: response.data.must_be_whole_number ?? false,
+          enabled: response.data.enabled ?? true,
           is_active: response.data.is_active,
         });
       } else {
@@ -80,7 +84,7 @@ export class UomUpsert extends Base implements OnInit {
     try {
       const payload = this.form.getRawValue();
       if (this.isEditMode()) {
-        const url = this.apiRoutes.uom.UPDATE(this.dialogData.itemId);
+        const url = this.apiRoutes.uom.UPDATE(this.dialogData.itemName);
         await this.httpPatchPromise<IGenericResponse<IUom>, typeof payload>(url, payload);
       } else {
         await this.httpPostPromise<IGenericResponse<IUom>, typeof payload>(
@@ -89,8 +93,8 @@ export class UomUpsert extends Base implements OnInit {
         );
       }
       this.dialogRef.close(true);
-    } catch {
-      this.errorMessage.set('Failed to save. Please try again.');
+    } catch (err) {
+      this.errorMessage.set((err as HttpErrorResponse).error.message);
     } finally {
       this.isSaving.set(false);
     }

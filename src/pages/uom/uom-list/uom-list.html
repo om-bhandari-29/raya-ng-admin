@@ -4,11 +4,15 @@
   [isLoading]="isLoading()"
   [errorMessage]="errorMessage()"
   (onRefresh)="loadItems()"
-  (onEdit)="openEditModal($any($event).id)"
+  (onEdit)="openEditModal($any($event).name)"
+  (onDelete)="delete($any($event).name)"
 >
-  <!-- Custom template for ID column (clickable link) -->
   <ng-template slot="id" let-item>
-    <button (click)="openEditModal(item.id)" class="text-blue-600 hover:text-blue-800 font-medium">
+    <button
+      (click)="openEditModal(item.name)"
+      class="font-semibold hover:underline"
+      style="color: #383838"
+    >
       {{ item.name }}
     </button>
   </ng-template>

@@ -21,7 +21,7 @@ export const APIRoutes = {
   },
   product_master: {
     GET_ALL: '/product-master',
-    GET_BY_ID: (id: number | string) => `/product-master/${id}`,
+    GET_BY_NAME: (name: string) => `/product-master/${name}`,
     CREATE: '/product-master',
     UPDATE: (id: number | string) => `/product-master/${id}`,
     DELETE: (id: number | string) => `/product-master/${id}`,

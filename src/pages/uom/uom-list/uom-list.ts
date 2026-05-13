@@ -1,15 +1,16 @@
 import { Component, OnInit, inject } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
+import { HttpErrorResponse } from '@angular/common/http';
 import { ListBase } from '../../../core/base/list-base';
 import { IGenericResponse } from '../../../core/response/genericResponse.interface';
 import { IUom } from '../uom.response';
 import { UomUpsert, UomDialogData } from '../uom-upsert/uom-upsert';
-import { TableLayout } from '../../../core/component/table-layout/table-layout';
+import { TableLayout, TableSlot } from '../../../core/component/table-layout/table-layout';
 import { TableColumn } from '../../../core/models/table-column.interface';
 
 @Component({
   selector: 'app-uom-list',
-  imports: [TableLayout],
+  imports: [TableLayout, TableSlot],
   templateUrl: './uom-list.html',
   styleUrl: './uom-list.scss',
 })
@@ -21,42 +22,46 @@ export class UomList extends ListBase<IUom> implements OnInit {
     {
       key: 'name',
       header: 'ID',
-      width: '120px',
       slot: 'id',
     },
     {
-      key: 'name',
-      header: 'UOM Name',
-      type: 'text',
-      cellClass: 'text-gray-800 font-medium',
-    },
-    {
-      key: 'description',
-      header: 'Description',
-      type: 'text',
-    },
-    {
-      key: 'is_active',
-      header: 'Is Active',
+      key: 'must_be_whole_number',
+      header: 'Must be Whole Number',
       type: 'boolean',
+    },
+    {
+      key: 'enabled',
+      header: 'Status',
+      type: 'badge',
+      badgeConfig: {
+        trueLabel: 'Enabled',
+        falseLabel: 'Disabled',
+        trueClass: 'bg-green-100 text-green-700',
+        falseClass: 'bg-red-100 text-red-600',
+      },
     },
   ];
 
   override ngOnInit(): void {
     super.ngOnInit();
     this.loadItems();
+    this.setHeaderConfig('UOM', 'Add UOM');
+  }
+
+  protected override onActionButtonClick(): void {
+    this.openAddModal();
   }
 
   openAddModal(): void {
-    this.openModal(0);
+    this.openModal('');
   }
 
-  openEditModal(id: number): void {
-    this.openModal(id);
+  openEditModal(name: string): void {
+    this.openModal(name);
   }
 
-  private openModal(itemId: number): void {
-    const data: UomDialogData = { itemId };
+  private openModal(itemName: string): void {
+    const data: UomDialogData = { itemName };
     const dialogRef = this.dialog.open(UomUpsert, {
       width: '480px',
       disableClose: true,
@@ -65,6 +70,27 @@ export class UomList extends ListBase<IUom> implements OnInit {
     dialogRef.afterClosed().subscribe((saved: boolean) => {
       if (saved) this.loadItems();
     });
+  }
+
+  async delete(name: string): Promise<void> {
+    if (!confirm('Are you sure you want to delete this UOM?')) return;
+
+    try {
+      const response = await this.httpDeletePromise<IGenericResponse<null>>(
+        this.apiRoutes.uom.DELETE(name),
+      );
+      if (response.status) {
+        this.loadItems();
+      } else {
+        this.errorMessage.set(response.message);
+      }
+    } catch (err) {
+      const message =
+        err instanceof HttpErrorResponse
+          ? (err.error?.message ?? 'Failed to delete. Please try again.')
+          : 'Failed to delete. Please try again.';
+      this.toastr.error(message);
+    }
   }
 
   async loadItems(): Promise<void> {

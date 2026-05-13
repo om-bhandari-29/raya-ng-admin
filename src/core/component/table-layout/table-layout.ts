@@ -22,7 +22,7 @@ export class TableSlot {
 @Component({
   selector: 'app-table-layout',
   standalone: true,
-  imports: [CommonModule, TableSlot],
+  imports: [CommonModule],
   templateUrl: './table-layout.html',
   styleUrl: './table-layout.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,

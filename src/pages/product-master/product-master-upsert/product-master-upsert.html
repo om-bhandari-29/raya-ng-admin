@@ -122,7 +122,7 @@
             </label>
             <select
               id="category_id"
-              formControlName="item_group_id"
+              formControlName="item_group_name"
               (change)="onCategoryChange()"
               class="w-full rounded-lg px-2 py-1 text-sm text-slate-800 placeholder-slate-400 outline-none transition focus:ring-2 focus:ring-gray-200 focus:border-gray-200 bg-[#f3f3f3]"
             >
@@ -155,7 +155,7 @@
             >
               <option [ngValue]="null" disabled>
                 {{
-                  form.controls.item_group_id.value
+                  form.controls.item_group_name.value
                     ? 'Select sub category'
                     : 'Select category first'
                 }}
