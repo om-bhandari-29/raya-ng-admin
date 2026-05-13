@@ -64,7 +64,7 @@ export const routes: Routes = [
           ),
       },
       {
-        path: `${APPRoutes.ITEM_ATTRIBUTE}/:id`,
+        path: `${APPRoutes.ITEM_ATTRIBUTE}/upsert`,
         loadComponent: () =>
           import('../pages/item-attribute/item-attribute-upsert/item-attribute-upsert').then(
             (m) => m.ItemAttributeUpsert,

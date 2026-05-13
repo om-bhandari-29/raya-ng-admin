@@ -1,10 +1,11 @@
 import { Component, OnInit, inject, signal } from '@angular/core';
-import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { FormArray, FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Base } from '../../../core/base/base';
 import { IGenericResponse } from '../../../core/response/genericResponse.interface';
 import { IItemAttribute, IItemAttributeValue } from '../item-attribute.response';
 import { BreadcrumbService } from '../../../core/services/breadcrumb.service';
+import { HttpErrorResponse } from '@angular/common/http';
 
 export interface ItemAttributeForm {
   name: FormControl<string>;
@@ -14,6 +15,14 @@ export interface ItemAttributeForm {
   from_range: FormControl<string>;
   to_range: FormControl<string>;
   increment: FormControl<string>;
+  values: FormArray<FormGroup<ValueFormGroup>>;
+}
+
+export interface ValueFormGroup {
+  name: FormControl<string>;
+  attribute_type: FormControl<string>;
+  abbreviation: FormControl<string>;
+  purity_factor: FormControl<number>;
 }
 
 @Component({
@@ -33,9 +42,6 @@ export class ItemAttributeUpsert extends Base implements OnInit {
   errorMessage = signal<string | null>(null);
   attributeName = signal<string>('');
 
-  values = signal<IItemAttributeValue[]>([]);
-  editingValueId = signal<number | null>(null);
-
   form = new FormGroup<ItemAttributeForm>({
     name: new FormControl<string>('', {
       nonNullable: true,
@@ -47,11 +53,16 @@ export class ItemAttributeUpsert extends Base implements OnInit {
     from_range: new FormControl<string>('0.0000', { nonNullable: true }),
     to_range: new FormControl<string>('0.0000', { nonNullable: true }),
     increment: new FormControl<string>('0.0000', { nonNullable: true }),
+    values: new FormArray<FormGroup<ValueFormGroup>>([]),
   });
+
+  get valuesArray(): FormArray<FormGroup<ValueFormGroup>> {
+    return this.form.controls.values;
+  }
 
   override ngOnInit(): void {
     super.ngOnInit();
-    const nameParam = this.route.snapshot.paramMap.get('id');
+    const nameParam = this.route.snapshot.queryParamMap.get('id');
     if (nameParam && nameParam !== 'new') {
       this.attributeName.set(nameParam);
       this.isEditMode.set(true);
@@ -59,7 +70,7 @@ export class ItemAttributeUpsert extends Base implements OnInit {
         { label: 'Item Attribute', url: `/${this.appRoutes.ITEM_ATTRIBUTE}` },
         { label: 'Edit Item Attribute' },
       ]);
-      this.setHeaderConfig('Edit Item Attribute', 'Update');
+      this.setHeaderConfig(this.attributeName(), 'Update');
       this.loadAttribute();
     } else {
       this.breadcrumbService.set([
@@ -87,7 +98,8 @@ export class ItemAttributeUpsert extends Base implements OnInit {
           to_range: response.data.to_range ?? '0.0000',
           increment: response.data.increment ?? '0.0000',
         });
-        this.values.set(response.data.values || []);
+        this.valuesArray.clear();
+        (response.data.values || []).forEach((v) => this.addValue(v));
       } else {
         this.errorMessage.set(response.message);
       }
@@ -98,33 +110,19 @@ export class ItemAttributeUpsert extends Base implements OnInit {
     }
   }
 
-  addValue(): void {
-    const newValue: IItemAttributeValue = {
-      id: 0,
-      attribute_id: 0,
-      attribute_value: '',
-      attribute_type: null,
-      abbreviation: null,
-      purity_factor: 0,
-    };
-    this.values.update((v) => [...v, newValue]);
-    this.editingValueId.set(0);
+  addValue(value?: IItemAttributeValue): void {
+    this.valuesArray.push(
+      new FormGroup<ValueFormGroup>({
+        name: new FormControl(value?.name ?? '', { nonNullable: true }),
+        attribute_type: new FormControl(value?.attribute_type ?? '', { nonNullable: true }),
+        abbreviation: new FormControl(value?.abbreviation ?? '', { nonNullable: true }),
+        purity_factor: new FormControl(value?.purity_factor ?? 0, { nonNullable: true }),
+      }),
+    );
   }
 
-  editValue(id: number): void {
-    this.editingValueId.set(id);
-  }
-
-  deleteValue(id: number): void {
-    this.values.update((v) => v.filter((val) => val.id !== id));
-  }
-
-  updateValueField(id: number, field: keyof IItemAttributeValue, value: any): void {
-    this.values.update((vals) => vals.map((v) => (v.id === id ? { ...v, [field]: value } : v)));
-  }
-
-  cancelEdit(): void {
-    this.editingValueId.set(null);
+  deleteValue(index: number): void {
+    this.valuesArray.removeAt(index);
   }
 
   protected override onActionButtonClick(): void {
@@ -139,10 +137,25 @@ export class ItemAttributeUpsert extends Base implements OnInit {
     this.isSaving.set(true);
     this.errorMessage.set(null);
     try {
+      const formValue = this.form.getRawValue();
+      // console.log(formValue);
+
       const payload = {
-        ...this.form.getRawValue(),
-        values: this.values(),
+        ...formValue,
+        from_range: parseFloat(formValue.from_range) || 0,
+        to_range: parseFloat(formValue.to_range) || 0,
+        increment: parseFloat(formValue.increment) || 0,
+        values: formValue.values.map((v) => ({
+          name: v.name,
+          attribute_type: v.attribute_type || null,
+          abbreviation: v.abbreviation || null,
+          purity_factor: v.purity_factor,
+        })),
       };
+
+      // console.log(payload);
+      // return;
+
       if (this.isEditMode()) {
         await this.httpPatchPromise<IGenericResponse<IItemAttribute>, typeof payload>(
           this.apiRoutes.item_attribute.UPDATE(this.attributeName()),
@@ -156,8 +169,8 @@ export class ItemAttributeUpsert extends Base implements OnInit {
       }
       this.toastr.success('Item attribute saved successfully.');
       this.router.navigate([this.appRoutes.ITEM_ATTRIBUTE]);
-    } catch {
-      this.errorMessage.set('Failed to save attribute. Please try again.');
+    } catch (err) {
+      this.errorMessage.set((err as HttpErrorResponse).error.message);
     } finally {
       this.isSaving.set(false);
     }

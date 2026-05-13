@@ -299,7 +299,7 @@
           >
             <option [value]="null">— Select Value —</option>
             @for (val of getAttributeValues(variantModalDraft().attribute_id); track val.id) {
-              <option [value]="val.id">{{ val.attribute_value }}</option>
+              <option [value]="val.id">{{ val.name }}</option>
             }
           </select>
         </div>

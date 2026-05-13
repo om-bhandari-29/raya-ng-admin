@@ -192,7 +192,7 @@ export class VariantsTab implements OnChanges {
 
   getValueName(row: ItemVariantRow): string {
     const val = this.getAttributeValues(row.attribute_id).find((v) => v.id === row.value_id);
-    return val?.attribute_value ?? '—';
+    return val?.name ?? '—';
   }
 
   onSave(): void {

@@ -22,23 +22,23 @@ export class ItemAttributeList extends ListBase<IItemAttribute> implements OnIni
       header: 'ID',
       slot: 'id',
     },
-    {
-      key: 'numeric_values',
-      header: 'Type',
-      type: 'badge',
-      badgeConfig: {
-        trueLabel: 'Numeric',
-        falseLabel: 'Text',
-        trueClass: 'bg-blue-100 text-blue-700',
-        falseClass: 'bg-purple-100 text-purple-700',
-      },
-    },
-    {
-      key: 'values',
-      header: 'Values',
-      type: 'custom',
-      format: (values) => (values?.length ? `${values.length} values` : 'No values'),
-    },
+    // {
+    //   key: 'numeric_values',
+    //   header: 'Type',
+    //   type: 'badge',
+    //   badgeConfig: {
+    //     trueLabel: 'Numeric',
+    //     falseLabel: 'Text',
+    //     trueClass: 'bg-blue-100 text-blue-700',
+    //     falseClass: 'bg-purple-100 text-purple-700',
+    //   },
+    // },
+    // {
+    //   key: 'values',
+    //   header: 'Values',
+    //   type: 'custom',
+    //   format: (values) => (values?.length ? `${values.length} values` : 'No values'),
+    // },
     {
       key: 'status',
       header: 'Status',
@@ -46,7 +46,7 @@ export class ItemAttributeList extends ListBase<IItemAttribute> implements OnIni
       badgeConfig: {
         trueLabel: 'Enabled',
         falseLabel: 'Disabled',
-        trueClass: 'bg-green-100 text-green-700',
+        trueClass: 'bg-blue-50 text-blue-600',
         falseClass: 'bg-red-100 text-red-600',
       },
     },
@@ -63,11 +63,11 @@ export class ItemAttributeList extends ListBase<IItemAttribute> implements OnIni
   }
 
   openAdd(): void {
-    this.router.navigate([this.appRoutes.ITEM_ATTRIBUTE, 'new']);
+    this.router.navigate([this.appRoutes.ITEM_ATTRIBUTE, 'upsert'], { queryParams: { id: 'new' } });
   }
 
   openEdit(name: string): void {
-    this.router.navigate([this.appRoutes.ITEM_ATTRIBUTE, name]);
+    this.router.navigate([this.appRoutes.ITEM_ATTRIBUTE, 'upsert'], { queryParams: { id: name } });
   }
 
   async delete(name: string): Promise<void> {
