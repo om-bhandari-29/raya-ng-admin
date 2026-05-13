@@ -4,6 +4,15 @@
 /* ngx-toastr styles */
 @import 'ngx-toastr/toastr';
 
-button, [role="button"], [role="switch"] {
+button,
+[role='button'],
+[role='switch'] {
   cursor: pointer;
+}
+
+/* Checkbox accent color and size */
+input[type='checkbox'] {
+  accent-color: #000000;
+  width: 13px;
+  height: 13px;
 }

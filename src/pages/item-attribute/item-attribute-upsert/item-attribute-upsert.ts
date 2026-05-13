@@ -4,12 +4,16 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { Base } from '../../../core/base/base';
 import { IGenericResponse } from '../../../core/response/genericResponse.interface';
 import { IItemAttribute, IItemAttributeValue } from '../item-attribute.response';
+import { BreadcrumbService } from '../../../core/services/breadcrumb.service';
 
 export interface ItemAttributeForm {
-  attribute_name: FormControl<string>;
+  name: FormControl<string>;
   status: FormControl<boolean>;
   is_base_attribute: FormControl<boolean>;
   numeric_values: FormControl<boolean>;
+  from_range: FormControl<string>;
+  to_range: FormControl<string>;
+  increment: FormControl<string>;
 }
 
 @Component({
@@ -21,33 +25,48 @@ export interface ItemAttributeForm {
 export class ItemAttributeUpsert extends Base implements OnInit {
   private route = inject(ActivatedRoute);
   private router = inject(Router);
+  private breadcrumbService = inject(BreadcrumbService);
 
   isEditMode = signal<boolean>(false);
   isLoading = signal<boolean>(false);
   isSaving = signal<boolean>(false);
   errorMessage = signal<string | null>(null);
-  attributeId = signal<number>(0);
+  attributeName = signal<string>('');
 
   values = signal<IItemAttributeValue[]>([]);
   editingValueId = signal<number | null>(null);
 
   form = new FormGroup<ItemAttributeForm>({
-    attribute_name: new FormControl<string>('', {
+    name: new FormControl<string>('', {
       nonNullable: true,
       validators: [Validators.required, Validators.minLength(2), Validators.maxLength(255)],
     }),
     status: new FormControl<boolean>(true, { nonNullable: true }),
     is_base_attribute: new FormControl<boolean>(false, { nonNullable: true }),
     numeric_values: new FormControl<boolean>(false, { nonNullable: true }),
+    from_range: new FormControl<string>('0.0000', { nonNullable: true }),
+    to_range: new FormControl<string>('0.0000', { nonNullable: true }),
+    increment: new FormControl<string>('0.0000', { nonNullable: true }),
   });
 
   override ngOnInit(): void {
     super.ngOnInit();
-    const idParam = this.route.snapshot.paramMap.get('id');
-    if (idParam && idParam !== 'new') {
-      this.attributeId.set(+idParam);
+    const nameParam = this.route.snapshot.paramMap.get('id');
+    if (nameParam && nameParam !== 'new') {
+      this.attributeName.set(nameParam);
       this.isEditMode.set(true);
+      this.breadcrumbService.set([
+        { label: 'Item Attribute', url: `/${this.appRoutes.ITEM_ATTRIBUTE}` },
+        { label: 'Edit Item Attribute' },
+      ]);
+      this.setHeaderConfig('Edit Item Attribute', 'Update');
       this.loadAttribute();
+    } else {
+      this.breadcrumbService.set([
+        { label: 'Item Attribute', url: `/${this.appRoutes.ITEM_ATTRIBUTE}` },
+        { label: 'New Item Attribute' },
+      ]);
+      this.setHeaderConfig('New Item Attribute', 'Save');
     }
   }
 
@@ -56,14 +75,17 @@ export class ItemAttributeUpsert extends Base implements OnInit {
     this.errorMessage.set(null);
     try {
       const response = await this.httpGetPromise<IGenericResponse<IItemAttribute>>(
-        this.apiRoutes.item_attribute.GET_BY_ID(this.attributeId()),
+        this.apiRoutes.item_attribute.GET_BY_ID(this.attributeName()),
       );
       if (response.status) {
         this.form.patchValue({
-          attribute_name: response.data.attribute_name,
+          name: response.data.name,
           status: response.data.status,
           is_base_attribute: response.data.is_base_attribute,
           numeric_values: response.data.numeric_values,
+          from_range: response.data.from_range ?? '0.0000',
+          to_range: response.data.to_range ?? '0.0000',
+          increment: response.data.increment ?? '0.0000',
         });
         this.values.set(response.data.values || []);
       } else {
@@ -79,7 +101,7 @@ export class ItemAttributeUpsert extends Base implements OnInit {
   addValue(): void {
     const newValue: IItemAttributeValue = {
       id: 0,
-      attribute_id: this.attributeId(),
+      attribute_id: 0,
       attribute_value: '',
       attribute_type: null,
       abbreviation: null,
@@ -105,6 +127,10 @@ export class ItemAttributeUpsert extends Base implements OnInit {
     this.editingValueId.set(null);
   }
 
+  protected override onActionButtonClick(): void {
+    this.onSave();
+  }
+
   async onSave(): Promise<void> {
     if (this.form.invalid) {
       this.form.markAllAsTouched();
@@ -119,7 +145,7 @@ export class ItemAttributeUpsert extends Base implements OnInit {
       };
       if (this.isEditMode()) {
         await this.httpPatchPromise<IGenericResponse<IItemAttribute>, typeof payload>(
-          this.apiRoutes.item_attribute.UPDATE(this.attributeId()),
+          this.apiRoutes.item_attribute.UPDATE(this.attributeName()),
           payload,
         );
       } else {

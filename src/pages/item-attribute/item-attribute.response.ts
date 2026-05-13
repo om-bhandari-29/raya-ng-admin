@@ -9,10 +9,13 @@ export interface IItemAttributeValue {
 
 export interface IItemAttribute {
   id: number;
-  attribute_name: string;
+  name: string;
   status: boolean;
   is_base_attribute: boolean;
   numeric_values: boolean;
+  from_range: string;
+  to_range: string;
+  increment: string;
   values: IItemAttributeValue[];
   created_at: string;
   updated_at: string;

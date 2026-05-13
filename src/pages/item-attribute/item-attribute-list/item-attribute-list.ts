@@ -1,14 +1,15 @@
 import { Component, OnInit, inject } from '@angular/core';
 import { Router } from '@angular/router';
+import { HttpErrorResponse } from '@angular/common/http';
 import { ListBase } from '../../../core/base/list-base';
 import { IGenericResponse } from '../../../core/response/genericResponse.interface';
 import { IItemAttribute } from '../item-attribute.response';
-import { TableLayout } from '../../../core/component/table-layout/table-layout';
+import { TableLayout, TableSlot } from '../../../core/component/table-layout/table-layout';
 import { TableColumn } from '../../../core/models/table-column.interface';
 
 @Component({
   selector: 'app-item-attribute-list',
-  imports: [TableLayout],
+  imports: [TableLayout, TableSlot],
   templateUrl: './item-attribute-list.html',
   styleUrl: './item-attribute-list.scss',
 })
@@ -17,16 +18,9 @@ export class ItemAttributeList extends ListBase<IItemAttribute> implements OnIni
 
   columns: TableColumn<IItemAttribute>[] = [
     {
-      key: 'attribute_name',
+      key: 'name',
       header: 'ID',
-      width: '150px',
       slot: 'id',
-    },
-    {
-      key: 'attribute_name',
-      header: 'Attribute Name',
-      type: 'text',
-      cellClass: 'text-gray-800 font-medium',
     },
     {
       key: 'numeric_values',
@@ -47,22 +41,54 @@ export class ItemAttributeList extends ListBase<IItemAttribute> implements OnIni
     },
     {
       key: 'status',
-      header: 'Is Active',
-      type: 'boolean',
+      header: 'Status',
+      type: 'badge',
+      badgeConfig: {
+        trueLabel: 'Enabled',
+        falseLabel: 'Disabled',
+        trueClass: 'bg-green-100 text-green-700',
+        falseClass: 'bg-red-100 text-red-600',
+      },
     },
   ];
 
   override ngOnInit(): void {
     super.ngOnInit();
     this.loadItems();
+    this.setHeaderConfig('Item Attribute', 'Add Item Attribute');
+  }
+
+  protected override onActionButtonClick(): void {
+    this.openAdd();
   }
 
   openAdd(): void {
     this.router.navigate([this.appRoutes.ITEM_ATTRIBUTE, 'new']);
   }
 
-  openEdit(id: number): void {
-    this.router.navigate([this.appRoutes.ITEM_ATTRIBUTE, id]);
+  openEdit(name: string): void {
+    this.router.navigate([this.appRoutes.ITEM_ATTRIBUTE, name]);
+  }
+
+  async delete(name: string): Promise<void> {
+    if (!confirm('Are you sure you want to delete this item attribute?')) return;
+
+    try {
+      const response = await this.httpDeletePromise<IGenericResponse<null>>(
+        this.apiRoutes.item_attribute.DELETE(name),
+      );
+      if (response.status) {
+        this.loadItems();
+      } else {
+        this.errorMessage.set(response.message);
+      }
+    } catch (err) {
+      const message =
+        err instanceof HttpErrorResponse
+          ? (err.error?.message ?? 'Failed to delete. Please try again.')
+          : 'Failed to delete. Please try again.';
+      this.toastr.error(message);
+    }
   }
 
   async loadItems(): Promise<void> {
