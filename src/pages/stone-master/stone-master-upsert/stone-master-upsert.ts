@@ -8,7 +8,7 @@ import { StoneMasterType } from '../../../core/enum/stone-master.enum';
 import { HttpErrorResponse } from '@angular/common/http';
 
 export interface StoneMasterDialogData {
-  itemId: number;
+  name: string;
   type: StoneMasterType;
   typeLabel: string;
 }
@@ -47,7 +47,7 @@ export class StoneMasterUpsert extends Base implements OnInit {
 
   override ngOnInit(): void {
     super.ngOnInit();
-    if (this.dialogData.itemId !== 0) {
+    if (this.dialogData.name) {
       this.isEditMode.set(true);
       this.loadItem();
     }
@@ -67,7 +67,7 @@ export class StoneMasterUpsert extends Base implements OnInit {
     this.errorMessage.set(null);
     try {
       const res = await this.httpGetPromise<IGenericResponse<IStoneMaster>>(
-        this.routes.GET_BY_ID(this.dialogData.itemId),
+        this.routes.GET_BY_ID(this.dialogData.name),
       );
       if (res.status) {
         this.form.patchValue({ name: res.data.name, is_published: res.data.is_published });
@@ -92,7 +92,7 @@ export class StoneMasterUpsert extends Base implements OnInit {
       const payload = this.form.getRawValue();
       if (this.isEditMode()) {
         await this.httpPatchPromise<IGenericResponse<IStoneMaster>, typeof payload>(
-          this.routes.UPDATE(this.dialogData.itemId),
+          this.routes.UPDATE(this.dialogData.name),
           payload,
         );
       } else {

@@ -66,10 +66,10 @@ export class StoneMasterList extends ListBase<IStoneMaster> implements OnInit {
   }
 
   openAddModal(): void {
-    this.openModal(0);
+    this.openModal('');
   }
-  openEditModal(id: number): void {
-    this.openModal(id);
+  openEditModal(name: string): void {
+    this.openModal(name);
   }
 
   async deleteItem(id: number): Promise<void> {
@@ -86,9 +86,9 @@ export class StoneMasterList extends ListBase<IStoneMaster> implements OnInit {
     }
   }
 
-  private openModal(itemId: number): void {
+  private openModal(name: string): void {
     const data: StoneMasterDialogData = {
-      itemId,
+      name,
       type: this.stoneType(),
       typeLabel: this.typeLabel(),
     };

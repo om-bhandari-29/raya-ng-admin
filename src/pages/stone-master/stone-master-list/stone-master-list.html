@@ -4,12 +4,12 @@
   [isLoading]="isLoading()"
   [errorMessage]="errorMessage()"
   (onRefresh)="loadItems()"
-  (onEdit)="openEditModal($any($event).id)"
+  (onEdit)="openEditModal($any($event).name)"
   (onDelete)="deleteItem($any($event).id)"
 >
   <ng-template slot="id" let-item>
     <button
-      (click)="openEditModal(item.id)"
+      (click)="openEditModal(item.name)"
       class="font-semibold hover:underline"
       style="color: #383838"
     >
