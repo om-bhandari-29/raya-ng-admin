@@ -4,6 +4,7 @@ import { CommonModule } from '@angular/common';
 import { Router, RouterModule, NavigationEnd } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { SidebarService } from './sidebar.service';
+import { SidebarMode } from '../../enum/sidebar-mode.enum';
 import { BreadcrumbService } from '../../services/breadcrumb.service';
 import { Subscription } from 'rxjs';
 import { filter } from 'rxjs/operators';
@@ -23,6 +24,8 @@ export class SideBar implements OnInit, OnDestroy {
   public menuItems: WritableSignal<IMenuSideBarItem[]> = signal(MenuItems);
   public isCollapsed: WritableSignal<boolean>;
   public sectionCollapsed: WritableSignal<boolean> = signal(false);
+  protected readonly SidebarMode = SidebarMode;
+  public mode = this.sidebarService.mode;
 
   constructor() {
     this.isCollapsed = this.sidebarService.isCollapsed;

@@ -3,33 +3,33 @@
 
     <!-- Inventory Settings -->
     <div>
-      <h3 class="text-sm font-semibold text-slate-800 mb-5">Inventory Settings</h3>
+      <h3 class="font-medium mb-5" style="font-size: 13px; color: #525252">Inventory Settings</h3>
       <div class="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-5">
 
         <div class="space-y-5">
           <div class="flex flex-col gap-1.5">
-            <label for="shelf_life_in_days" class="text-sm font-medium text-slate-700">Shelf Life In Days</label>
+            <label for="shelf_life_in_days" class="font-medium" style="font-size: 13px; color: #525252">Shelf Life In Days</label>
             <input id="shelf_life_in_days" type="number" formControlName="shelf_life_in_days"
-              class="w-full rounded-lg border border-slate-300 px-3.5 py-2.5 text-sm text-slate-800 outline-none transition focus:ring-2 focus:ring-blue-500 focus:border-blue-500"/>
+              class="w-full rounded-lg px-2 py-1 text-sm text-slate-800 outline-none transition focus:ring-2 focus:ring-gray-200 focus:border-gray-200 bg-[#f3f3f3]"/>
           </div>
           <div class="flex flex-col gap-1.5">
-            <label for="end_of_life" class="text-sm font-medium text-slate-700">End of Life</label>
+            <label for="end_of_life" class="font-medium" style="font-size: 13px; color: #525252">End of Life</label>
             <input id="end_of_life" type="date" formControlName="end_of_life"
-              class="w-full rounded-lg border border-slate-300 px-3.5 py-2.5 text-sm text-slate-800 outline-none transition focus:ring-2 focus:ring-blue-500 focus:border-blue-500"/>
+              class="w-full rounded-lg px-2 py-1 text-sm text-slate-800 outline-none transition focus:ring-2 focus:ring-gray-200 focus:border-gray-200 bg-[#f3f3f3]"/>
           </div>
           <div class="flex flex-col gap-1.5">
-            <label for="default_material_request_type" class="text-sm font-medium text-slate-700">Default Material Request Type</label>
+            <label for="default_material_request_type" class="font-medium" style="font-size: 13px; color: #525252">Default Material Request Type</label>
             <select id="default_material_request_type" formControlName="default_material_request_type"
-              class="w-full rounded-lg border border-slate-300 px-3.5 py-2.5 text-sm text-slate-800 outline-none bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+              class="w-full rounded-lg px-2 py-1 text-sm text-slate-800 outline-none bg-[#f3f3f3] transition focus:ring-2 focus:ring-gray-200 focus:border-gray-200">
               @for (type of materialRequestTypes; track type) {
                 <option [value]="type">{{ MaterialRequestTypeLabels[type] }}</option>
               }
             </select>
           </div>
           <div class="flex flex-col gap-1.5">
-            <label for="valuation_method" class="text-sm font-medium text-slate-700">Valuation Method</label>
+            <label for="valuation_method" class="font-medium" style="font-size: 13px; color: #525252">Valuation Method</label>
             <select id="valuation_method" formControlName="valuation_method"
-              class="w-full rounded-lg border border-slate-300 px-3.5 py-2.5 text-sm text-slate-800 outline-none bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+              class="w-full rounded-lg px-2 py-1 text-sm text-slate-800 outline-none bg-[#f3f3f3] transition focus:ring-2 focus:ring-gray-200 focus:border-gray-200">
               <option value="">— Select —</option>
               @for (method of valuationMethods; track method) {
                 <option [value]="method">{{ ValuationMethodLabels[method] }}</option>
@@ -40,19 +40,19 @@
 
         <div class="space-y-5">
           <div class="flex flex-col gap-1.5">
-            <label for="warranty_period_in_days" class="text-sm font-medium text-slate-700">Warranty Period (in days)</label>
+            <label for="warranty_period_in_days" class="font-medium" style="font-size: 13px; color: #525252">Warranty Period (in days)</label>
             <input id="warranty_period_in_days" type="number" formControlName="warranty_period_in_days"
-              class="w-full rounded-lg border border-slate-300 px-3.5 py-2.5 text-sm text-slate-800 outline-none transition focus:ring-2 focus:ring-blue-500 focus:border-blue-500"/>
+              class="w-full rounded-lg px-2 py-1 text-sm text-slate-800 outline-none transition focus:ring-2 focus:ring-gray-200 focus:border-gray-200 bg-[#f3f3f3]"/>
           </div>
           <div class="flex flex-col gap-1.5">
-            <label for="weight_per_unit" class="text-sm font-medium text-slate-700">Weight Per Unit</label>
+            <label for="weight_per_unit" class="font-medium" style="font-size: 13px; color: #525252">Weight Per Unit</label>
             <input id="weight_per_unit" type="number" formControlName="weight_per_unit" step="0.001"
-              class="w-full rounded-lg border border-slate-300 px-3.5 py-2.5 text-sm text-slate-800 outline-none transition focus:ring-2 focus:ring-blue-500 focus:border-blue-500"/>
+              class="w-full rounded-lg px-2 py-1 text-sm text-slate-800 outline-none transition focus:ring-2 focus:ring-gray-200 focus:border-gray-200 bg-[#f3f3f3]"/>
           </div>
           <div class="flex flex-col gap-1.5">
-            <label for="weight_uom_id" class="text-sm font-medium text-slate-700">Weight UOM</label>
+            <label for="weight_uom_id" class="font-medium" style="font-size: 13px; color: #525252">Weight UOM</label>
             <select id="weight_uom_id" formControlName="weight_uom_id"
-              class="w-full rounded-lg border border-slate-300 px-3.5 py-2.5 text-sm text-slate-800 outline-none bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+              class="w-full rounded-lg px-2 py-1 text-sm text-slate-800 outline-none bg-[#f3f3f3] transition focus:ring-2 focus:ring-gray-200 focus:border-gray-200">
               <option [ngValue]="null">— None —</option>
               @for (u of dropdowns?.uoms ?? []; track u.id) {
                 <option [ngValue]="u.id">{{ u.name }}</option>

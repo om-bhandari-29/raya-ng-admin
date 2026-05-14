@@ -8,9 +8,8 @@ export interface IComboItemFrappeBased {
 }
 
 export interface IComboHsnCode {
-  id: number;
   hsn_code: string;
-  gst_rate: number;
+  name: number;
 }
 
 export interface IComboItemAttribute {

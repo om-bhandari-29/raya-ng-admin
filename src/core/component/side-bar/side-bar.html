@@ -11,72 +11,78 @@
     class="h-full bg-white border-e border-gray-200 overflow-y-auto text-[13px] text-[#383838] font-medium"
   >
     @if (!isCollapsed()) {
-      <div class="py-3">
-        <!-- PUBLIC Section Header -->
-        <div class="px-2 mb-2">
-          <button
-            (click)="toggleSection()"
-            class="flex items-center text-xs font-semibold uppercase tracking-wide hover:opacity-70 transition-colors section-header"
-          >
-            <i
-              class="text-base mr-1 transition-transform"
-              [ngClass]="sectionCollapsed() ? 'bx bx-chevron-right' : 'bx bx-chevron-down'"
-            ></i>
-            <span>PUBLIC</span>
-          </button>
-        </div>
+      @if (mode() === SidebarMode.NAV) {
+        <div class="py-3">
+          <!-- PUBLIC Section Header -->
+          <div class="px-2 mb-2">
+            <button
+              (click)="toggleSection()"
+              class="flex items-center text-xs font-semibold uppercase tracking-wide hover:opacity-70 transition-colors section-header"
+            >
+              <i
+                class="text-base mr-1 transition-transform"
+                [ngClass]="sectionCollapsed() ? 'bx bx-chevron-right' : 'bx bx-chevron-down'"
+              ></i>
+              <span>PUBLIC</span>
+            </button>
+          </div>
 
-        @if (!sectionCollapsed()) {
-          <ul class="space-y-0.5 ps-1 pe-4">
-            @for (item of menuItems(); track $index) {
-              <li>
-                @if (item.child && item.child.length > 0) {
-                  <div>
-                    <button
-                      (click)="toggleSubmenu(item)"
-                      class="flex items-center w-full px-3 py-1 rounded-md hover:bg-gray-50 group transition-colors"
+          @if (!sectionCollapsed()) {
+            <ul class="space-y-0.5 ps-1 pe-4">
+              @for (item of menuItems(); track $index) {
+                <li>
+                  @if (item.child && item.child.length > 0) {
+                    <div>
+                      <button
+                        (click)="toggleSubmenu(item)"
+                        class="flex items-center w-full px-3 py-1 rounded-md hover:bg-gray-50 group transition-colors"
+                        [attr.title]="item.name"
+                      >
+                        <i class="text-[18px] flex-shrink-0" [ngClass]="item.icon"></i>
+                        <span class="flex-1 ms-1.5 text-left whitespace-nowrap">{{ item.name }}</span>
+                        <i
+                          class="text-base transition-transform"
+                          [ngClass]="item.expanded ? 'bx bx-chevron-up' : 'bx bx-chevron-down'"
+                        ></i>
+                      </button>
+
+                      @if (item.expanded) {
+                        <ul class="mt-1 space-y-0.5">
+                          @for (child of item.child; track $index) {
+                            <li>
+                              <a
+                                [routerLink]="child.route"
+                                routerLinkActive="active-link"
+                                class="flex items-center w-full px-3 py-1 pl-12 rounded-md hover:bg-gray-50 group transition-colors"
+                              >
+                                <span class="font-normal">{{ child.name }}</span>
+                              </a>
+                            </li>
+                          }
+                        </ul>
+                      }
+                    </div>
+                  } @else {
+                    <a
+                      [routerLink]="item.route"
+                      routerLinkActive="active-link"
+                      class="flex items-center px-3 py-1 rounded-md hover:bg-gray-50 group transition-colors"
                       [attr.title]="item.name"
                     >
                       <i class="text-[18px] flex-shrink-0" [ngClass]="item.icon"></i>
-                      <span class="flex-1 ms-1.5 text-left whitespace-nowrap">{{ item.name }}</span>
-                      <i
-                        class="text-base transition-transform"
-                        [ngClass]="item.expanded ? 'bx bx-chevron-up' : 'bx bx-chevron-down'"
-                      ></i>
-                    </button>
-
-                    @if (item.expanded) {
-                      <ul class="mt-1 space-y-0.5">
-                        @for (child of item.child; track $index) {
-                          <li>
-                            <a
-                              [routerLink]="child.route"
-                              routerLinkActive="active-link"
-                              class="flex items-center w-full px-3 py-1 pl-12 rounded-md hover:bg-gray-50 group transition-colors"
-                            >
-                              <span class="font-normal">{{ child.name }}</span>
-                            </a>
-                          </li>
-                        }
-                      </ul>
-                    }
-                  </div>
-                } @else {
-                  <a
-                    [routerLink]="item.route"
-                    routerLinkActive="active-link"
-                    class="flex items-center px-3 py-1 rounded-md hover:bg-gray-50 group transition-colors"
-                    [attr.title]="item.name"
-                  >
-                    <i class="text-[18px] flex-shrink-0" [ngClass]="item.icon"></i>
-                    <span class="ms-1.5">{{ item.name }}</span>
-                  </a>
-                }
-              </li>
-            }
-          </ul>
-        }
-      </div>
+                      <span class="ms-1.5">{{ item.name }}</span>
+                    </a>
+                  }
+                </li>
+              }
+            </ul>
+          }
+        </div>
+      } @else if (mode() === SidebarMode.DETAIL) {
+        <div class="p-4">
+          <ng-content></ng-content>
+        </div>
+      }
     }
   </div>
 </aside>

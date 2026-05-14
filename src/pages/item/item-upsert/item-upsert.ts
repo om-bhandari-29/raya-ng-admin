@@ -2,7 +2,11 @@ import { Component, OnInit, inject, signal } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Base } from '../../../core/base/base';
 import { IGenericResponse } from '../../../core/response/genericResponse.interface';
-import { IComboItem, IComboHsnCode } from '../../../core/response/combo.interface';
+import {
+  IComboItem,
+  IComboHsnCode,
+  IComboItemFrappeBased,
+} from '../../../core/response/combo.interface';
 import { IItemAttribute } from '../../item-attribute/item-attribute.response';
 import { IItem } from '../item.response';
 import { ItemDropdowns } from '../item.models';
@@ -33,15 +37,15 @@ export class ItemUpsert extends Base implements OnInit {
   isSaving = signal<boolean>(false);
   errorMessage = signal<string | null>(null);
   activeTab = signal<ItemTab>(ItemTab.DETAILS);
-  itemId = signal<number>(0);
+  itemName = signal<string>('');
   item = signal<IItem | null>(null);
   dropdowns = signal<ItemDropdowns | null>(null);
 
   override ngOnInit(): void {
     super.ngOnInit();
-    const idParam = this.route.snapshot.paramMap.get('id');
-    if (idParam && idParam !== 'new') {
-      this.itemId.set(+idParam);
+    const name = this.route.snapshot.queryParamMap.get('name');
+    if (name) {
+      this.itemName.set(name);
       this.isEditMode.set(true);
       this.loadItem();
     }
@@ -67,7 +71,7 @@ export class ItemUpsert extends Base implements OnInit {
     try {
       if (this.isEditMode()) {
         await this.httpPatchPromise<IGenericResponse<IItem>, ItemDetailsPayload>(
-          this.apiRoutes.item.UPDATE(this.itemId()),
+          this.apiRoutes.item.UPDATE(this.itemName()),
           payload,
         );
         this.toastr.success('Details saved.');
@@ -78,11 +82,13 @@ export class ItemUpsert extends Base implements OnInit {
           payload,
         );
         if (res.status) {
-          this.itemId.set(res.data.id);
+          this.itemName.set(res.data.name);
           this.isEditMode.set(true);
           this.item.set(res.data);
-          // Update URL without navigation so the user stays on the page
-          this.router.navigate([this.appRoutes.ITEM, res.data.id], { replaceUrl: true });
+          this.router.navigate(['/stock/item/upsert'], {
+            queryParams: { name: res.data.name },
+            replaceUrl: true,
+          });
           this.toastr.success('Item created. You can now fill in the other tabs.');
           this.goNextTab();
         }
@@ -104,7 +110,7 @@ export class ItemUpsert extends Base implements OnInit {
     this.errorMessage.set(null);
     try {
       await this.httpPatchPromise<IGenericResponse<IItem>, ItemInventoryPayload>(
-        this.apiRoutes.item.UPDATE(this.itemId()),
+        this.apiRoutes.item.UPDATE(this.itemName()),
         payload,
       );
       this.toastr.success('Inventory saved.');
@@ -126,7 +132,7 @@ export class ItemUpsert extends Base implements OnInit {
     this.errorMessage.set(null);
     try {
       await this.httpPatchPromise<IGenericResponse<IItem>, ItemVariantsPayload>(
-        this.apiRoutes.item.UPDATE(this.itemId()),
+        this.apiRoutes.item.UPDATE(this.itemName()),
         payload,
       );
       this.toastr.success('Variants saved.');
@@ -148,7 +154,7 @@ export class ItemUpsert extends Base implements OnInit {
     this.errorMessage.set(null);
     try {
       await this.httpPatchPromise<IGenericResponse<IItem>, ItemStoneDetailsPayload>(
-        this.apiRoutes.item.UPDATE(this.itemId()),
+        this.apiRoutes.item.UPDATE(this.itemName()),
         payload,
       );
       this.toastr.success('Stone details saved.');
@@ -165,7 +171,9 @@ export class ItemUpsert extends Base implements OnInit {
   private async loadDropdowns(): Promise<void> {
     try {
       const [groups, products, uoms, hsn, attrs, families, clarities, shapes] = await Promise.all([
-        this.httpGetPromise<IGenericResponse<IComboItem[]>>(this.apiRoutes.item_group.COMBO),
+        this.httpGetPromise<IGenericResponse<IComboItemFrappeBased[]>>(
+          this.apiRoutes.item_group.COMBO,
+        ),
         this.httpGetPromise<IGenericResponse<IComboItem[]>>(this.apiRoutes.product_master.COMBO()),
         this.httpGetPromise<IGenericResponse<IComboItem[]>>(this.apiRoutes.uom.COMBO),
         this.httpGetPromise<IGenericResponse<IComboHsnCode[]>>(this.apiRoutes.gst_hsn_code.COMBO),
@@ -196,7 +204,7 @@ export class ItemUpsert extends Base implements OnInit {
     this.errorMessage.set(null);
     try {
       const res = await this.httpGetPromise<IGenericResponse<IItem>>(
-        this.apiRoutes.item.GET_BY_ID(this.itemId()),
+        this.apiRoutes.item.GET_BY_NAME(this.itemName()),
       );
       if (res.status) {
         this.item.set(res.data);

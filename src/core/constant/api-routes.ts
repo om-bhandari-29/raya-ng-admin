@@ -48,7 +48,8 @@ export const APIRoutes = {
   },
   item: {
     GET_ALL: '/item',
-    GET_BY_ID: (id: number | string) => `/item/${id}`,
+    GET_BY_ID: (id: number) => `/item/${id}`,
+    GET_BY_NAME: (name: string) => `/item/by-name/${name}`,
     CREATE: '/item',
     UPDATE: (id: number | string) => `/item/${id}`,
     DELETE: (id: number | string) => `/item/${id}`,

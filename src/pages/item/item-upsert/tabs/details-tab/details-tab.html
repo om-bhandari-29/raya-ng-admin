@@ -1,16 +1,18 @@
 <form [formGroup]="form" (ngSubmit)="onSave()" novalidate>
   <div class="p-6 space-y-6">
-
     <div class="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-5">
-
       <!-- LEFT COLUMN -->
       <div class="space-y-5">
-
         <!-- Product Master -->
         <div class="flex flex-col gap-1.5">
-          <label for="product_master_id" class="text-sm font-medium text-slate-700">Product Master</label>
-          <select id="product_master_id" formControlName="product_master_id"
-            class="w-full rounded-lg border border-slate-300 px-3.5 py-2.5 text-sm text-slate-800 outline-none bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+          <label for="product_master_id" class="font-medium" style="font-size: 13px; color: #525252"
+            >Product Master</label
+          >
+          <select
+            id="product_master_id"
+            formControlName="product_master_id"
+            class="w-full rounded-lg px-2 py-1 text-sm text-slate-800 outline-none bg-[#f3f3f3] transition focus:ring-2 focus:ring-gray-200 focus:border-gray-200"
+          >
             <option [ngValue]="null">— None —</option>
             @for (pm of dropdowns?.productMasters ?? []; track pm.id) {
               <option [ngValue]="pm.id">{{ pm.name }}</option>
@@ -20,13 +22,17 @@
 
         <!-- Item Name -->
         <div class="flex flex-col gap-1.5">
-          <label for="name" class="text-sm font-medium text-slate-700">
+          <label for="name" class="font-medium" style="font-size: 13px; color: #525252">
             Item Name <span class="text-red-500">*</span>
           </label>
-          <input id="name" type="text" formControlName="name" placeholder="Enter item name"
-            class="w-full rounded-lg border px-3.5 py-2.5 text-sm text-slate-800 placeholder-slate-400 outline-none transition focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+          <input
+            id="name"
+            type="text"
+            formControlName="name"
+            placeholder="Enter item name"
+            class="w-full rounded-lg px-2 py-1 text-sm text-slate-800 placeholder-slate-400 outline-none transition focus:ring-2 focus:ring-gray-200 focus:border-gray-200 bg-[#f3f3f3]"
             [class.border-red-400]="f.name.invalid && f.name.touched"
-            [class.border-slate-300]="!(f.name.invalid && f.name.touched)"/>
+          />
           @if (f.name.invalid && f.name.touched) {
             <p class="text-xs text-red-500">Item name is required.</p>
           }
@@ -34,16 +40,18 @@
 
         <!-- Item Group -->
         <div class="flex flex-col gap-1.5">
-          <label for="item_group_id" class="text-sm font-medium text-slate-700">
+          <label for="item_group_id" class="font-medium" style="font-size: 13px; color: #525252">
             Item Group <span class="text-red-500">*</span>
           </label>
-          <select id="item_group_id" formControlName="item_group_id"
-            class="w-full rounded-lg border px-3.5 py-2.5 text-sm text-slate-800 outline-none bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+          <select
+            id="item_group_id"
+            formControlName="item_group_id"
+            class="w-full rounded-lg px-2 py-1 text-sm text-slate-800 outline-none bg-[#f3f3f3] transition focus:ring-2 focus:ring-gray-200 focus:border-gray-200"
             [class.border-red-400]="f.item_group_id.invalid && f.item_group_id.touched"
-            [class.border-slate-300]="!(f.item_group_id.invalid && f.item_group_id.touched)">
+          >
             <option [ngValue]="null" disabled>Select item group</option>
             @for (g of dropdowns?.itemGroups ?? []; track g.id) {
-              <option [ngValue]="g.id">{{ g.name }}</option>
+              <option [ngValue]="g.id">{{ g.name_frappe_based_id }}</option>
             }
           </select>
           @if (f.item_group_id.invalid && f.item_group_id.touched) {
@@ -53,19 +61,23 @@
 
         <!-- HSN/SAC -->
         <div class="flex flex-col gap-1.5">
-          <label for="hsn_sac_id" class="text-sm font-medium text-slate-700">
+          <label for="hsn_sac_id" class="font-medium" style="font-size: 13px; color: #525252">
             HSN/SAC <span class="text-red-500">*</span>
           </label>
-          <select id="hsn_sac_id" formControlName="hsn_sac_id"
-            class="w-full rounded-lg border px-3.5 py-2.5 text-sm text-slate-800 outline-none bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+          <select
+            id="hsn_sac_id"
+            formControlName="hsn_sac_id"
+            class="w-full rounded-lg px-2 py-1 text-sm text-slate-800 outline-none bg-[#f3f3f3] transition focus:ring-2 focus:ring-gray-200 focus:border-gray-200"
             [class.border-red-400]="f.hsn_sac_id.invalid && f.hsn_sac_id.touched"
-            [class.border-slate-300]="!(f.hsn_sac_id.invalid && f.hsn_sac_id.touched)">
+          >
             <option [ngValue]="null" disabled>Select HSN/SAC code</option>
-            @for (h of dropdowns?.hsnCodes ?? []; track h.id) {
-              <option [ngValue]="h.id">{{ h.hsn_code }} — {{ h.gst_rate }}%</option>
+            @for (h of dropdowns?.hsnCodes ?? []; track h.name) {
+              <option [ngValue]="h.name">{{ h.name }}</option>
             }
           </select>
-          <p class="text-xs text-slate-400">You can search code by the description of the category.</p>
+          <p class="text-xs text-slate-400">
+            You can search code by the description of the category.
+          </p>
           @if (f.hsn_sac_id.invalid && f.hsn_sac_id.touched) {
             <p class="text-xs text-red-500">HSN/SAC is required.</p>
           }
@@ -73,13 +85,15 @@
 
         <!-- Default Unit of Measure -->
         <div class="flex flex-col gap-1.5">
-          <label for="default_uom_id" class="text-sm font-medium text-slate-700">
+          <label for="default_uom_id" class="font-medium" style="font-size: 13px; color: #525252">
             Default Unit of Measure <span class="text-red-500">*</span>
           </label>
-          <select id="default_uom_id" formControlName="default_uom_id"
-            class="w-full rounded-lg border px-3.5 py-2.5 text-sm text-slate-800 outline-none bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+          <select
+            id="default_uom_id"
+            formControlName="default_uom_id"
+            class="w-full rounded-lg px-2 py-1 text-sm text-slate-800 outline-none bg-[#f3f3f3] transition focus:ring-2 focus:ring-gray-200 focus:border-gray-200"
             [class.border-red-400]="f.default_uom_id.invalid && f.default_uom_id.touched"
-            [class.border-slate-300]="!(f.default_uom_id.invalid && f.default_uom_id.touched)">
+          >
             <option [ngValue]="null" disabled>Select UOM</option>
             @for (u of dropdowns?.uoms ?? []; track u.id) {
               <option [ngValue]="u.id">{{ u.name }}</option>
@@ -92,98 +106,180 @@
 
         <!-- Fixed QTY -->
         <div class="flex flex-col gap-1.5">
-          <label for="fixed_qty" class="text-sm font-medium text-slate-700">
+          <label for="fixed_qty" class="font-medium" style="font-size: 13px; color: #525252">
             Fixed QTY <span class="text-red-500">*</span>
           </label>
-          <input id="fixed_qty" type="number" formControlName="fixed_qty" step="0.01"
-            class="w-full rounded-lg border border-slate-300 px-3.5 py-2.5 text-sm text-slate-800 outline-none transition focus:ring-2 focus:ring-blue-500 focus:border-blue-500"/>
+          <input
+            id="fixed_qty"
+            type="number"
+            formControlName="fixed_qty"
+            step="0.01"
+            class="w-full rounded-lg px-2 py-1 text-sm text-slate-800 outline-none transition focus:ring-2 focus:ring-gray-200 focus:border-gray-200 bg-[#f3f3f3]"
+          />
         </div>
-
       </div>
 
       <!-- RIGHT COLUMN -->
       <div class="space-y-5">
-
         <div class="space-y-3 pt-1">
           <label class="flex items-center gap-3 cursor-pointer">
-            <input type="checkbox" formControlName="is_disabled" class="h-4 w-4 rounded border-slate-300 text-blue-600 focus:ring-blue-500"/>
+            <input
+              type="checkbox"
+              formControlName="is_disabled"
+              class="h-4 w-4 rounded border-slate-300 text-blue-600 focus:ring-blue-500"
+            />
             <span class="text-sm text-slate-700">Disabled</span>
           </label>
           <label class="flex items-center gap-3 cursor-pointer">
-            <input type="checkbox" formControlName="allow_alternative_item" class="h-4 w-4 rounded border-slate-300 text-blue-600 focus:ring-blue-500"/>
+            <input
+              type="checkbox"
+              formControlName="allow_alternative_item"
+              class="h-4 w-4 rounded border-slate-300 text-blue-600 focus:ring-blue-500"
+            />
             <span class="text-sm text-slate-700">Allow Alternative Item</span>
           </label>
           <label class="flex items-center gap-3 cursor-pointer">
-            <input type="checkbox" formControlName="maintain_stock" class="h-4 w-4 rounded border-slate-300 text-blue-600 focus:ring-blue-500"/>
+            <input
+              type="checkbox"
+              formControlName="maintain_stock"
+              class="h-4 w-4 rounded border-slate-300 text-blue-600 focus:ring-blue-500"
+            />
             <span class="text-sm font-medium text-slate-700">Maintain Stock</span>
           </label>
           <label class="flex items-center gap-3 cursor-pointer">
-            <input type="checkbox" formControlName="is_in_stock" class="h-4 w-4 rounded border-slate-300 text-blue-600 focus:ring-blue-500"/>
+            <input
+              type="checkbox"
+              formControlName="is_in_stock"
+              class="h-4 w-4 rounded border-slate-300 text-blue-600 focus:ring-blue-500"
+            />
             <span class="text-sm text-slate-700">Is In Stock</span>
           </label>
           <div class="flex flex-col gap-1">
             <label class="flex items-center gap-3 cursor-pointer">
-              <input type="checkbox" formControlName="has_variants" class="h-4 w-4 rounded border-slate-300 text-blue-600 focus:ring-blue-500"/>
+              <input
+                type="checkbox"
+                formControlName="has_variants"
+                class="h-4 w-4 rounded border-slate-300 text-blue-600 focus:ring-blue-500"
+              />
               <span class="text-sm text-slate-700">Has Variants</span>
             </label>
-            <p class="text-xs text-slate-400 ml-7">If this item has variants, then it cannot be selected in sales orders etc.</p>
+            <p class="text-xs text-slate-400 ml-7">
+              If this item has variants, then it cannot be selected in sales orders etc.
+            </p>
           </div>
         </div>
 
         <div class="flex flex-col gap-1.5">
-          <label for="estimated_delivery_days" class="text-sm font-medium text-slate-700">Estimated Delivery Days</label>
-          <input id="estimated_delivery_days" type="number" formControlName="estimated_delivery_days"
-            class="w-full rounded-lg border border-slate-300 px-3.5 py-2.5 text-sm text-slate-800 outline-none transition focus:ring-2 focus:ring-blue-500 focus:border-blue-500"/>
+          <label
+            for="estimated_delivery_days"
+            class="font-medium"
+            style="font-size: 13px; color: #525252"
+            >Estimated Delivery Days</label
+          >
+          <input
+            id="estimated_delivery_days"
+            type="number"
+            formControlName="estimated_delivery_days"
+            class="w-full rounded-lg px-2 py-1 text-sm text-slate-800 outline-none transition focus:ring-2 focus:ring-gray-200 focus:border-gray-200 bg-[#f3f3f3]"
+          />
         </div>
 
         <div class="flex flex-col gap-1.5">
-          <label for="valuation_rate" class="text-sm font-medium text-slate-700">Valuation Rate</label>
-          <input id="valuation_rate" type="number" formControlName="valuation_rate" step="0.01"
-            class="w-full rounded-lg border border-slate-300 px-3.5 py-2.5 text-sm text-slate-800 outline-none transition focus:ring-2 focus:ring-blue-500 focus:border-blue-500"/>
+          <label for="valuation_rate" class="font-medium" style="font-size: 13px; color: #525252"
+            >Valuation Rate</label
+          >
+          <input
+            id="valuation_rate"
+            type="number"
+            formControlName="valuation_rate"
+            step="0.01"
+            class="w-full rounded-lg px-2 py-1 text-sm text-slate-800 outline-none transition focus:ring-2 focus:ring-gray-200 focus:border-gray-200 bg-[#f3f3f3]"
+          />
         </div>
 
         <label class="flex items-center gap-3 cursor-pointer">
-          <input type="checkbox" formControlName="is_fixed_asset" class="h-4 w-4 rounded border-slate-300 text-blue-600 focus:ring-blue-500"/>
+          <input
+            type="checkbox"
+            formControlName="is_fixed_asset"
+            class="h-4 w-4 rounded border-slate-300 text-blue-600 focus:ring-blue-500"
+          />
           <span class="text-sm text-slate-700">Is Fixed Asset</span>
         </label>
 
         <div class="flex flex-col gap-1.5">
-          <label for="over_delivery_receipt_allowance" class="text-sm font-medium text-slate-700">Over Delivery/Receipt Allowance (%)</label>
-          <input id="over_delivery_receipt_allowance" type="number" formControlName="over_delivery_receipt_allowance" step="0.001"
-            class="w-full rounded-lg border border-slate-300 px-3.5 py-2.5 text-sm text-slate-800 outline-none transition focus:ring-2 focus:ring-blue-500 focus:border-blue-500"/>
+          <label
+            for="over_delivery_receipt_allowance"
+            class="font-medium"
+            style="font-size: 13px; color: #525252"
+            >Over Delivery/Receipt Allowance (%)</label
+          >
+          <input
+            id="over_delivery_receipt_allowance"
+            type="number"
+            formControlName="over_delivery_receipt_allowance"
+            step="0.001"
+            class="w-full rounded-lg px-2 py-1 text-sm text-slate-800 outline-none transition focus:ring-2 focus:ring-gray-200 focus:border-gray-200 bg-[#f3f3f3]"
+          />
         </div>
 
         <div class="flex flex-col gap-1.5">
-          <label for="over_billing_allowance" class="text-sm font-medium text-slate-700">Over Billing Allowance (%)</label>
-          <input id="over_billing_allowance" type="number" formControlName="over_billing_allowance" step="0.001"
-            class="w-full rounded-lg border border-slate-300 px-3.5 py-2.5 text-sm text-slate-800 outline-none transition focus:ring-2 focus:ring-blue-500 focus:border-blue-500"/>
+          <label
+            for="over_billing_allowance"
+            class="font-medium"
+            style="font-size: 13px; color: #525252"
+            >Over Billing Allowance (%)</label
+          >
+          <input
+            id="over_billing_allowance"
+            type="number"
+            formControlName="over_billing_allowance"
+            step="0.001"
+            class="w-full rounded-lg px-2 py-1 text-sm text-slate-800 outline-none transition focus:ring-2 focus:ring-gray-200 focus:border-gray-200 bg-[#f3f3f3]"
+          />
         </div>
-
       </div>
     </div>
 
     <!-- Description -->
     <div class="border-t border-slate-200 pt-5">
-      <p class="text-sm font-semibold text-slate-700 mb-3">Description</p>
-      <textarea id="description" formControlName="description" rows="4"
+      <p class="font-medium mb-3" style="font-size: 13px; color: #525252">Description</p>
+      <textarea
+        id="description"
+        formControlName="description"
+        rows="4"
         placeholder="Enter item description..."
-        class="w-full rounded-lg border border-slate-300 px-3.5 py-2.5 text-sm text-slate-800 placeholder-slate-400 outline-none transition focus:ring-2 focus:ring-blue-500 focus:border-blue-500 resize-none">
+        class="w-full rounded-lg px-2 py-1 text-sm text-slate-800 placeholder-slate-400 outline-none transition focus:ring-2 focus:ring-gray-200 focus:border-gray-200 bg-[#f3f3f3] resize-none"
+      >
       </textarea>
     </div>
 
     <!-- Tab Save Footer -->
     <div class="flex justify-end pt-2 border-t border-slate-200">
-      <button type="submit" [disabled]="isSaving"
-        class="inline-flex items-center gap-2 px-5 py-2 rounded-lg text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 disabled:opacity-60 disabled:cursor-not-allowed transition-colors">
+      <button
+        type="submit"
+        [disabled]="isSaving"
+        class="inline-flex items-center gap-2 px-5 py-2 rounded-lg text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 disabled:opacity-60 disabled:cursor-not-allowed transition-colors"
+      >
         @if (isSaving) {
-          <svg class="animate-spin h-4 w-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+          <svg
+            class="animate-spin h-4 w-4"
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+          >
+            <circle
+              class="opacity-25"
+              cx="12"
+              cy="12"
+              r="10"
+              stroke="currentColor"
+              stroke-width="4"
+            ></circle>
             <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z"></path>
           </svg>
         }
         Save & Next
       </button>
     </div>
-
   </div>
 </form>

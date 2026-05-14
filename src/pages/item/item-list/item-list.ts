@@ -57,14 +57,19 @@ export class ItemList extends ListBase<IItem> implements OnInit {
     super.ngOnInit();
     this.breadcrumb.set([{ label: 'Stock', url: APPRoutes.STOCK.ITEM }, { label: 'Item' }]);
     this.loadItems();
+    this.setHeaderConfig('Stock', 'Add Stock');
+  }
+
+  protected override onActionButtonClick(): void {
+    this.openAdd();
   }
 
   openAdd(): void {
-    this.router.navigate([this.appRoutes.STOCK.ITEM, 'new']);
+    this.router.navigate(['/stock/item/upsert'], { queryParams: { name: '' } });
   }
 
-  openEdit(id: number): void {
-    this.router.navigate([this.appRoutes.STOCK.ITEM, id]);
+  openEdit(name: string): void {
+    this.router.navigate(['/stock/item/upsert'], { queryParams: { name } });
   }
 
   async deleteItem(id: number): Promise<void> {

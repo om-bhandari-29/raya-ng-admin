@@ -1,8 +1,12 @@
-import { IComboItem, IComboHsnCode } from '../../core/response/combo.interface';
+import {
+  IComboItem,
+  IComboHsnCode,
+  IComboItemFrappeBased,
+} from '../../core/response/combo.interface';
 import { IItemAttribute } from '../item-attribute/item-attribute.response';
 
 export interface ItemDropdowns {
-  itemGroups: IComboItem[];
+  itemGroups: IComboItemFrappeBased[];
   productMasters: IComboItem[];
   uoms: IComboItem[];
   hsnCodes: IComboHsnCode[];

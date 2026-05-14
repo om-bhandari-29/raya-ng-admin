@@ -117,7 +117,7 @@ export const routes: Routes = [
         loadComponent: () => import('../pages/item/item-list/item-list').then((m) => m.ItemList),
       },
       {
-        path: 'stock/item/:id',
+        path: 'stock/item/upsert',
         loadComponent: () =>
           import('../pages/item/item-upsert/item-upsert').then((m) => m.ItemUpsert),
       },
