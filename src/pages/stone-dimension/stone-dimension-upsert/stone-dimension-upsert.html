@@ -1,10 +1,21 @@
 <div class="min-h-screen bg-slate-50">
-
   <!-- Loading -->
   @if (isLoading()) {
     <div class="flex items-center justify-center gap-2 py-20 text-slate-400 text-sm">
-      <svg class="animate-spin h-5 w-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+      <svg
+        class="animate-spin h-5 w-5"
+        xmlns="http://www.w3.org/2000/svg"
+        fill="none"
+        viewBox="0 0 24 24"
+      >
+        <circle
+          class="opacity-25"
+          cx="12"
+          cy="12"
+          r="10"
+          stroke="currentColor"
+          stroke-width="4"
+        ></circle>
         <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z"></path>
       </svg>
       Loading...
@@ -13,29 +24,16 @@
 
   @if (!isLoading()) {
     <form [formGroup]="form" (ngSubmit)="onSubmit()" novalidate class="max-w-6xl mx-auto">
-      
-      <!-- Action Buttons -->
-      <div class="flex items-center justify-end gap-3 mb-6">
-        <button type="button" (click)="onCancel()"
-          class="px-4 py-1.5 text-sm font-medium text-slate-600 hover:text-slate-800 transition-colors bg-white rounded-md border border-slate-200 shadow-sm">
-          Cancel
-        </button>
-        <button type="submit" [disabled]="isSaving()"
-          class="inline-flex items-center gap-2 px-5 py-1.5 rounded-md text-sm font-medium text-white bg-slate-800 hover:bg-slate-900 disabled:opacity-60 disabled:cursor-not-allowed transition-colors shadow-sm">
-          @if (isSaving()) {
-            <svg class="animate-spin h-4 w-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-              <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-              <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z"></path>
-            </svg>
-          }
-          Save
-        </button>
-      </div>
-      
       @if (errorMessage()) {
-        <div class="mb-4 flex items-center gap-2 px-4 py-3 rounded-lg text-sm text-red-600 bg-red-50 border border-red-200">
+        <div
+          class="mb-4 flex items-center gap-2 px-4 py-3 rounded-lg text-sm text-red-600 bg-red-50 border border-red-200"
+        >
           <svg class="h-4 w-4 shrink-0" fill="currentColor" viewBox="0 0 20 20">
-            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm-.75-11.25a.75.75 0 011.5 0v4.5a.75.75 0 01-1.5 0v-4.5zm.75 7.5a.75.75 0 100-1.5.75.75 0 000 1.5z" clip-rule="evenodd"/>
+            <path
+              fill-rule="evenodd"
+              d="M10 18a8 8 0 100-16 8 8 0 000 16zm-.75-11.25a.75.75 0 011.5 0v4.5a.75.75 0 01-1.5 0v-4.5zm.75 7.5a.75.75 0 100-1.5.75.75 0 000 1.5z"
+              clip-rule="evenodd"
+            />
           </svg>
           {{ errorMessage() }}
         </div>
@@ -43,16 +41,18 @@
 
       <div class="bg-white rounded-lg border border-slate-200 p-6">
         <div class="grid grid-cols-2 gap-x-6 gap-y-4">
-          
           <!-- Shape -->
           <div class="flex flex-col gap-1.5">
-            <label for="shape" class="text-sm font-normal text-slate-600">
-              Shape
+            <label for="shape" class="font-medium" style="font-size: 13px; color: #525252">
+              Shape <span class="text-red-500">*</span>
             </label>
-            <input id="shape" type="text" formControlName="shape"
-              class="w-full rounded-md border border-slate-200 bg-slate-50 px-3 py-1.5 text-sm text-slate-800 outline-none transition focus:bg-white focus:border-slate-300"
+            <input
+              id="shape"
+              type="text"
+              formControlName="shape"
+              class="w-full rounded-lg px-2 py-1 text-sm text-slate-800 placeholder-slate-400 outline-none transition focus:ring-2 focus:ring-gray-200 focus:border-gray-200 bg-[#f3f3f3]"
               [class.border-red-400]="shapeControl.invalid && shapeControl.touched"
-              [class.bg-red-50]="shapeControl.invalid && shapeControl.touched"/>
+            />
             @if (shapeControl.invalid && shapeControl.touched) {
               <p class="text-xs text-red-500">Shape is required.</p>
             }
@@ -60,22 +60,29 @@
 
           <!-- Size Range -->
           <div class="flex flex-col gap-1.5">
-            <label for="sizeRange" class="text-sm font-normal text-slate-600">
+            <label for="sizeRange" class="font-medium" style="font-size: 13px; color: #525252">
               Size Range
             </label>
-            <input id="sizeRange" type="text" formControlName="sizeRange"
-              class="w-full rounded-md border border-slate-200 bg-slate-50 px-3 py-1.5 text-sm text-slate-800 outline-none transition focus:bg-white focus:border-slate-300"/>
+            <input
+              id="sizeRange"
+              type="text"
+              formControlName="sizeRange"
+              class="w-full rounded-lg px-2 py-1 text-sm text-slate-800 placeholder-slate-400 outline-none transition focus:ring-2 focus:ring-gray-200 focus:border-gray-200 bg-[#f3f3f3]"
+            />
           </div>
 
           <!-- Stone Name -->
           <div class="flex flex-col gap-1.5">
-            <label for="stoneName" class="text-sm font-normal text-slate-600">
-              Stone Name
+            <label for="stoneName" class="font-medium" style="font-size: 13px; color: #525252">
+              Stone Name <span class="text-red-500">*</span>
             </label>
-            <input id="stoneName" type="text" formControlName="stoneName"
-              class="w-full rounded-md border border-slate-200 bg-slate-50 px-3 py-1.5 text-sm text-slate-800 outline-none transition focus:bg-white focus:border-slate-300"
+            <input
+              id="stoneName"
+              type="text"
+              formControlName="stoneName"
+              class="w-full rounded-lg px-2 py-1 text-sm text-slate-800 placeholder-slate-400 outline-none transition focus:ring-2 focus:ring-gray-200 focus:border-gray-200 bg-[#f3f3f3]"
               [class.border-red-400]="stoneNameControl.invalid && stoneNameControl.touched"
-              [class.bg-red-50]="stoneNameControl.invalid && stoneNameControl.touched"/>
+            />
             @if (stoneNameControl.invalid && stoneNameControl.touched) {
               <p class="text-xs text-red-500">Stone name is required.</p>
             }
@@ -83,22 +90,30 @@
 
           <!-- Length -->
           <div class="flex flex-col gap-1.5">
-            <label for="length" class="text-sm font-normal text-slate-600">
-              length
+            <label for="length" class="font-medium" style="font-size: 13px; color: #525252">
+              Length
             </label>
-            <input id="length" type="number" step="0.001" formControlName="length"
-              class="w-full rounded-md border border-slate-200 bg-slate-50 px-3 py-1.5 text-sm text-slate-800 outline-none transition focus:bg-white focus:border-slate-300"/>
+            <input
+              id="length"
+              type="number"
+              step="0.001"
+              formControlName="length"
+              class="w-full rounded-lg px-2 py-1 text-sm text-slate-800 placeholder-slate-400 outline-none transition focus:ring-2 focus:ring-gray-200 focus:border-gray-200 bg-[#f3f3f3]"
+            />
           </div>
 
           <!-- Cut Style -->
           <div class="flex flex-col gap-1.5">
-            <label for="cutStyle" class="text-sm font-normal text-slate-600">
-              Cut Style
+            <label for="cutStyle" class="font-medium" style="font-size: 13px; color: #525252">
+              Cut Style <span class="text-red-500">*</span>
             </label>
-            <input id="cutStyle" type="text" formControlName="cutStyle"
-              class="w-full rounded-md border border-slate-200 bg-slate-50 px-3 py-1.5 text-sm text-slate-800 outline-none transition focus:bg-white focus:border-slate-300"
+            <input
+              id="cutStyle"
+              type="text"
+              formControlName="cutStyle"
+              class="w-full rounded-lg px-2 py-1 text-sm text-slate-800 placeholder-slate-400 outline-none transition focus:ring-2 focus:ring-gray-200 focus:border-gray-200 bg-[#f3f3f3]"
               [class.border-red-400]="cutStyleControl.invalid && cutStyleControl.touched"
-              [class.bg-red-50]="cutStyleControl.invalid && cutStyleControl.touched"/>
+            />
             @if (cutStyleControl.invalid && cutStyleControl.touched) {
               <p class="text-xs text-red-500">Cut style is required.</p>
             }
@@ -106,76 +121,111 @@
 
           <!-- Width -->
           <div class="flex flex-col gap-1.5">
-            <label for="width" class="text-sm font-normal text-slate-600">
-              width
+            <label for="width" class="font-medium" style="font-size: 13px; color: #525252">
+              Width
             </label>
-            <input id="width" type="number" step="0.001" formControlName="width"
-              class="w-full rounded-md border border-slate-200 bg-slate-50 px-3 py-1.5 text-sm text-slate-800 outline-none transition focus:bg-white focus:border-slate-300"/>
+            <input
+              id="width"
+              type="number"
+              step="0.001"
+              formControlName="width"
+              class="w-full rounded-lg px-2 py-1 text-sm text-slate-800 placeholder-slate-400 outline-none transition focus:ring-2 focus:ring-gray-200 focus:border-gray-200 bg-[#f3f3f3]"
+            />
           </div>
 
           <!-- Origin -->
           <div class="flex flex-col gap-1.5">
-            <label for="origin" class="text-sm font-normal text-slate-600">
+            <label for="origin" class="font-medium" style="font-size: 13px; color: #525252">
               Origin
             </label>
-            <input id="origin" type="text" formControlName="origin"
-              class="w-full rounded-md border border-slate-200 bg-slate-50 px-3 py-1.5 text-sm text-slate-800 outline-none transition focus:bg-white focus:border-slate-300"/>
+            <input
+              id="origin"
+              type="text"
+              formControlName="origin"
+              class="w-full rounded-lg px-2 py-1 text-sm text-slate-800 placeholder-slate-400 outline-none transition focus:ring-2 focus:ring-gray-200 focus:border-gray-200 bg-[#f3f3f3]"
+            />
           </div>
 
           <!-- Height -->
           <div class="flex flex-col gap-1.5">
-            <label for="height" class="text-sm font-normal text-slate-600">
-              height
+            <label for="height" class="font-medium" style="font-size: 13px; color: #525252">
+              Height
             </label>
-            <input id="height" type="number" step="0.001" formControlName="height"
-              class="w-full rounded-md border border-slate-200 bg-slate-50 px-3 py-1.5 text-sm text-slate-800 outline-none transition focus:bg-white focus:border-slate-300"/>
+            <input
+              id="height"
+              type="number"
+              step="0.001"
+              formControlName="height"
+              class="w-full rounded-lg px-2 py-1 text-sm text-slate-800 placeholder-slate-400 outline-none transition focus:ring-2 focus:ring-gray-200 focus:border-gray-200 bg-[#f3f3f3]"
+            />
           </div>
 
           <!-- Clarity -->
           <div class="flex flex-col gap-1.5">
-            <label for="clarity" class="text-sm font-normal text-slate-600">
+            <label for="clarity" class="font-medium" style="font-size: 13px; color: #525252">
               Clarity
             </label>
-            <input id="clarity" type="text" formControlName="clarity"
-              class="w-full rounded-md border border-slate-200 bg-slate-50 px-3 py-1.5 text-sm text-slate-800 outline-none transition focus:bg-white focus:border-slate-300"/>
+            <input
+              id="clarity"
+              type="text"
+              formControlName="clarity"
+              class="w-full rounded-lg px-2 py-1 text-sm text-slate-800 placeholder-slate-400 outline-none transition focus:ring-2 focus:ring-gray-200 focus:border-gray-200 bg-[#f3f3f3]"
+            />
           </div>
 
           <!-- Estimated Weight in Ct -->
           <div class="flex flex-col gap-1.5">
-            <label for="estimatedWeightInCt" class="text-sm font-normal text-slate-600">
+            <label for="estimatedWeightInCt" class="font-medium" style="font-size: 13px; color: #525252">
               Estimated Weight in Ct
             </label>
-            <input id="estimatedWeightInCt" type="number" step="0.01" formControlName="estimatedWeightInCt"
-              class="w-full rounded-md border border-slate-200 bg-slate-50 px-3 py-1.5 text-sm text-slate-800 outline-none transition focus:bg-white focus:border-slate-300"/>
+            <input
+              id="estimatedWeightInCt"
+              type="number"
+              step="0.01"
+              formControlName="estimatedWeightInCt"
+              class="w-full rounded-lg px-2 py-1 text-sm text-slate-800 placeholder-slate-400 outline-none transition focus:ring-2 focus:ring-gray-200 focus:border-gray-200 bg-[#f3f3f3]"
+            />
           </div>
 
           <!-- Colour -->
           <div class="flex flex-col gap-1.5">
-            <label for="colour" class="text-sm font-normal text-slate-600">
+            <label for="colour" class="font-medium" style="font-size: 13px; color: #525252">
               Colour
             </label>
-            <input id="colour" type="text" formControlName="colour"
-              class="w-full rounded-md border border-slate-200 bg-slate-50 px-3 py-1.5 text-sm text-slate-800 outline-none transition focus:bg-white focus:border-slate-300"/>
+            <input
+              id="colour"
+              type="text"
+              formControlName="colour"
+              class="w-full rounded-lg px-2 py-1 text-sm text-slate-800 placeholder-slate-400 outline-none transition focus:ring-2 focus:ring-gray-200 focus:border-gray-200 bg-[#f3f3f3]"
+            />
           </div>
 
           <!-- Price per ct -->
           <div class="flex flex-col gap-1.5">
-            <label for="pricePerCt" class="text-sm font-normal text-slate-600">
+            <label for="pricePerCt" class="font-medium" style="font-size: 13px; color: #525252">
               Price per ct
             </label>
-            <input id="pricePerCt" type="number" step="0.01" formControlName="pricePerCt"
-              class="w-full rounded-md border border-slate-200 bg-slate-50 px-3 py-1.5 text-sm text-slate-800 outline-none transition focus:bg-white focus:border-slate-300"/>
+            <input
+              id="pricePerCt"
+              type="number"
+              step="0.01"
+              formControlName="pricePerCt"
+              class="w-full rounded-lg px-2 py-1 text-sm text-slate-800 placeholder-slate-400 outline-none transition focus:ring-2 focus:ring-gray-200 focus:border-gray-200 bg-[#f3f3f3]"
+            />
           </div>
 
           <!-- Stone Type -->
           <div class="flex flex-col gap-1.5">
-            <label for="stoneType" class="text-sm font-normal text-slate-600">
-              Stone Type
+            <label for="stoneType" class="font-medium" style="font-size: 13px; color: #525252">
+              Stone Type <span class="text-red-500">*</span>
             </label>
-            <input id="stoneType" type="text" formControlName="stoneType"
-              class="w-full rounded-md border border-slate-200 bg-slate-50 px-3 py-1.5 text-sm text-slate-800 outline-none transition focus:bg-white focus:border-slate-300"
+            <input
+              id="stoneType"
+              type="text"
+              formControlName="stoneType"
+              class="w-full rounded-lg px-2 py-1 text-sm text-slate-800 placeholder-slate-400 outline-none transition focus:ring-2 focus:ring-gray-200 focus:border-gray-200 bg-[#f3f3f3]"
               [class.border-red-400]="stoneTypeControl.invalid && stoneTypeControl.touched"
-              [class.bg-red-50]="stoneTypeControl.invalid && stoneTypeControl.touched"/>
+            />
             @if (stoneTypeControl.invalid && stoneTypeControl.touched) {
               <p class="text-xs text-red-500">Stone type is required.</p>
             }
@@ -183,53 +233,71 @@
 
           <!-- Price per ct USD -->
           <div class="flex flex-col gap-1.5">
-            <label for="pricePerCtUsd" class="text-sm font-normal text-slate-600">
+            <label for="pricePerCtUsd" class="font-medium" style="font-size: 13px; color: #525252">
               Price per ct USD
             </label>
-            <input id="pricePerCtUsd" type="number" step="0.01" formControlName="pricePerCtUsd"
-              class="w-full rounded-md border border-slate-200 bg-slate-50 px-3 py-1.5 text-sm text-slate-800 outline-none transition focus:bg-white focus:border-slate-300"/>
+            <input
+              id="pricePerCtUsd"
+              type="number"
+              step="0.01"
+              formControlName="pricePerCtUsd"
+              class="w-full rounded-lg px-2 py-1 text-sm text-slate-800 placeholder-slate-400 outline-none transition focus:ring-2 focus:ring-gray-200 focus:border-gray-200 bg-[#f3f3f3]"
+            />
           </div>
 
           <!-- Cut Grade -->
           <div class="flex flex-col gap-1.5">
-            <label for="cutGrade" class="text-sm font-normal text-slate-600">
+            <label for="cutGrade" class="font-medium" style="font-size: 13px; color: #525252">
               Cut Grade
             </label>
-            <input id="cutGrade" type="text" formControlName="cutGrade"
-              class="w-full rounded-md border border-slate-200 bg-slate-50 px-3 py-1.5 text-sm text-slate-800 outline-none transition focus:bg-white focus:border-slate-300"/>
+            <input
+              id="cutGrade"
+              type="text"
+              formControlName="cutGrade"
+              class="w-full rounded-lg px-2 py-1 text-sm text-slate-800 placeholder-slate-400 outline-none transition focus:ring-2 focus:ring-gray-200 focus:border-gray-200 bg-[#f3f3f3]"
+            />
           </div>
 
           <!-- Enhancement/Treatment -->
           <div class="flex flex-col gap-1.5">
-            <label for="enhancementTreatment" class="text-sm font-normal text-slate-600">
+            <label for="enhancementTreatment" class="font-medium" style="font-size: 13px; color: #525252">
               Enhancement/Treatment
             </label>
-            <input id="enhancementTreatment" type="text" formControlName="enhancementTreatment"
-              class="w-full rounded-md border border-slate-200 bg-slate-50 px-3 py-1.5 text-sm text-slate-800 outline-none transition focus:bg-white focus:border-slate-300"/>
+            <input
+              id="enhancementTreatment"
+              type="text"
+              formControlName="enhancementTreatment"
+              class="w-full rounded-lg px-2 py-1 text-sm text-slate-800 placeholder-slate-400 outline-none transition focus:ring-2 focus:ring-gray-200 focus:border-gray-200 bg-[#f3f3f3]"
+            />
           </div>
 
           <!-- Country orgin -->
           <div class="flex flex-col gap-1.5">
-            <label for="countryOrigin" class="text-sm font-normal text-slate-600">
+            <label for="countryOrigin" class="font-medium" style="font-size: 13px; color: #525252">
               Country orgin
             </label>
-            <input id="countryOrigin" type="text" formControlName="countryOrigin"
-              class="w-full rounded-md border border-slate-200 bg-slate-50 px-3 py-1.5 text-sm text-slate-800 outline-none transition focus:bg-white focus:border-slate-300"/>
+            <input
+              id="countryOrigin"
+              type="text"
+              formControlName="countryOrigin"
+              class="w-full rounded-lg px-2 py-1 text-sm text-slate-800 placeholder-slate-400 outline-none transition focus:ring-2 focus:ring-gray-200 focus:border-gray-200 bg-[#f3f3f3]"
+            />
           </div>
 
           <!-- Source File - Full Width -->
           <div class="col-span-2 flex flex-col gap-1.5">
-            <label for="sourceFile" class="text-sm font-normal text-slate-600">
+            <label for="sourceFile" class="font-medium" style="font-size: 13px; color: #525252">
               Source File
             </label>
-            <textarea id="sourceFile" formControlName="sourceFile" rows="4"
-              class="w-full rounded-md border border-slate-200 bg-slate-50 px-3 py-1.5 text-sm text-slate-800 outline-none transition focus:bg-white focus:border-slate-300 resize-none"></textarea>
+            <textarea
+              id="sourceFile"
+              formControlName="sourceFile"
+              rows="4"
+              class="w-full rounded-lg px-2 py-1 text-sm text-slate-800 placeholder-slate-400 outline-none transition focus:ring-2 focus:ring-gray-200 focus:border-gray-200 bg-[#f3f3f3] resize-none"
+            ></textarea>
           </div>
-
         </div>
       </div>
-
     </form>
   }
-
 </div>

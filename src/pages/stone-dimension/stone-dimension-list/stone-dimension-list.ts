@@ -7,6 +7,7 @@ import { TableLayout } from '../../../core/component/table-layout/table-layout';
 import { TableColumn } from '../../../core/models/table-column.interface';
 import { APPRoutes } from '../../../core/constant/app-routes';
 import { PageTitleService } from '../../../core/services/page-title.service';
+import { BreadcrumbService } from '../../../core/services/breadcrumb.service';
 
 @Component({
   selector: 'app-stone-dimension-list',
@@ -17,24 +18,29 @@ import { PageTitleService } from '../../../core/services/page-title.service';
 export class StoneDimensionList extends ListBase<IStoneDimension> implements OnInit {
   private router = inject(Router);
   private pageTitleService = inject(PageTitleService);
+  private breadcrumb = inject(BreadcrumbService);
 
   columns: TableColumn<IStoneDimension>[] = [
     {
       key: 'generatedKey',
       header: 'ID',
       type: 'text',
+      width: '40%',
+      ellipsis: true,
       cellClass: 'text-blue-600 font-medium cursor-pointer hover:text-blue-800',
     },
     {
       key: 'cutStyle',
       header: 'Cut Style',
       type: 'text',
+      width: '30%',
       cellClass: 'text-gray-700',
     },
     {
       key: 'pricePerCt',
       header: 'Price per ct',
       type: 'text',
+      width: '20%',
       cellClass: 'text-gray-700 font-medium',
     },
   ];
@@ -42,15 +48,23 @@ export class StoneDimensionList extends ListBase<IStoneDimension> implements OnI
   override ngOnInit(): void {
     super.ngOnInit();
     this.pageTitleService.setTitle('Stone Dimension');
+    this.breadcrumb.set([{ label: 'Stone Dimension' }]);
     this.loadItems();
+    this.setHeaderConfig('Stone Dimension', 'Add stone dimension');
+  }
+
+  protected override onActionButtonClick(): void {
+    this.openAddModal();
   }
 
   openAddModal(): void {
-    this.router.navigate([`/${APPRoutes.STONE_DIMENSION}/0`]);
+    this.router.navigate([`/${APPRoutes.STONE_DIMENSION}/upsert`], { queryParams: { name: '' } });
   }
 
-  openEditModal(id: number): void {
-    this.router.navigate([`/${APPRoutes.STONE_DIMENSION}/${id}`]);
+  openEditModal(generatedKey: string): void {
+    this.router.navigate([`/${APPRoutes.STONE_DIMENSION}/upsert`], {
+      queryParams: { name: generatedKey },
+    });
   }
 
   async deleteItem(id: number): Promise<void> {

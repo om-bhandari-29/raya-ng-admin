@@ -6,6 +6,7 @@ import { IGenericResponse } from '../../../core/response/genericResponse.interfa
 import { IStoneDimension } from '../stone-dimension.response';
 import { APPRoutes } from '../../../core/constant/app-routes';
 import { PageTitleService } from '../../../core/services/page-title.service';
+import { BreadcrumbService } from '../../../core/services/breadcrumb.service';
 
 interface StoneDimensionForm {
   shape: FormControl<string>;
@@ -39,8 +40,9 @@ export class StoneDimensionUpsert extends Base implements OnInit {
   private route = inject(ActivatedRoute);
   private router = inject(Router);
   private pageTitleService = inject(PageTitleService);
+  private breadcrumb = inject(BreadcrumbService);
 
-  itemId = signal<number>(0);
+  itemName = signal<string>('');
   isEditMode = signal<boolean>(false);
   isLoading = signal<boolean>(false);
   isSaving = signal<boolean>(false);
@@ -106,15 +108,29 @@ export class StoneDimensionUpsert extends Base implements OnInit {
 
   override ngOnInit(): void {
     super.ngOnInit();
-    const id = this.route.snapshot.paramMap.get('id');
-    if (id && id !== '0') {
-      this.itemId.set(parseInt(id, 10));
+    const name = this.route.snapshot.queryParamMap.get('name');
+    if (name) {
+      this.itemName.set(name);
       this.isEditMode.set(true);
-      this.pageTitleService.setTitle('Edit Stone Dimension');
+      console.log(this.itemName());
+      this.setHeaderConfig(this.itemName(), 'Save');
+      this.breadcrumb.set([
+        { label: 'Stone Dimension', url: APPRoutes.STONE_DIMENSION },
+        { label: name },
+      ]);
       this.loadItem();
     } else {
-      this.pageTitleService.setTitle('New Stone Dimension');
+      // this.pageTitleService.setTitle('New Stone Dimension');
+      this.setHeaderConfig('New Stone Dimension', 'Save');
+      this.breadcrumb.set([
+        { label: 'Stone Dimension', url: APPRoutes.STONE_DIMENSION },
+        { label: 'New' },
+      ]);
     }
+  }
+
+  protected override onActionButtonClick(): void {
+    this.onSubmit();
   }
 
   private async loadItem(): Promise<void> {
@@ -122,7 +138,7 @@ export class StoneDimensionUpsert extends Base implements OnInit {
     this.errorMessage.set(null);
     try {
       const res = await this.httpGetPromise<IGenericResponse<IStoneDimension>>(
-        this.apiRoutes.stone_dimension.GET_BY_ID(this.itemId()),
+        this.apiRoutes.stone_dimension.GET_BY_ID(this.itemName()),
       );
       if (res.status) {
         this.form.patchValue({
@@ -171,7 +187,7 @@ export class StoneDimensionUpsert extends Base implements OnInit {
       const payload = this.form.getRawValue();
       if (this.isEditMode()) {
         await this.httpPatchPromise<IGenericResponse<IStoneDimension>, typeof payload>(
-          this.apiRoutes.stone_dimension.UPDATE(this.itemId()),
+          this.apiRoutes.stone_dimension.UPDATE(this.itemName()),
           payload,
         );
         this.toastr.success('Stone dimension updated successfully.');

@@ -102,7 +102,7 @@ export const routes: Routes = [
           ),
       },
       {
-        path: `${APPRoutes.STONE_DIMENSION}/:id`,
+        path: `${APPRoutes.STONE_DIMENSION}/upsert`,
         loadComponent: () =>
           import('../pages/stone-dimension/stone-dimension-upsert/stone-dimension-upsert').then(
             (m) => m.StoneDimensionUpsert,
