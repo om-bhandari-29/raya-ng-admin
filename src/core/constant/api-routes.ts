@@ -62,12 +62,12 @@ export const APIRoutes = {
     COMBO: '/item-attribute-master/combo',
   },
   stone_family: {
-    GET_ALL: '/stone-master/family',
-    GET_BY_ID: (id: number | string) => `/stone-master/family/${id}`,
-    CREATE: '/stone-master/family',
-    UPDATE: (id: number | string) => `/stone-master/family/${id}`,
-    DELETE: (id: number | string) => `/stone-master/family/${id}`,
-    COMBO: '/stone-master/family/combo',
+    GET_ALL: '/stone-master/type',
+    GET_BY_ID: (id: number | string) => `/stone-master/type/${id}`,
+    CREATE: '/stone-master/type',
+    UPDATE: (id: number | string) => `/stone-master/type/${id}`,
+    DELETE: (id: number | string) => `/stone-master/type/${id}`,
+    COMBO: '/stone-master/type/combo',
   },
   stone_clarity: {
     GET_ALL: '/stone-master/clarity',

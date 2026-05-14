@@ -9,13 +9,13 @@ import {
   StoneMasterUpsert,
   StoneMasterDialogData,
 } from '../stone-master-upsert/stone-master-upsert';
-import { TableLayout } from '../../../core/component/table-layout/table-layout';
+import { TableLayout, TableSlot } from '../../../core/component/table-layout/table-layout';
 import { TableColumn } from '../../../core/models/table-column.interface';
 import { signal } from '@angular/core';
 
 @Component({
   selector: 'app-stone-master-list',
-  imports: [TableLayout],
+  imports: [TableLayout, TableSlot],
   templateUrl: './stone-master-list.html',
   styleUrl: './stone-master-list.scss',
 })
@@ -30,20 +30,20 @@ export class StoneMasterList extends ListBase<IStoneMaster> implements OnInit {
     {
       key: 'name',
       header: 'ID',
-      width: '150px',
+      width: '30%',
       slot: 'id',
     },
-    {
-      key: 'name',
-      header: 'Name',
-      type: 'text',
-      cellClass: 'text-gray-800 font-medium',
-    },
-    {
-      key: 'description',
-      header: 'Description',
-      type: 'text',
-    },
+    // {
+    //   key: 'name',
+    //   header: 'Name',
+    //   type: 'text',
+    //   cellClass: 'text-gray-800 font-medium',
+    // },
+    // {
+    //   key: 'description',
+    //   header: 'Description',
+    //   type: 'text',
+    // },
     {
       key: 'is_published',
       header: 'Is Published',
@@ -58,6 +58,11 @@ export class StoneMasterList extends ListBase<IStoneMaster> implements OnInit {
     this.stoneType.set(type);
     this.typeLabel.set(label);
     this.loadItems();
+    this.setHeaderConfig(label, 'Add more');
+  }
+
+  protected override onActionButtonClick(): void {
+    this.openAddModal();
   }
 
   openAddModal(): void {

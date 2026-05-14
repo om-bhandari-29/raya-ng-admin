@@ -1,11 +1,11 @@
 export enum StoneMasterType {
-  FAMILY = 'family',
+  FAMILY = 'Type',
   CLARITY = 'clarity',
   SHAPE = 'shape',
 }
 
 export enum StoneMasterLabel {
-  FAMILY = 'Stone Family',
+  FAMILY = 'Stone Type',
   CLARITY = 'Stone Clarity',
   SHAPE = 'Stone Shape',
 }

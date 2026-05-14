@@ -56,7 +56,7 @@ export const MenuItems: IMenuSideBarItem[] = [
     child: [],
   },
   {
-    name: 'Stone Family',
+    name: 'Stone Type',
     route: APPRoutes.STONE_FAMILY,
     icon: 'bx bx-diamond',
     userType: [],

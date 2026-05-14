@@ -5,6 +5,7 @@ import { Base } from '../../../core/base/base';
 import { IGenericResponse } from '../../../core/response/genericResponse.interface';
 import { IStoneMaster } from '../stone-master.response';
 import { StoneMasterType } from '../../../core/enum/stone-master.enum';
+import { HttpErrorResponse } from '@angular/common/http';
 
 export interface StoneMasterDialogData {
   itemId: number;
@@ -39,7 +40,7 @@ export class StoneMasterUpsert extends Base implements OnInit {
   form = new FormGroup<StoneMasterForm>({
     name: new FormControl<string>('', {
       nonNullable: true,
-      validators: [Validators.required, Validators.minLength(2), Validators.maxLength(255)],
+      validators: [Validators.required, Validators.minLength(1), Validators.maxLength(255)],
     }),
     is_published: new FormControl<boolean>(true, { nonNullable: true }),
   });
@@ -101,8 +102,8 @@ export class StoneMasterUpsert extends Base implements OnInit {
         );
       }
       this.dialogRef.close(true);
-    } catch {
-      this.errorMessage.set('Failed to save. Please try again.');
+    } catch (err) {
+      this.errorMessage.set((err as HttpErrorResponse).error.message);
     } finally {
       this.isSaving.set(false);
     }
