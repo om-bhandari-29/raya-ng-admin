@@ -55,7 +55,7 @@ export class ItemList extends ListBase<IItem> implements OnInit {
 
   override ngOnInit(): void {
     super.ngOnInit();
-    this.breadcrumb.set([{ label: 'Stock', url: APPRoutes.STOCK.ITEM }, { label: 'Item' }]);
+    this.breadcrumb.set([{ label: 'Stock', url: APPRoutes.STOCK.ROOT }, { label: 'Item' }]);
     this.loadItems();
     this.setHeaderConfig('Stock', 'Add Stock');
   }
