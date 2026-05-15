@@ -10,6 +10,7 @@ import {
 } from '../sub-category-upsert/sub-category-upsert';
 import { TableLayout, TableSlot } from '../../../core/component/table-layout/table-layout';
 import { TableColumn } from '../../../core/models/table-column.interface';
+import { SidebarMode } from '../../../core/enum/sidebar-mode.enum';
 
 @Component({
   selector: 'app-sub-category-list',
@@ -44,6 +45,7 @@ export class SubCategoryList extends ListBase<ISubCategory> implements OnInit {
     super.ngOnInit();
     this.loadItems();
     this.setHeaderConfig('Item Sub-Category', 'Add Item Sub-Category');
+    this.sidebarService.setMode(SidebarMode.SUB_CATEGORY_LIST);
   }
 
   protected override onActionButtonClick(): void {

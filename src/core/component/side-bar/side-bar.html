@@ -39,7 +39,9 @@
                         [attr.title]="item.name"
                       >
                         <i class="text-[18px] flex-shrink-0" [ngClass]="item.icon"></i>
-                        <span class="flex-1 ms-1.5 text-left whitespace-nowrap">{{ item.name }}</span>
+                        <span class="flex-1 ms-1.5 text-left whitespace-nowrap">{{
+                          item.name
+                        }}</span>
                         <i
                           class="text-base transition-transform"
                           [ngClass]="item.expanded ? 'bx bx-chevron-up' : 'bx bx-chevron-down'"
@@ -77,6 +79,47 @@
               }
             </ul>
           }
+        </div>
+      } @else if (mode() === SidebarMode.SUB_CATEGORY_LIST) {
+        <div class="p-4 space-y-4">
+          <div>
+            <span class="text-xs font-semibold text-gray-500">Filter By</span>
+            <div class="mt-2 space-y-2">
+              <select
+                class="w-full border border-gray-200 rounded-md px-3 py-0.5 text-sm bg-[#f3f3f3] appearance-none"
+              >
+                <option>Assigned To</option>
+              </select>
+              <select
+                class="w-full border border-gray-200 rounded-md px-3 py-0.5 text-sm bg-[#f3f3f3] appearance-none"
+              >
+                <option>Created By</option>
+              </select>
+            </div>
+          </div>
+          <div>
+            <span class="text-xs font-semibold text-gray-500">Edit Filters</span>
+            <div class="mt-2">
+              <select
+                class="w-full border border-gray-200 rounded-md px-3 py-0.5 text-sm bg-[#f3f3f3] appearance-none"
+              >
+                <option>Tags</option>
+              </select>
+            </div>
+          </div>
+          <div>
+            <span class="text-xs font-semibold text-gray-500">Show Tags</span>
+          </div>
+          <div>
+            <span class="text-xs font-semibold text-gray-500">Save Filter</span>
+            <div class="mt-2">
+              <input
+                type="text"
+                placeholder="Filter Name"
+                class="w-full rounded-lg px-2 py-0.5 text-sm text-slate-800 placeholder-slate-400 outline-none transition focus:ring-2 focus:ring-gray-200 focus:border-gray-200 bg-[#f3f3f3]"
+              />
+            </div>
+          </div>
         </div>
       } @else if (mode() === SidebarMode.DETAIL) {
         <div class="p-4">

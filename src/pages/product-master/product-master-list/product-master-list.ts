@@ -7,6 +7,7 @@ import { IProductMaster } from '../product-master.response';
 import { TableLayout } from '../../../core/component/table-layout/table-layout';
 import { TableColumn } from '../../../core/models/table-column.interface';
 import { APPRoutes } from '../../../core/constant/app-routes';
+import { SidebarMode } from '../../../core/enum/sidebar-mode.enum';
 
 @Component({
   selector: 'app-product-master-list',
@@ -35,6 +36,7 @@ export class ProductMasterList extends ListBase<IProductMaster> implements OnIni
     super.ngOnInit();
     this.loadItems();
     this.setHeaderConfig('Product Master', 'Add Product Master');
+    this.sidebarService.setMode(SidebarMode.SUB_CATEGORY_LIST);
   }
 
   protected override onActionButtonClick(): void {

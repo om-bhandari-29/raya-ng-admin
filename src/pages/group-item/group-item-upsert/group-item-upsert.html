@@ -108,8 +108,8 @@
             class="w-full rounded-lg px-2 py-1 text-sm text-slate-800 placeholder-slate-400 outline-none transition focus:ring-2 focus:ring-gray-200 focus:border-gray-200 bg-[#f3f3f3]"
           >
             <option value="" class="text-gray-900">— None —</option>
-            @for (hsn of hsnCodeOptions(); track hsn.id) {
-              <option [value]="hsn.hsn_code">{{ hsn.hsn_code }} ({{ hsn.gst_rate }}%)</option>
+            @for (hsn of hsnCodeOptions(); track hsn.name) {
+              <option [value]="hsn.name">{{ hsn.name }}</option>
             }
           </select>
         </div>

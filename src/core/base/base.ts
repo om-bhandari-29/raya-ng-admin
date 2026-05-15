@@ -8,6 +8,7 @@ import { APIRoutes } from '../constant/api-routes';
 import { environment } from '../../environment/dev.env';
 import { variable } from '../enum/variable.enum';
 import { ActionService } from '../services/action.service';
+import { SidebarService } from '../component/side-bar/sidebar.service';
 
 @Component({
   selector: 'app-base',
@@ -17,6 +18,7 @@ import { ActionService } from '../services/action.service';
 export class Base {
   public toastr: ToastrService = inject(ToastrService);
   private actionService: ActionService = inject(ActionService);
+  public sidebarService: SidebarService = inject(SidebarService);
   // public toastService: ToastService = inject(ToastService);
 
   public subscriptionArray: Array<Subscription> = [];
