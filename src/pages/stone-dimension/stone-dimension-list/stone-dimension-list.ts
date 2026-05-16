@@ -8,6 +8,7 @@ import { TableColumn } from '../../../core/models/table-column.interface';
 import { APPRoutes } from '../../../core/constant/app-routes';
 import { PageTitleService } from '../../../core/services/page-title.service';
 import { BreadcrumbService } from '../../../core/services/breadcrumb.service';
+import { SidebarMode } from '../../../core/enum/sidebar-mode.enum';
 
 @Component({
   selector: 'app-stone-dimension-list',
@@ -51,6 +52,7 @@ export class StoneDimensionList extends ListBase<IStoneDimension> implements OnI
     this.breadcrumb.set([{ label: 'Stone Dimension' }]);
     this.loadItems();
     this.setHeaderConfig('Stone Dimension', 'Add stone dimension');
+    this.sidebarService.setMode(SidebarMode.STONE_DIMENSION);
   }
 
   protected override onActionButtonClick(): void {

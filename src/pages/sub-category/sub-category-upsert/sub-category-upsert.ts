@@ -73,10 +73,12 @@ export class SubCategoryUpsert extends Base implements OnInit {
 
       if (response.status) {
         this.form.patchValue({
-          item_group_name: response.data.item_group_id,
+          item_group_name: response.data.item_group_name,
           name: response.data.name,
           is_active: response.data.is_active,
         });
+
+        console.log(this.form.value);
       } else {
         this.errorMessage.set(response.message);
       }

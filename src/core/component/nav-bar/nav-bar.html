@@ -4,7 +4,9 @@
       <div class="flex items-center justify-start rtl:justify-end">
         <!-- Logo/Brand + Breadcrumb -->
         <div class="flex items-center gap-1.5">
-          <a href="#" class="text-lg font-semibold text-gray-800 whitespace-nowrap">RAYA</a>
+          <a href="/dashboard" class="text-lg font-semibold text-gray-800 whitespace-nowrap"
+            >RAYA</a
+          >
           @if (breadcrumbService.breadcrumbs().length) {
             <span class="text-slate-400 text-base">›</span>
             @for (crumb of breadcrumbService.breadcrumbs(); track $index; let last = $last) {

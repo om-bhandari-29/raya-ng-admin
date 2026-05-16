@@ -8,10 +8,12 @@ import { SidebarMode } from '../../enum/sidebar-mode.enum';
 import { BreadcrumbService } from '../../services/breadcrumb.service';
 import { Subscription } from 'rxjs';
 import { filter } from 'rxjs/operators';
+import { SubCategorySidebar } from './sub-category-sidebar/sub-category-sidebar';
+import { StoneDimensionSidebar } from './stone-dimension-sidebar/stone-dimension-sidebar';
 
 @Component({
   selector: 'app-side-bar',
-  imports: [CommonModule, FormsModule, RouterModule],
+  imports: [CommonModule, FormsModule, RouterModule, SubCategorySidebar, StoneDimensionSidebar],
   templateUrl: './side-bar.html',
   styleUrl: './side-bar.scss',
 })
@@ -34,8 +36,8 @@ export class SideBar implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.updateBreadcrumb(this.router.url);
     this.sub = this.router.events
-      .pipe(filter(e => e instanceof NavigationEnd))
-      .subscribe(e => this.updateBreadcrumb((e as NavigationEnd).urlAfterRedirects));
+      .pipe(filter((e) => e instanceof NavigationEnd))
+      .subscribe((e) => this.updateBreadcrumb((e as NavigationEnd).urlAfterRedirects));
   }
 
   ngOnDestroy(): void {
@@ -43,8 +45,8 @@ export class SideBar implements OnInit, OnDestroy {
   }
 
   private updateBreadcrumb(url: string): void {
-    const allItems = this.menuItems().flatMap(i => i.child?.length ? i.child : [i]);
-    const matched = allItems.find(i => url.startsWith('/' + i.route));
+    const allItems = this.menuItems().flatMap((i) => (i.child?.length ? i.child : [i]));
+    const matched = allItems.find((i) => url.startsWith('/' + i.route));
     if (matched) this.breadcrumbService.set([{ label: matched.name }]);
   }
 
