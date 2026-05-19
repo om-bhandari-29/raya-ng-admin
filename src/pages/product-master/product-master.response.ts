@@ -1,14 +1,14 @@
 export interface ISubCategory {
   id: number;
   name: string;
-  item_group_name: string;
+  item_group_id: string;
   is_active: boolean;
 }
 
 export interface IProductMaster {
   id: number;
   name: string;
-  sub_category_name: number;
+  sub_category_id: number;
   product_description: string;
   is_active: boolean;
   created_at: string;

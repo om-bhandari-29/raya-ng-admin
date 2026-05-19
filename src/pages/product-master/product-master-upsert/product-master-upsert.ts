@@ -10,7 +10,7 @@ import { APPRoutes } from '../../../core/constant/app-routes';
 
 export interface ProductMasterForm {
   item_group_name: FormControl<string | null>;
-  sub_category_name: FormControl<number | null>;
+  sub_category_id: FormControl<number | null>;
   name: FormControl<string>;
   product_description: FormControl<string>;
   is_active: FormControl<boolean>;
@@ -42,7 +42,7 @@ export class ProductMasterUpsert extends Base implements OnInit {
 
   form = new FormGroup<ProductMasterForm>({
     item_group_name: new FormControl<string | null>(null),
-    sub_category_name: new FormControl<number | null>(
+    sub_category_id: new FormControl<number | null>(
       { value: null, disabled: true },
       { validators: [Validators.required] },
     ),
@@ -106,17 +106,17 @@ export class ProductMasterUpsert extends Base implements OnInit {
   }
 
   onCategoryChange(): void {
-    this.form.controls.sub_category_name.setValue(null);
+    this.form.controls.sub_category_id.setValue(null);
     console.log(this.form.controls.item_group_name.value);
 
     const item_group_id: string | null = this.form.controls.item_group_name.value ?? null;
 
     this.subCategories.set([]);
     if (item_group_id) {
-      this.form.controls.sub_category_name.enable();
+      this.form.controls.sub_category_id.enable();
       this.loadSubCategoriesByItemGrpName(item_group_id);
     } else {
-      this.form.controls.sub_category_name.disable();
+      this.form.controls.sub_category_id.disable();
     }
   }
 
@@ -130,12 +130,12 @@ export class ProductMasterUpsert extends Base implements OnInit {
         await this.httpGetPromise<IGenericResponse<IProductMaster>>(url);
 
       if (response.status) {
-        await this.loadSubCategoriesByItemGrpName(response.data.sub_category.item_group_name ?? '');
-        this.form.controls.sub_category_name.enable();
+        await this.loadSubCategoriesByItemGrpName(response.data.sub_category.item_group_id ?? '');
+        this.form.controls.sub_category_id.enable();
 
         this.form.patchValue({
-          item_group_name: response.data.sub_category.item_group_name,
-          sub_category_name: response.data.sub_category_name,
+          item_group_name: response.data.sub_category.item_group_id,
+          sub_category_id: response.data.sub_category.id,
           name: response.data.name,
           product_description: response.data.product_description,
           is_active: response.data.is_active,
@@ -188,7 +188,7 @@ export class ProductMasterUpsert extends Base implements OnInit {
   }
 
   get subCategoryIdControl() {
-    return this.form.controls.sub_category_name;
+    return this.form.controls.sub_category_id;
   }
   get nameControl() {
     return this.form.controls.name;

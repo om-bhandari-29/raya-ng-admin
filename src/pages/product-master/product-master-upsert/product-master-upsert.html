@@ -138,15 +138,15 @@
           <!-- Item Sub Category -->
           <div class="flex flex-col gap-1.5">
             <label
-              for="sub_category_name"
+              for="sub_category_id"
               class="font-medium"
               style="font-size: 13px; color: #525252"
             >
               Item Sub Category <span class="text-red-500">*</span>
             </label>
             <select
-              id="sub_category_name"
-              formControlName="sub_category_name"
+              id="sub_category_id"
+              formControlName="sub_category_id"
               class="w-full rounded-lg px-2 py-1 text-sm text-slate-800 placeholder-slate-400 outline-none transition focus:ring-2 focus:ring-gray-200 focus:border-gray-200 bg-[#f3f3f3] disabled:text-slate-400 disabled:cursor-not-allowed"
               [class.border-red-400]="subCategoryIdControl.invalid && subCategoryIdControl.touched"
               [class.border-slate-300]="
@@ -161,7 +161,7 @@
                 }}
               </option>
               @for (category of subCategories(); track category.id) {
-                <option [ngValue]="category.name">{{ category.name }}</option>
+                <option [ngValue]="category.id">{{ category.name }}</option>
               }
             </select>
             @if (subCategoryIdControl.invalid && subCategoryIdControl.touched) {
