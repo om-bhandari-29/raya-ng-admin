@@ -77,8 +77,8 @@
           [class.border-slate-300]="!(itemGroupIdControl.invalid && itemGroupIdControl.touched)"
         >
           <option [ngValue]="null" disabled>Select item group</option>
-          @for (group of itemGroups(); track group.name_frappe_based_id) {
-            <option [ngValue]="group.name_frappe_based_id">{{ group.name_frappe_based_id }}</option>
+          @for (group of itemGroups(); track group.id) {
+            <option [ngValue]="group.id">{{ group.name }}</option>
           }
         </select>
         @if (itemGroupIdControl.invalid && itemGroupIdControl.touched) {

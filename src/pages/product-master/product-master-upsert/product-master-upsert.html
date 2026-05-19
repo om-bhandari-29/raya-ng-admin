@@ -127,9 +127,9 @@
               class="w-full rounded-lg px-2 py-1 text-sm text-slate-800 placeholder-slate-400 outline-none transition focus:ring-2 focus:ring-gray-200 focus:border-gray-200 bg-[#f3f3f3]"
             >
               <option [ngValue]="null" [value]="''">Select category</option>
-              @for (group of itemGroups(); track group.name_frappe_based_id) {
-                <option [value]="group.name_frappe_based_id">
-                  {{ group.name_frappe_based_id }}
+              @for (group of itemGroups(); track group.id) {
+                <option [value]="group.id">
+                  {{ group.name }}
                 </option>
               }
             </select>

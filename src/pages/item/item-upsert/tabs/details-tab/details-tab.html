@@ -51,7 +51,7 @@
           >
             <option [ngValue]="null" disabled>Select item group</option>
             @for (g of dropdowns?.itemGroups ?? []; track g.id) {
-              <option [ngValue]="g.id">{{ g.name_frappe_based_id }}</option>
+              <option [ngValue]="g.id">{{ g.name }}</option>
             }
           </select>
           @if (f.item_group_id.invalid && f.item_group_id.touched) {
