@@ -13,7 +13,7 @@ export interface SubCategoryDialogData {
 }
 
 export interface SubCategoryForm {
-  item_group_name: FormControl<number | null>;
+  item_group_id: FormControl<number | null>;
   name: FormControl<string>;
   is_active: FormControl<boolean>;
 }
@@ -35,7 +35,7 @@ export class SubCategoryUpsert extends Base implements OnInit {
   itemGroups = signal<IComboItemFrappeBased[]>([]);
 
   form = new FormGroup<SubCategoryForm>({
-    item_group_name: new FormControl<number | null>(null, { validators: [Validators.required] }),
+    item_group_id: new FormControl<number | null>(null, { validators: [Validators.required] }),
     name: new FormControl<string>('', {
       nonNullable: true,
       validators: [Validators.required, Validators.minLength(2)],
@@ -73,7 +73,7 @@ export class SubCategoryUpsert extends Base implements OnInit {
 
       if (response.status) {
         this.form.patchValue({
-          item_group_name: response.data.item_group_name,
+          item_group_id: response.data.item_group_id,
           name: response.data.name,
           is_active: response.data.is_active,
         });
@@ -124,7 +124,7 @@ export class SubCategoryUpsert extends Base implements OnInit {
   }
 
   get itemGroupIdControl() {
-    return this.form.controls.item_group_name;
+    return this.form.controls.item_group_id;
   }
   get nameControl() {
     return this.form.controls.name;
