@@ -13,8 +13,8 @@ import { BreadcrumbService } from '../../../core/services/breadcrumb.service';
 import { APPRoutes } from '../../../core/constant/app-routes';
 
 export interface GroupItemForm {
-  name_frappe_based_id: FormControl<string>;
-  parent_item_group: FormControl<string>;
+  name: FormControl<string>;
+  parent_item_group_id: FormControl<string>;
   is_group: FormControl<boolean>;
   gst_hsn_code: FormControl<string>;
   is_active: FormControl<boolean>;
@@ -41,11 +41,11 @@ export class GroupItemUpsert extends Base implements OnInit {
   hsnCodeOptions = signal<IComboHsnCode[]>([]);
 
   form = new FormGroup<GroupItemForm>({
-    name_frappe_based_id: new FormControl<string>('', {
+    name: new FormControl<string>('', {
       nonNullable: true,
       validators: [Validators.required, Validators.minLength(2)],
     }),
-    parent_item_group: new FormControl<string>('', { nonNullable: true }),
+    parent_item_group_id: new FormControl<string>('', { nonNullable: true }),
     is_group: new FormControl<boolean>(false, { nonNullable: true }),
     gst_hsn_code: new FormControl<string>('', { nonNullable: true }),
     is_active: new FormControl<boolean>(true, { nonNullable: true }),
@@ -100,8 +100,8 @@ export class GroupItemUpsert extends Base implements OnInit {
 
       if (response.status) {
         this.form.patchValue({
-          name_frappe_based_id: response.data.name_frappe_based_id,
-          parent_item_group: response.data.parent_item_group ?? '',
+          name: response.data.name,
+          parent_item_group_id: response.data.parent_item_group_id ?? '',
           is_group: response.data.is_group,
           gst_hsn_code: response.data.gst_hsn_code ?? '',
           is_active: response.data.is_active,
@@ -132,10 +132,10 @@ export class GroupItemUpsert extends Base implements OnInit {
     try {
       const raw = this.form.getRawValue();
       const payload = {
-        name_frappe_based_id: raw.name_frappe_based_id,
+        name: raw.name,
         is_group: raw.is_group,
         gst_hsn_code: raw.gst_hsn_code || null,
-        parent_item_group: raw.parent_item_group || null,
+        parent_item_group_id: raw.parent_item_group_id || null,
         is_active: raw.is_active,
       };
 

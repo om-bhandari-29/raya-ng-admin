@@ -21,19 +21,19 @@ export class GroupItemList extends ListBase<IGroupItem> implements OnInit {
 
   columns: TableColumn<IGroupItem>[] = [
     {
-      key: 'name_frappe_based_id',
+      key: 'name',
       header: 'ID',
       width: '220px',
       slot: 'id',
     },
     {
-      key: 'name_frappe_based_id',
+      key: 'name',
       header: 'Item Group Name',
       type: 'text',
       width: '280px',
     },
     {
-      key: 'parent_item_group',
+      key: 'parent_item_group_name',
       header: 'Parent Item Group',
       type: 'text',
       format: (value) => value || '-',
@@ -73,7 +73,7 @@ export class GroupItemList extends ListBase<IGroupItem> implements OnInit {
         IGenericResponse<null>,
         { name_frappe_based_id: string; liked: boolean }
       >(this.apiRoutes.item_group.TOGGLE_LIKED, {
-        name_frappe_based_id: item.name_frappe_based_id,
+        name_frappe_based_id: item.name,
         liked: newLiked,
       });
       this.items.update((list) =>

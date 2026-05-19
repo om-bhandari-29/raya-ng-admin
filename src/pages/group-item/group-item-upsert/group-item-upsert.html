@@ -53,22 +53,18 @@
             Item Group Name <span class="text-red-500">*</span>
           </label>
           <input
-            id="name_frappe_based_id"
+            id="name"
             type="text"
-            formControlName="name_frappe_based_id"
+            formControlName="name"
             placeholder="Enter item group name"
             class="w-full rounded-lg px-2 py-1 text-sm text-slate-800 placeholder-slate-400 outline-none transition focus:ring-2 focus:ring-gray-200 focus:border-gray-200 bg-[#f3f3f3]"
-            [class.border-red-400]="
-              f.name_frappe_based_id.invalid && f.name_frappe_based_id.touched
-            "
-            [class.border-slate-300]="
-              !(f.name_frappe_based_id.invalid && f.name_frappe_based_id.touched)
-            "
+            [class.border-red-400]="f.name.invalid && f.name.touched"
+            [class.border-slate-300]="!(f.name.invalid && f.name.touched)"
           />
-          @if (f.name_frappe_based_id.invalid && f.name_frappe_based_id.touched) {
-            @if (f.name_frappe_based_id.errors?.['required']) {
+          @if (f.name.invalid && f.name.touched) {
+            @if (f.name.errors?.['required']) {
               <p class="text-xs text-red-500">Item group name is required.</p>
-            } @else if (f.name_frappe_based_id.errors?.['minlength']) {
+            } @else if (f.name.errors?.['minlength']) {
               <p class="text-xs text-red-500">Name must be at least 2 characters.</p>
             }
           }
@@ -77,21 +73,21 @@
         <!-- Parent Item Group -->
         <div class="flex flex-col gap-1.5">
           <label
-            for="parent_item_group"
+            for="parent_item_group_id"
             class="font-medium"
             style="font-size: 13px; color: #525252"
           >
             Parent Item Group
           </label>
           <select
-            id="parent_item_group"
-            formControlName="parent_item_group"
+            id="parent_item_group_id"
+            formControlName="parent_item_group_id"
             class="w-full rounded-lg px-2 py-1 text-sm text-slate-800 placeholder-slate-400 outline-none transition focus:ring-2 focus:ring-gray-200 focus:border-gray-200 bg-[#f3f3f3]"
           >
             <option value="" class="text-gray-900">— None —</option>
             @for (group of itemGroupOptions(); track group.id) {
-              <option [value]="group.id" class="text-gray-900">
-                {{ group.name_frappe_based_id }}
+              <option [ngValue]="group.id" class="text-gray-900">
+                {{ group.name }}
               </option>
             }
           </select>

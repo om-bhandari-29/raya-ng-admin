@@ -4,7 +4,7 @@ export interface IComboItem {
 }
 export interface IComboItemFrappeBased {
   id: number;
-  name_frappe_based_id: string;
+  name: string;
 }
 
 export interface IComboHsnCode {
