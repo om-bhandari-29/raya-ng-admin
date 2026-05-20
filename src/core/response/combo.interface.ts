@@ -9,7 +9,7 @@ export interface IComboItemFrappeBased {
 
 export interface IComboHsnCode {
   hsn_code: string;
-  name: number;
+  id: number;
 }
 
 export interface IComboItemAttribute {

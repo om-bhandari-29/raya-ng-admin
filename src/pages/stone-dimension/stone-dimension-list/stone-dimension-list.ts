@@ -60,12 +60,12 @@ export class StoneDimensionList extends ListBase<IStoneDimension> implements OnI
   }
 
   openAddModal(): void {
-    this.router.navigate([`/${APPRoutes.STONE_DIMENSION}/upsert`], { queryParams: { name: '' } });
+    this.router.navigate([`/${APPRoutes.STONE_DIMENSION}/upsert`], { queryParams: { id: 0 } });
   }
 
-  openEditModal(generatedKey: string): void {
+  openEditModal(id: number): void {
     this.router.navigate([`/${APPRoutes.STONE_DIMENSION}/upsert`], {
-      queryParams: { name: generatedKey },
+      queryParams: { id },
     });
   }
 

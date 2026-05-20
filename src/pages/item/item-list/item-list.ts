@@ -65,11 +65,11 @@ export class ItemList extends ListBase<IItem> implements OnInit {
   }
 
   openAdd(): void {
-    this.router.navigate(['/stock/item/upsert'], { queryParams: { name: '' } });
+    this.router.navigate(['/stock/item/upsert'], { queryParams: { id: 0 } });
   }
 
-  openEdit(name: string): void {
-    this.router.navigate(['/stock/item/upsert'], { queryParams: { name } });
+  openEdit(id: number): void {
+    this.router.navigate(['/stock/item/upsert'], { queryParams: { id } });
   }
 
   async deleteItem(id: number): Promise<void> {

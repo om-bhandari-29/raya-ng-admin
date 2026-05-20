@@ -4,8 +4,8 @@
   [isLoading]="isLoading()"
   [errorMessage]="errorMessage()"
   (onRefresh)="loadItems()"
-  (onRowClick)="openEditModal($any($event).generatedKey)"
-  (onEdit)="openEditModal($any($event).generatedKey)"
+  (onRowClick)="openEditModal($any($event).id)"
+  (onEdit)="openEditModal($any($event).id)"
   (onDelete)="deleteItem($any($event).id)"
 >
 </app-table-layout>

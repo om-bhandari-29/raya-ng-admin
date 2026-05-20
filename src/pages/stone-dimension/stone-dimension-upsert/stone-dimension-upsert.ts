@@ -42,7 +42,7 @@ export class StoneDimensionUpsert extends Base implements OnInit {
   private pageTitleService = inject(PageTitleService);
   private breadcrumb = inject(BreadcrumbService);
 
-  itemName = signal<string>('');
+  itemName = signal<number>(0);
   isEditMode = signal<boolean>(false);
   isLoading = signal<boolean>(false);
   isSaving = signal<boolean>(false);
@@ -108,16 +108,15 @@ export class StoneDimensionUpsert extends Base implements OnInit {
 
   override ngOnInit(): void {
     super.ngOnInit();
-    const name = this.route.snapshot.queryParamMap.get('name');
-    if (name) {
-      this.itemName.set(name);
+    const id = this.route.snapshot.queryParamMap.get('id');
+    if (id) {
+      this.itemName.set(parseInt(id));
       this.isEditMode.set(true);
-      console.log(this.itemName());
-      this.setHeaderConfig(this.itemName(), 'Save');
-      this.breadcrumb.set([
-        { label: 'Stone Dimension', url: APPRoutes.STONE_DIMENSION },
-        { label: name },
-      ]);
+      // this.setHeaderConfig(this.itemName(), 'Save');
+      // this.breadcrumb.set([
+      //   { label: 'Stone Dimension', url: APPRoutes.STONE_DIMENSION },
+      //   { label: 'Edit' },
+      // ]);
       this.loadItem();
     } else {
       // this.pageTitleService.setTitle('New Stone Dimension');
@@ -166,6 +165,11 @@ export class StoneDimensionUpsert extends Base implements OnInit {
         if (res.data.stoneName) {
           this.pageTitleService.setTitle(res.data.stoneName);
         }
+        this.setHeaderConfig(res.data.generatedKey, 'Save');
+        this.breadcrumb.set([
+          { label: 'Stone Dimension', url: APPRoutes.STONE_DIMENSION },
+          { label: res.data.generatedKey },
+        ]);
       } else {
         this.errorMessage.set(res.message);
       }

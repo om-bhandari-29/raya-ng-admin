@@ -71,8 +71,8 @@
             [class.border-red-400]="f.hsn_sac_id.invalid && f.hsn_sac_id.touched"
           >
             <option [ngValue]="null" disabled>Select HSN/SAC code</option>
-            @for (h of dropdowns?.hsnCodes ?? []; track h.name) {
-              <option [ngValue]="h.name">{{ h.name }}</option>
+            @for (h of dropdowns?.hsnCodes ?? []; track h.id) {
+              <option [ngValue]="h.id">{{ h.hsn_code }}</option>
             }
           </select>
           <p class="text-xs text-slate-400">

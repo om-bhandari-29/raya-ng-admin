@@ -37,15 +37,15 @@ export class ItemUpsert extends Base implements OnInit {
   isSaving = signal<boolean>(false);
   errorMessage = signal<string | null>(null);
   activeTab = signal<ItemTab>(ItemTab.DETAILS);
-  itemName = signal<string>('');
+  itemId = signal<number>(0);
   item = signal<IItem | null>(null);
   dropdowns = signal<ItemDropdowns | null>(null);
 
   override ngOnInit(): void {
     super.ngOnInit();
-    const name = this.route.snapshot.queryParamMap.get('name');
-    if (name) {
-      this.itemName.set(name);
+    const id = this.route.snapshot.queryParamMap.get('id');
+    if (id) {
+      this.itemId.set(parseInt(id));
       this.isEditMode.set(true);
       this.loadItem();
     }
@@ -71,7 +71,7 @@ export class ItemUpsert extends Base implements OnInit {
     try {
       if (this.isEditMode()) {
         await this.httpPatchPromise<IGenericResponse<IItem>, ItemDetailsPayload>(
-          this.apiRoutes.item.UPDATE(this.itemName()),
+          this.apiRoutes.item.UPDATE(this.itemId()),
           payload,
         );
         this.toastr.success('Details saved.');
@@ -82,7 +82,7 @@ export class ItemUpsert extends Base implements OnInit {
           payload,
         );
         if (res.status) {
-          this.itemName.set(res.data.name);
+          this.itemId.set(res.data.id);
           this.isEditMode.set(true);
           this.item.set(res.data);
           this.router.navigate(['/stock/item/upsert'], {
@@ -110,7 +110,7 @@ export class ItemUpsert extends Base implements OnInit {
     this.errorMessage.set(null);
     try {
       await this.httpPatchPromise<IGenericResponse<IItem>, ItemInventoryPayload>(
-        this.apiRoutes.item.UPDATE(this.itemName()),
+        this.apiRoutes.item.UPDATE(this.itemId()),
         payload,
       );
       this.toastr.success('Inventory saved.');
@@ -132,7 +132,7 @@ export class ItemUpsert extends Base implements OnInit {
     this.errorMessage.set(null);
     try {
       await this.httpPatchPromise<IGenericResponse<IItem>, ItemVariantsPayload>(
-        this.apiRoutes.item.UPDATE(this.itemName()),
+        this.apiRoutes.item.UPDATE(this.itemId()),
         payload,
       );
       this.toastr.success('Variants saved.');
@@ -154,7 +154,7 @@ export class ItemUpsert extends Base implements OnInit {
     this.errorMessage.set(null);
     try {
       await this.httpPatchPromise<IGenericResponse<IItem>, ItemStoneDetailsPayload>(
-        this.apiRoutes.item.UPDATE(this.itemName()),
+        this.apiRoutes.item.UPDATE(this.itemId()),
         payload,
       );
       this.toastr.success('Stone details saved.');
@@ -204,7 +204,7 @@ export class ItemUpsert extends Base implements OnInit {
     this.errorMessage.set(null);
     try {
       const res = await this.httpGetPromise<IGenericResponse<IItem>>(
-        this.apiRoutes.item.GET_BY_NAME(this.itemName()),
+        this.apiRoutes.item.GET_BY_ID(this.itemId()),
       );
       if (res.status) {
         this.item.set(res.data);

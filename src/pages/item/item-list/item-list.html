@@ -4,12 +4,12 @@
   [isLoading]="isLoading()"
   [errorMessage]="errorMessage()"
   (onRefresh)="loadItems()"
-  (onEdit)="openEdit($any($event).name)"
+  (onEdit)="openEdit($any($event).id)"
   (onDelete)="deleteItem($any($event).id)"
 >
   <!-- Custom template for ID column (clickable link) -->
   <ng-template slot="id" let-item>
-    <button (click)="openEdit(item.name)" class="text-blue-600 hover:text-blue-800 font-medium">
+    <button (click)="openEdit(item.id)" class="text-blue-600 hover:text-blue-800 font-medium">
       {{ item.name }}
     </button>
   </ng-template>
