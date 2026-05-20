@@ -49,8 +49,8 @@ export class GstHsnCodeList extends ListBase<IGstHsnCode> implements OnInit {
     this.router.navigate([this.appRoutes.GST_HSN_CODE_UPSERT], { queryParams: { id: 0 } });
   }
 
-  openEditModal(name: number): void {
-    this.router.navigate([this.appRoutes.GST_HSN_CODE_UPSERT], { queryParams: { name } });
+  openEditModal(id: number): void {
+    this.router.navigate([this.appRoutes.GST_HSN_CODE_UPSERT], { queryParams: { id } });
   }
 
   public override onActionButtonClick(): void {

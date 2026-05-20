@@ -8,7 +8,7 @@
   [pageSize]="pageSize()"
   [totalPages]="totalPages()"
   (onRefresh)="loadItems()"
-  (onEdit)="openEditModal($any($event).name)"
+  (onEdit)="openEditModal($any($event).id)"
   (onPageChange)="onPageChange($event)"
 >
 </app-table-layout>

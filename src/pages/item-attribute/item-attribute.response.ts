@@ -1,8 +1,8 @@
 export interface IItemAttributeValue {
   id: number;
-  attribute_name: number;
+  attribute_master_id: number;
   name: string;
-  attribute_type: string | null;
+  type: string | null;
   abbreviation: string | null;
   purity_factor: number;
 }

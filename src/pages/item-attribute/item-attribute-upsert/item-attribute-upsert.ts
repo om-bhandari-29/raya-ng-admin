@@ -19,8 +19,9 @@ export interface ItemAttributeForm {
 }
 
 export interface ValueFormGroup {
+  id: FormControl<number>;
   name: FormControl<string>;
-  attribute_type: FormControl<string>;
+  type: FormControl<string>;
   abbreviation: FormControl<string>;
   purity_factor: FormControl<number>;
 }
@@ -70,7 +71,7 @@ export class ItemAttributeUpsert extends Base implements OnInit {
         { label: 'Item Attribute', url: `/${this.appRoutes.ITEM_ATTRIBUTE}` },
         { label: 'Edit Item Attribute' },
       ]);
-      this.setHeaderConfig(this.attributeName(), 'Update');
+      // this.setHeaderConfig(this.attributeName(), 'Update');
       this.loadAttribute();
     } else {
       this.breadcrumbService.set([
@@ -100,6 +101,7 @@ export class ItemAttributeUpsert extends Base implements OnInit {
         });
         this.valuesArray.clear();
         (response.data.values || []).forEach((v) => this.addValue(v));
+        this.setHeaderConfig(response.data.name, 'Update');
       } else {
         this.errorMessage.set(response.message);
       }
@@ -113,8 +115,9 @@ export class ItemAttributeUpsert extends Base implements OnInit {
   addValue(value?: IItemAttributeValue): void {
     this.valuesArray.push(
       new FormGroup<ValueFormGroup>({
+        id: new FormControl<number>(value?.id ?? 0, { nonNullable: true }),
         name: new FormControl(value?.name ?? '', { nonNullable: true }),
-        attribute_type: new FormControl(value?.attribute_type ?? '', { nonNullable: true }),
+        type: new FormControl(value?.type ?? '', { nonNullable: true }),
         abbreviation: new FormControl(value?.abbreviation ?? '', { nonNullable: true }),
         purity_factor: new FormControl(value?.purity_factor ?? 0, { nonNullable: true }),
       }),
@@ -146,8 +149,9 @@ export class ItemAttributeUpsert extends Base implements OnInit {
         to_range: parseFloat(formValue.to_range) || 0,
         increment: parseFloat(formValue.increment) || 0,
         values: formValue.values.map((v) => ({
+          id: v.id,
           name: v.name,
-          attribute_type: v.attribute_type || null,
+          type: v.type || null,
           abbreviation: v.abbreviation || null,
           purity_factor: v.purity_factor,
         })),
