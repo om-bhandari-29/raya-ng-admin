@@ -115,9 +115,15 @@ export class StoneMasterList extends ListBase<IStoneMaster> implements OnInit {
     this.isLoading.set(true);
     this.errorMessage.set(null);
     try {
-      const res = await this.httpGetPromise<IGenericResponse<IStoneMaster[]>>(this.routes.GET_ALL);
+      const res = await this.httpGetPromise<IGenericResponse<IStoneMaster[]>>(
+        this.routes.GET_ALL(this.currentPage(), this.pageSize(), this.searchTerm()),
+      );
       if (res.status) {
         this.items.set(res.data);
+        if (res.meta) {
+          this.totalItems.set(res.meta.total);
+          this.totalPages.set(res.meta.totalPages);
+        }
       } else {
         this.errorMessage.set(res.message);
       }

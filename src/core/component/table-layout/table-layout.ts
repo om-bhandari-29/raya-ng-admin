@@ -7,10 +7,14 @@ import {
   QueryList,
   TemplateRef,
   AfterContentInit,
+  OnInit,
+  OnDestroy,
   Directive,
   ChangeDetectionStrategy,
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { Subject } from 'rxjs';
+import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 import { TableColumn } from '../../models/table-column.interface';
 
 @Directive({ selector: 'ng-template[slot]', standalone: true })
@@ -27,7 +31,7 @@ export class TableSlot {
   styleUrl: './table-layout.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class TableLayout<T = any> implements AfterContentInit {
+export class TableLayout<T = any> implements AfterContentInit, OnInit, OnDestroy {
   @Input() columns: TableColumn<T>[] = [];
   @Input() data: T[] = [];
   @Input() title: string = '';
@@ -36,6 +40,10 @@ export class TableLayout<T = any> implements AfterContentInit {
   @Input() totalCount: number = 0;
   @Input() showCheckbox: boolean = true;
   @Input() showActions: boolean = true;
+
+  // Search
+  @Input() searchPlaceholder: string = 'Search...';
+  @Input() searchDebounce: number = 400;
 
   // Pagination
   @Input() currentPage: number = 1;
@@ -49,10 +57,35 @@ export class TableLayout<T = any> implements AfterContentInit {
   @Output() onDelete = new EventEmitter<T>();
   @Output() onLike = new EventEmitter<T>();
   @Output() onPageChange = new EventEmitter<number>();
+  @Output() onSearch = new EventEmitter<string>();
 
   @ContentChildren(TableSlot) slotList!: QueryList<TableSlot>;
 
   private templateMap = new Map<string, TemplateRef<any>>();
+  private searchSubject = new Subject<string>();
+  private destroy$ = new Subject<void>();
+
+  searchValue: string = '';
+
+  ngOnInit(): void {
+    this.searchSubject
+      .pipe(debounceTime(this.searchDebounce), distinctUntilChanged())
+      .subscribe((term) => {
+        this.onSearch.emit(term);
+      });
+  }
+
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
+    this.searchSubject.complete();
+  }
+
+  onSearchInput(event: Event): void {
+    const value = (event.target as HTMLInputElement).value;
+    this.searchValue = value;
+    this.searchSubject.next(value.trim());
+  }
 
   ngAfterContentInit(): void {
     this.slotList.forEach((slot) => {
