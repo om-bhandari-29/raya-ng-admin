@@ -63,7 +63,8 @@ export const APIRoutes = {
     COMBO: '/item-attribute-master/combo',
   },
   stone_family: {
-    GET_ALL: '/stone-master/type',
+    GET_ALL: (page: number = 1, limit: number = 20, search: string = '') =>
+      `/stone-master/type?page=${page}&limit=${limit}${search ? `&search=${encodeURIComponent(search)}` : ''}`,
     GET_BY_ID: (id: number | string) => `/stone-master/type/${id}`,
     CREATE: '/stone-master/type',
     UPDATE: (id: number | string) => `/stone-master/type/${id}`,
@@ -71,7 +72,8 @@ export const APIRoutes = {
     COMBO: '/stone-master/type/combo',
   },
   stone_clarity: {
-    GET_ALL: '/stone-master/clarity',
+    GET_ALL: (page: number = 1, limit: number = 20, search: string = '') =>
+      `/stone-master/clarity?page=${page}&limit=${limit}${search ? `&search=${encodeURIComponent(search)}` : ''}`,
     GET_BY_ID: (id: number | string) => `/stone-master/clarity/${id}`,
     CREATE: '/stone-master/clarity',
     UPDATE: (id: number | string) => `/stone-master/clarity/${id}`,
@@ -79,7 +81,8 @@ export const APIRoutes = {
     COMBO: '/stone-master/clarity/combo',
   },
   stone_shape: {
-    GET_ALL: '/stone-master/shape',
+    GET_ALL: (page: number = 1, limit: number = 20, search: string = '') =>
+      `/stone-master/shape?page=${page}&limit=${limit}${search ? `&search=${encodeURIComponent(search)}` : ''}`,
     GET_BY_ID: (id: number | string) => `/stone-master/shape/${id}`,
     CREATE: '/stone-master/shape',
     UPDATE: (id: number | string) => `/stone-master/shape/${id}`,
@@ -87,7 +90,8 @@ export const APIRoutes = {
     COMBO: '/stone-master/shape/combo',
   },
   stone_dimension: {
-    GET_ALL: '/stone',
+    GET_ALL: (page: number = 1, limit: number = 10, search: string = '') =>
+      `/stone?page=${page}&limit=${limit}${search ? `&generatedKey=${encodeURIComponent(search)}` : ''}`,
     GET_BY_ID: (id: number | string) => `/stone/${id}`,
     CREATE: '/stone',
     UPDATE: (id: number | string) => `/stone/${id}`,

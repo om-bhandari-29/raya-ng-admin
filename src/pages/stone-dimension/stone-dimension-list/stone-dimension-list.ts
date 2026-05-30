@@ -26,7 +26,7 @@ export class StoneDimensionList extends ListBase<IStoneDimension> implements OnI
       key: 'generatedKey',
       header: 'ID',
       type: 'text',
-      width: '40%',
+      width: '70%',
       ellipsis: true,
       cellClass: 'text-blue-600 font-medium cursor-pointer hover:text-blue-800',
     },
@@ -34,14 +34,14 @@ export class StoneDimensionList extends ListBase<IStoneDimension> implements OnI
       key: 'cutStyle',
       header: 'Cut Style',
       type: 'text',
-      width: '30%',
+      width: '10%',
       cellClass: 'text-gray-700',
     },
     {
       key: 'pricePerCt',
       header: 'Price per ct',
       type: 'text',
-      width: '20%',
+      width: '10%',
       cellClass: 'text-gray-700 font-medium',
     },
   ];
@@ -90,10 +90,18 @@ export class StoneDimensionList extends ListBase<IStoneDimension> implements OnI
     this.errorMessage.set(null);
     try {
       const res = await this.httpGetPromise<IGenericResponse<IStoneDimensionListResponse>>(
-        this.apiRoutes.stone_dimension.GET_ALL,
+        this.apiRoutes.stone_dimension.GET_ALL(
+          this.currentPage(),
+          this.pageSize(),
+          this.searchTerm(),
+        ),
       );
       if (res.status && res.data) {
         this.items.set(res.data.stones || []);
+        if (res.data.pagination) {
+          this.totalItems.set(res.data.pagination.total);
+          this.totalPages.set(res.data.pagination.totalPages);
+        }
       } else {
         this.errorMessage.set(res.message);
       }

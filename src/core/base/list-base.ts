@@ -8,9 +8,12 @@ export abstract class ListBase<T> extends Base {
 
   // Pagination state
   currentPage = signal<number>(1);
-  pageSize = signal<number>(20);
+  pageSize = signal<number>(10);
   totalItems = signal<number>(0);
   totalPages = signal<number>(0);
+
+  // Search state
+  searchTerm = signal<string>('');
 
   abstract loadItems(): Promise<void>;
 
@@ -21,6 +24,12 @@ export abstract class ListBase<T> extends Base {
 
   onPageSizeChange(size: number): void {
     this.pageSize.set(size);
+    this.currentPage.set(1);
+    this.loadItems();
+  }
+
+  onSearchChange(term: string): void {
+    this.searchTerm.set(term);
     this.currentPage.set(1);
     this.loadItems();
   }

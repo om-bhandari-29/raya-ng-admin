@@ -3,9 +3,16 @@
   [data]="items()"
   [isLoading]="isLoading()"
   [errorMessage]="errorMessage()"
+  [showPagination]="true"
+  [currentPage]="currentPage()"
+  [pageSize]="pageSize()"
+  [totalPages]="totalPages()"
+  [searchPlaceholder]="'Search by ID...'"
   (onRefresh)="loadItems()"
   (onRowClick)="openEditModal($any($event).id)"
   (onEdit)="openEditModal($any($event).id)"
   (onDelete)="deleteItem($any($event).id)"
+  (onPageChange)="onPageChange($event)"
+  (onSearch)="onSearchChange($event)"
 >
 </app-table-layout>

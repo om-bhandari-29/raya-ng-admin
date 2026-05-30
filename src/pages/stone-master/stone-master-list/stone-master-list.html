@@ -3,9 +3,16 @@
   [data]="items()"
   [isLoading]="isLoading()"
   [errorMessage]="errorMessage()"
+  [showPagination]="true"
+  [currentPage]="currentPage()"
+  [pageSize]="pageSize()"
+  [totalPages]="totalPages()"
+  [searchPlaceholder]="'Search by name...'"
   (onRefresh)="loadItems()"
   (onEdit)="openEditModal($any($event).name)"
   (onDelete)="deleteItem($any($event).id)"
+  (onPageChange)="onPageChange($event)"
+  (onSearch)="onSearchChange($event)"
 >
   <ng-template slot="id" let-item>
     <button
