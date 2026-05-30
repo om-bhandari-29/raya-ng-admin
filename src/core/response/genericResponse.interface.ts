@@ -12,3 +12,12 @@ export interface IGenericResponse<DType> {
   data: DType;
   meta?: IResponseMeta;
 }
+export interface IGenericListResponse<DType> {
+  status: boolean;
+  message: string;
+  statusCode: number;
+  data: {
+    items: DType[];
+  };
+  meta?: IResponseMeta;
+}

@@ -1,6 +1,6 @@
 import { Component, inject } from '@angular/core';
 import { Observable, Subscription } from 'rxjs';
-import { HttpClient, HttpErrorResponse, HttpHeaders } from '@angular/common/http';
+import { HttpClient, HttpErrorResponse, HttpHeaders, HttpParams } from '@angular/common/http';
 import { ToastrService } from 'ngx-toastr';
 // import { ApiRoutes, ToastService, variable, ConfirmationUtil } from '@shared';
 import { APPRoutes } from '../constant/app-routes';
@@ -33,11 +33,12 @@ export class Base {
     this.listenToActionButton();
   }
 
-  public httpGetPromise<RType>(url: string, showLoader: boolean = true): Promise<RType> {
+  public httpGetPromise<RType>(url: string, showLoader: boolean = true, queryParams?: Record<string, string | number | boolean>): Promise<RType> {
     const getPromise: Promise<RType> = new Promise((resolve, reject) => {
       const sub: Subscription = this.httpClient
         .get<RType>(this.apiBaseUrl + url, {
           headers: this.getHeaderWithLoaderConfigure(showLoader),
+          params: this.buildParams(queryParams),
         })
         .subscribe({
           next: (res: RType) => {
@@ -57,11 +58,13 @@ export class Base {
     url: string,
     payload: PType,
     showLoader: boolean = true,
+    queryParams?: Record<string, string | number | boolean>,
   ): Promise<RType> {
     return new Promise((resolve, reject) => {
       this.httpClient
         .post<RType>(this.apiBaseUrl + url, payload, {
           headers: this.getHeaderWithLoaderConfigure(showLoader),
+          params: this.buildParams(queryParams),
         })
         .subscribe({
           next: (res: RType) => resolve(res),
@@ -74,9 +77,11 @@ export class Base {
     url: string,
     payload: PType,
     showLoader: boolean = true,
+    queryParams?: Record<string, string | number | boolean>,
   ): Observable<RType> {
     return this.httpClient.post<RType>(this.apiBaseUrl + url, payload, {
       headers: this.getHeaderWithLoaderConfigure(showLoader),
+      params: this.buildParams(queryParams),
     });
   }
 
@@ -84,11 +89,13 @@ export class Base {
     url: string,
     payload: PType,
     showLoader: boolean = true,
+    queryParams?: Record<string, string | number | boolean>,
   ): Promise<RType> {
     return new Promise((resolve, reject) => {
       this.httpClient
         .put<RType>(this.apiBaseUrl + url, payload, {
           headers: this.getHeaderWithLoaderConfigure(showLoader),
+          params: this.buildParams(queryParams),
         })
         .subscribe({
           next: (res: RType) => resolve(res),
@@ -101,11 +108,13 @@ export class Base {
     url: string,
     payload: PType,
     showLoader: boolean = true,
+    queryParams?: Record<string, string | number | boolean>,
   ): Promise<RType> {
     return new Promise((resolve, reject) => {
       this.httpClient
         .patch<RType>(this.apiBaseUrl + url, payload, {
           headers: this.getHeaderWithLoaderConfigure(showLoader),
+          params: this.buildParams(queryParams),
         })
         .subscribe({
           next: (res: RType) => resolve(res),
@@ -114,11 +123,12 @@ export class Base {
     });
   }
 
-  public httpDeletePromise<T>(url: string, showLoader: boolean = true): Promise<T> {
+  public httpDeletePromise<T>(url: string, showLoader: boolean = true, queryParams?: Record<string, string | number | boolean>): Promise<T> {
     return new Promise((resolve, reject) => {
       this.httpClient
         .delete<T>(this.apiBaseUrl + url, {
           headers: this.getHeaderWithLoaderConfigure(showLoader),
+          params: this.buildParams(queryParams),
         })
         .subscribe({
           next: (res: T) => resolve(res),
@@ -159,6 +169,16 @@ export class Base {
     });
 
     return header;
+  }
+
+  private buildParams(queryParams?: Record<string, string | number | boolean>): HttpParams {
+    let params = new HttpParams();
+    if (queryParams) {
+      Object.entries(queryParams).forEach(([key, value]) => {
+        params = params.set(key, String(value));
+      });
+    }
+    return params;
   }
 
   ngOnDestroy(): void {

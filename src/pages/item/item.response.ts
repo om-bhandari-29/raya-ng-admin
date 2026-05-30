@@ -1,3 +1,5 @@
+import { ItemVariantRow } from "./item-upsert/tabs/variants-tab/variants-tab.model";
+
 export interface IItemProductMaster {
   id: number;
   name: string;
@@ -112,6 +114,6 @@ export interface IItem {
   default_uom: IItemUom | null;
   weight_uom: IItemUom | null;
   barcodes: IItemBarcode[];
-  variants: IItemVariant[];
+  variants: ItemVariantRow[];
   stone_details: IItemStoneDetail[];
 }

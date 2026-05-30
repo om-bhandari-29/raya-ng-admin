@@ -6,6 +6,7 @@ import {
   OnChanges,
   SimpleChanges,
   signal,
+  OnInit,
 } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ItemDropdowns } from '../../../item.models';
@@ -14,68 +15,45 @@ import {
   IItemAttribute,
   IItemAttributeValue,
 } from '../../../../item-attribute/item-attribute.response';
-
-export interface ItemVariantRow {
-  id: number;
-  variant_of_id: number | null;
-  attribute_id: number | null;
-  value_id: number | null;
-  is_disabled: boolean;
-  stone_family: string;
-  stone_id: string;
-}
-
-export interface ItemVariantsPayload {
-  stones: string;
-  gross_weight: number;
-  net_weight: number;
-  stones_weight_in_gram: number;
-  stone_carat_wt: number;
-  pure_weight_metal: number;
-  labor_rate: number;
-  variants: {
-    attribute_id: number;
-    value_id: number;
-    variant_of_id?: number;
-    is_disabled?: boolean;
-    stone_family?: string;
-    stone_id?: string;
-  }[];
-}
-
-interface VariantWeightForm {
-  gross_weight: FormControl<number>;
-  net_weight: FormControl<number>;
-  stones_weight_in_gram: FormControl<number>;
-  stone_carat_wt: FormControl<number>;
-  pure_weight_metal: FormControl<number>;
-  labor_rate: FormControl<number>;
-  stones: FormControl<string>;
-}
+import { ItemVariantRow, ItemVariantsPayload, VariantWeightForm } from './variants-tab.model';
+import { IComboItem } from '../../../../../core/response/combo.interface';
+import { Base } from '../../../../../core/base/base';
+import {
+  IGenericListResponse,
+  IGenericResponse,
+} from '../../../../../core/response/genericResponse.interface';
+import {
+  SearchableDropdown,
+  ISearchableDropdownItem,
+} from '../../../../../core/component/searchable-dropdown/searchable-dropdown';
 
 @Component({
   selector: 'app-variants-tab',
-  imports: [ReactiveFormsModule],
+  imports: [ReactiveFormsModule, SearchableDropdown],
   templateUrl: './variants-tab.html',
 })
-export class VariantsTab implements OnChanges {
+export class VariantsTab extends Base implements OnChanges, OnInit {
   @Input() item: IItem | null = null;
   @Input() dropdowns: ItemDropdowns | null = null;
   @Input() isSaving = false;
   @Output() save = new EventEmitter<ItemVariantsPayload>();
 
-  variantRows = signal<ItemVariantRow[]>([]);
+  public variantRows = signal<ItemVariantRow[]>([]);
   variantModalOpen = signal<boolean>(false);
-  variantModalIsNew = signal<boolean>(false);
   variantModalId = signal<number>(0);
-  variantModalDraft = signal<ItemVariantRow>({
-    id: 0,
-    variant_of_id: null,
-    attribute_id: null,
-    value_id: null,
-    is_disabled: false,
-    stone_id: '',
-    stone_family: '',
+  public attributeValueOptions = signal<IComboItem[]>([]);
+  public productMasterOptions = signal<IComboItem[]>([]);
+
+  public variantForm = new FormGroup({
+    id: new FormControl<number>(0),
+    variant_of_id: new FormControl<IComboItem | null>(null),
+    attribute_value: new FormControl<string | null>(null),
+    attribute_master_id: new FormControl<IComboItem | null>(null, [Validators.required]),
+    attribute_master_value: new FormControl<string>('', { nonNullable: true }),
+    is_disabled: new FormControl<boolean>(false, { nonNullable: true }),
+    value: new FormControl<string | null>(null),
+    stone_id: new FormControl<string>('', { nonNullable: true }),
+    stone_family: new FormControl<string>('', { nonNullable: true }),
   });
 
   weightForm = new FormGroup<VariantWeightForm>({
@@ -100,6 +78,10 @@ export class VariantsTab implements OnChanges {
     stones: new FormControl<string>('', { nonNullable: true }),
   });
 
+  override ngOnInit(): void {
+    this.loadAttributeValueOptions();
+    this.loadProductMasterOptions();
+  }
   get itemAttributes(): IItemAttribute[] {
     return this.dropdowns?.itemAttributes ?? [];
   }
@@ -119,9 +101,11 @@ export class VariantsTab implements OnChanges {
         (this.item.variants ?? []).map((v) => ({
           id: v.id,
           variant_of_id: v.variant_of_id,
-          attribute_id: v.attribute_id,
-          value_id: v.value_id,
+          attribute_value: v.attribute_value,
+          attribute_master_id: v.attribute_master_id,
+          attribute_master_value: v.attribute_master_value,
           is_disabled: v.is_disabled,
+          value: v.value ?? null,
           stone_family: v.stone_family ?? '',
           stone_id: v.stone_id ?? '',
         })),
@@ -129,47 +113,52 @@ export class VariantsTab implements OnChanges {
     }
   }
 
-  addVariant(): void {
-    const draft: ItemVariantRow = {
-      id: Date.now(),
+  public addVariant(): void {
+    this.variantForm.reset({
+      id: 0,
       variant_of_id: null,
-      attribute_id: null,
-      value_id: null,
+      attribute_value: '',
+      attribute_master_id: null,
+      attribute_master_value: '',
       is_disabled: false,
+      value: null,
       stone_id: '',
       stone_family: '',
-    };
-    this.variantModalDraft.set(draft);
-    this.variantModalId.set(draft.id);
-    this.variantModalIsNew.set(true);
+    });
+    // this.variantModalId.set(this.variantForm.getRawValue().id);
+    // this.variantModalIsNew.set(true);
     this.variantModalOpen.set(true);
   }
 
   openModal(id: number): void {
     const row = this.variantRows().find((r) => r.id === id);
     if (!row) return;
-    this.variantModalDraft.set({ ...row });
+    // this.variantForm.patchValue({
+    //   ...row,
+    //   variant_of_id: this.findDropdownItem(this.productMasterOptions(), row.variant_of_id),
+    //   attribute_id: this.findDropdownItem(this.itemAttributes, row.attribute_id),
+    // });
     this.variantModalId.set(id);
-    this.variantModalIsNew.set(false);
+    // this.variantModalIsNew.set(false);
     this.variantModalOpen.set(true);
   }
 
+  public onAttributeChange(selectedAttribute: IComboItem | null): void {
+    if(selectedAttribute) {
+      this.variantForm.controls.attribute_master_value.setValue(selectedAttribute.name);
+    } else {
+      this.variantForm.controls.attribute_master_value.setValue('');
+    }
+  }
   closeModal(): void {
     this.variantModalOpen.set(false);
   }
 
-  confirmModal(): void {
-    const draft = this.variantModalDraft();
-    if (this.variantModalIsNew()) {
-      this.variantRows.update((v) => [...v, { ...draft }]);
-    } else {
-      this.variantRows.update((rows) => rows.map((r) => (r.id === draft.id ? { ...draft } : r)));
-    }
+  public confirmModal(): void {
+    this.variantForm.markAllAsTouched();
+    const raw = this.variantForm.getRawValue();
+    this.variantRows.update((variant) => [...variant,  raw as ItemVariantRow]);
     this.variantModalOpen.set(false);
-  }
-
-  updateDraft(field: keyof ItemVariantRow, value: any): void {
-    this.variantModalDraft.update((d) => ({ ...d, [field]: value }));
   }
 
   deleteRow(id: number): void {
@@ -190,25 +179,55 @@ export class VariantsTab implements OnChanges {
     return this.itemAttributes.find((a) => a.id === attributeId)?.name ?? '—';
   }
 
-  getValueName(row: ItemVariantRow): string {
-    const val = this.getAttributeValues(row.attribute_id).find((v) => v.id === row.value_id);
-    return val?.name ?? '—';
+  onSave(): void {
+    const variants = this.variantRows();
+    const raw = this.weightForm.getRawValue();
+
+    console.log('variant ->', variants);
+    console.log('weight form ->', raw);
   }
 
-  onSave(): void {
-    const raw = this.weightForm.getRawValue();
-    this.save.emit({
-      ...raw,
-      variants: this.variantRows()
-        .filter((r) => r.attribute_id && r.value_id)
-        .map((r) => ({
-          attribute_id: r.attribute_id!,
-          value_id: r.value_id!,
-          ...(r.variant_of_id ? { variant_of_id: r.variant_of_id } : {}),
-          ...(r.is_disabled ? { is_disabled: r.is_disabled } : {}),
-          ...(r.stone_family ? { stone_family: r.stone_family } : {}),
-          ...(r.stone_id ? { stone_id: r.stone_id } : {}),
-        })),
-    });
+  public onAttributeSearch(searchText: string): void {
+    this.loadAttributeValueOptions(searchText);
+  }
+  public onProductMasterSearch(searchText: string): void {
+    this.loadProductMasterOptions(searchText);
+  }
+
+  private loadProductMasterOptions(search: string = ''): void {
+    this.httpGetPromise<IGenericListResponse<IComboItem>>(
+      this.apiRoutes.product_master.COMBO(),
+      false,
+      { search, page: 1, limit: 20 },
+    )
+      .then((response) => {
+        if (response.status) {
+          this.productMasterOptions.set(response.data.items);
+        } else {
+          this.productMasterOptions.set([]);
+        }
+      })
+      .catch(() => {
+        this.productMasterOptions.set([]);
+      });
+  }
+
+  private loadAttributeValueOptions(search: string = ''): void {
+    const paginationParams = { search: search, page: 1, limit: 20 };
+    this.httpGetPromise<IGenericListResponse<IComboItem>>(
+      this.apiRoutes.item_attribute.COMBO,
+      false,
+      paginationParams,
+    )
+      .then((response) => {
+        if (response.status) {
+          this.attributeValueOptions.set(response.data.items);
+        } else {
+          this.attributeValueOptions.set([]);
+        }
+      })
+      .catch(() => {
+        this.attributeValueOptions.set([]);
+      });
   }
 }

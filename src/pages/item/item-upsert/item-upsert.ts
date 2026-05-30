@@ -1,7 +1,10 @@
 import { Component, OnInit, inject, signal } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Base } from '../../../core/base/base';
-import { IGenericResponse } from '../../../core/response/genericResponse.interface';
+import {
+  IGenericListResponse,
+  IGenericResponse,
+} from '../../../core/response/genericResponse.interface';
 import {
   IComboItem,
   IComboHsnCode,
@@ -13,11 +16,12 @@ import { ItemDropdowns } from '../item.models';
 import { ItemTab, ITEM_TABS } from '../../../core/enum/item-tab.enum';
 import { DetailsTab, ItemDetailsPayload } from './tabs/details-tab/details-tab';
 import { InventoryTab, ItemInventoryPayload } from './tabs/inventory-tab/inventory-tab';
-import { VariantsTab, ItemVariantsPayload } from './tabs/variants-tab/variants-tab';
+import { VariantsTab } from './tabs/variants-tab/variants-tab';
 import {
   StoneDetailsTab,
   ItemStoneDetailsPayload,
 } from './tabs/stone-details-tab/stone-details-tab';
+import { ItemVariantsPayload } from './tabs/variants-tab/variants-tab.model';
 
 @Component({
   selector: 'app-item-upsert',
@@ -46,8 +50,11 @@ export class ItemUpsert extends Base implements OnInit {
     const id = this.route.snapshot.queryParamMap.get('id');
     if (id) {
       this.itemId.set(parseInt(id));
-      this.isEditMode.set(true);
-      this.loadItem();
+
+      if (this.itemId() > 0) {
+        this.isEditMode.set(true);
+        this.loadItem();
+      }
     }
     this.loadDropdowns();
   }
@@ -174,7 +181,9 @@ export class ItemUpsert extends Base implements OnInit {
         this.httpGetPromise<IGenericResponse<IComboItemFrappeBased[]>>(
           this.apiRoutes.item_group.COMBO,
         ),
-        this.httpGetPromise<IGenericResponse<IComboItem[]>>(this.apiRoutes.product_master.COMBO()),
+        this.httpGetPromise<IGenericListResponse<IComboItem>>(
+          this.apiRoutes.product_master.COMBO(),
+        ),
         this.httpGetPromise<IGenericResponse<IComboItem[]>>(this.apiRoutes.uom.COMBO),
         this.httpGetPromise<IGenericResponse<IComboHsnCode[]>>(this.apiRoutes.gst_hsn_code.COMBO),
         this.httpGetPromise<IGenericResponse<IItemAttribute[]>>(
@@ -186,7 +195,7 @@ export class ItemUpsert extends Base implements OnInit {
       ]);
       this.dropdowns.set({
         itemGroups: groups.status ? groups.data : [],
-        productMasters: products.status ? products.data : [],
+        productMasters: products.status ? products.data.items : [],
         uoms: uoms.status ? uoms.data : [],
         hsnCodes: hsn.status ? hsn.data : [],
         itemAttributes: attrs.status ? attrs.data : [],
