@@ -259,7 +259,12 @@
     class="flex items-center justify-between px-4 py-2 border-t border-gray-200 bg-white text-sm text-gray-600"
   >
     <!-- Left: total info -->
-    <span class="text-xs text-gray-500"> Page {{ currentPage }} of {{ totalPages }} </span>
+    <span class="text-xs text-gray-500">
+      Page {{ currentPage }} of {{ totalPages }}
+      @if (totalCount > 0) {
+        <span class="ml-2 text-gray-400">({{ totalCount }} records)</span>
+      }
+    </span>
 
     <!-- Center: page buttons -->
     <div class="flex items-center gap-1">

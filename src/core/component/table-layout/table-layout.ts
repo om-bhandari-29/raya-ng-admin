@@ -16,6 +16,7 @@ import { CommonModule } from '@angular/common';
 import { Subject } from 'rxjs';
 import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 import { TableColumn } from '../../models/table-column.interface';
+import { IResponseMeta } from '../../response/genericResponse.interface';
 
 @Directive({ selector: 'ng-template[slot]', standalone: true })
 export class TableSlot {
@@ -37,7 +38,6 @@ export class TableLayout<T = any> implements AfterContentInit, OnInit, OnDestroy
   @Input() title: string = '';
   @Input() isLoading: boolean = false;
   @Input() errorMessage: string | null = null;
-  @Input() totalCount: number = 0;
   @Input() showCheckbox: boolean = true;
   @Input() showActions: boolean = true;
 
@@ -46,10 +46,13 @@ export class TableLayout<T = any> implements AfterContentInit, OnInit, OnDestroy
   @Input() searchDebounce: number = 400;
 
   // Pagination
-  @Input() currentPage: number = 1;
-  @Input() pageSize: number = 20;
-  @Input() totalPages: number = 0;
+  @Input() meta: IResponseMeta = { page: 1, limit: 20, total: 0, totalPages: 0 };
   @Input() showPagination: boolean = false;
+
+  get currentPage(): number { return this.meta.page; }
+  get pageSize(): number { return this.meta.limit; }
+  get totalPages(): number { return this.meta.totalPages; }
+  get totalCount(): number { return this.meta.total; }
 
   @Output() onRefresh = new EventEmitter<void>();
   @Output() onRowClick = new EventEmitter<T>();

@@ -116,13 +116,12 @@ export class StoneMasterList extends ListBase<IStoneMaster> implements OnInit {
     this.errorMessage.set(null);
     try {
       const res = await this.httpGetPromise<IGenericResponse<IStoneMaster[]>>(
-        this.routes.GET_ALL(this.currentPage(), this.pageSize(), this.searchTerm()),
+        this.routes.GET_ALL(this.meta().page, this.meta().limit, this.searchTerm()),
       );
       if (res.status) {
         this.items.set(res.data);
         if (res.meta) {
-          this.totalItems.set(res.meta.total);
-          this.totalPages.set(res.meta.totalPages);
+          this.meta.set(res.meta);
         }
       } else {
         this.errorMessage.set(res.message);

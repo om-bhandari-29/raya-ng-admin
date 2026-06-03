@@ -1,5 +1,6 @@
-import { signal, WritableSignal } from '@angular/core';
+import { signal } from '@angular/core';
 import { Base } from './base';
+import { IResponseMeta } from '../response/genericResponse.interface';
 
 export abstract class ListBase<T> extends Base {
   items = signal<T[]>([]);
@@ -7,10 +8,7 @@ export abstract class ListBase<T> extends Base {
   errorMessage = signal<string | null>(null);
 
   // Pagination state
-  currentPage = signal<number>(1);
-  pageSize = signal<number>(10);
-  totalItems = signal<number>(0);
-  totalPages = signal<number>(0);
+  meta = signal<IResponseMeta>({ page: 1, limit: 10, total: 0, totalPages: 0 });
 
   // Search state
   searchTerm = signal<string>('');
@@ -18,19 +16,18 @@ export abstract class ListBase<T> extends Base {
   abstract loadItems(): Promise<void>;
 
   onPageChange(page: number): void {
-    this.currentPage.set(page);
+    this.meta.update((m) => ({ ...m, page }));
     this.loadItems();
   }
 
   onPageSizeChange(size: number): void {
-    this.pageSize.set(size);
-    this.currentPage.set(1);
+    this.meta.update((m) => ({ ...m, limit: size, page: 1 }));
     this.loadItems();
   }
 
   onSearchChange(term: string): void {
     this.searchTerm.set(term);
-    this.currentPage.set(1);
+    this.meta.update((m) => ({ ...m, page: 1 }));
     this.loadItems();
   }
 

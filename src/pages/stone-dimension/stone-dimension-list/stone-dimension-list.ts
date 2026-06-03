@@ -91,16 +91,15 @@ export class StoneDimensionList extends ListBase<IStoneDimension> implements OnI
     try {
       const res = await this.httpGetPromise<IGenericResponse<IStoneDimensionListResponse>>(
         this.apiRoutes.stone_dimension.GET_ALL(
-          this.currentPage(),
-          this.pageSize(),
+          this.meta().page,
+          this.meta().limit,
           this.searchTerm(),
         ),
       );
       if (res.status && res.data) {
         this.items.set(res.data.stones || []);
-        if (res.data.pagination) {
-          this.totalItems.set(res.data.pagination.total);
-          this.totalPages.set(res.data.pagination.totalPages);
+        if (res.meta) {
+          this.meta.set(res.meta);
         }
       } else {
         this.errorMessage.set(res.message);
