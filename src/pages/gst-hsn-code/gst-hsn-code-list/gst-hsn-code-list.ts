@@ -62,13 +62,14 @@ export class GstHsnCodeList extends ListBase<IGstHsnCode> implements OnInit {
     this.errorMessage.set(null);
     try {
       const response = await this.httpGetPromise<IGenericResponse<IGstHsnCode[]>>(
-        this.apiRoutes.gst_hsn_code.GET_ALL(this.currentPage(), this.pageSize()),
+        this.apiRoutes.gst_hsn_code.GET_ALL(this.meta().page, this.meta().limit),
       );
       if (response.status) {
         this.items.set(response.data);
         if (response.meta) {
-          this.totalItems.set(response.meta.total);
-          this.totalPages.set(response.meta.totalPages);
+          // this.totalItems.set(response.meta.total);
+          this.meta.set(response.meta);
+          // this.totalPages.set(response.meta.totalPages);
         }
       } else {
         this.errorMessage.set(response.message);

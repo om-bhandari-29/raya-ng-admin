@@ -2,7 +2,7 @@
 @use 'tailwindcss';
 
 /* ngx-toastr styles */
-@import 'ngx-toastr/toastr';
+@use 'ngx-toastr/toastr';
 
 button,
 [role='button'],
