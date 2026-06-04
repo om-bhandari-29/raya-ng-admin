@@ -1,0 +1,11 @@
+<app-table-layout
+  [columns]="columns"
+  [data]="filteredItems()"
+  [isLoading]="isLoading()"
+  [errorMessage]="errorMessage()"
+  [showPagination]="false"
+  [searchPlaceholder]="'Search...'"
+  (onRefresh)="loadItems()"
+  (onSearch)="onSearchChange($event)"
+>
+</app-table-layout>
