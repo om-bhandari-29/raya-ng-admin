@@ -1,14 +1,15 @@
 import { Component, OnInit, inject, computed } from '@angular/core';
+import { RouterLink } from '@angular/router';
 import { ListBase } from '../../../core/base/list-base';
 import { IProductMasterImported, IProductMasterImportedResponse } from '../product-master-imported.response';
-import { TableLayout } from '../../../core/component/table-layout/table-layout';
+import { TableLayout, TableSlot } from '../../../core/component/table-layout/table-layout';
 import { TableColumn } from '../../../core/models/table-column.interface';
 import { PageTitleService } from '../../../core/services/page-title.service';
 import { BreadcrumbService } from '../../../core/services/breadcrumb.service';
 
 @Component({
   selector: 'app-product-master-imported-list',
-  imports: [TableLayout],
+  imports: [TableLayout, TableSlot, RouterLink],
   templateUrl: './product-master-imported-list.html',
   styleUrl: './product-master-imported-list.scss',
 })
@@ -30,6 +31,7 @@ export class ProductMasterImportedList extends ListBase<IProductMasterImported> 
       type: 'text',
       width: '40%',
       cellClass: 'text-blue-600 font-medium',
+      slot: 'design_slug',
     },
     {
       key: 'variant_name',

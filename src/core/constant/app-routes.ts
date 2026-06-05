@@ -7,6 +7,7 @@ export const APPRoutes = {
   PRODUCT_MASTER: 'product-master',
   PRODUCT_MASTER_UPSERT: 'product-master/upsert',
   PRODUCT_MASTER_IMPORTED: 'product-master-imported',
+  PRODUCT_MASTER_IMPORTED_DETAIL: 'product-master-imported/detail',
   GST_HSN_CODE: 'gst-hsn-code',
   GST_HSN_CODE_UPSERT: 'gst-hsn-code/upsert',
   UOM: 'uom',

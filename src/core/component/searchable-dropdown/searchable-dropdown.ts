@@ -9,6 +9,7 @@ import {
   OnDestroy,
   effect,
   forwardRef,
+  computed,
 } from '@angular/core';
 import { FormsModule, NG_VALUE_ACCESSOR, ControlValueAccessor } from '@angular/forms';
 
@@ -48,21 +49,32 @@ export class SearchableDropdown implements OnInit, OnDestroy, ControlValueAccess
   searchText = signal<string>('');
   selected = signal<ISearchableDropdownItem | null>(null);
   isDisabled = signal<boolean>(false);
+  dropUp = signal<boolean>(false);
+
+  filteredItems = computed(() => {
+    const search = this.searchText().toLowerCase().trim();
+    const items = this.items();
+    const sel = this.selected();
+
+    // If search is empty, show all items
+    if (!search) {
+      return items;
+    }
+
+    // If search text matches the selected item exactly, show all (opened while selected)
+    if (sel && sel.name.toLowerCase().trim() === search) {
+      return items;
+    }
+
+    return items.filter((item) => item.name.toLowerCase().includes(search));
+  });
 
   private searchTimeout: any;
   private clickListener!: (e: Event) => void;
   private onChange: (value: ISearchableDropdownItem | null) => void = () => {};
   private onTouched: () => void = () => {};
 
-  constructor() {
-    effect(() => {
-      const currentItems = this.items();
-      const sel = this.selected();
-      if (sel && currentItems.length && !this.searchText()) {
-        this.searchText.set(sel.name);
-      }
-    });
-  }
+  constructor() {}
 
   // ── ControlValueAccessor ─────────────────────────────────────────────────
 
@@ -102,8 +114,18 @@ export class SearchableDropdown implements OnInit, OnDestroy, ControlValueAccess
   // ── Actions ──────────────────────────────────────────────────────────────
 
   onFocus(): void {
+    this.checkSpace();
     this.isOpen.set(true);
     this.onTouched();
+  }
+
+  private checkSpace(): void {
+    const hostElement = this.elRef.nativeElement;
+    const rect = hostElement.getBoundingClientRect();
+    const spaceBelow = window.innerHeight - rect.bottom;
+    const dropdownHeight = 240; // max-h-60 is 240px
+
+    this.dropUp.set(spaceBelow < dropdownHeight && rect.top > dropdownHeight);
   }
 
   onSearchChange(value: string): void {

@@ -46,6 +46,13 @@ export const routes: Routes = [
           ),
       },
       {
+        path: `${APPRoutes.PRODUCT_MASTER_IMPORTED_DETAIL}/:design_slug`,
+        loadComponent: () =>
+          import(
+            '../pages/product-master-imported/product-master-imported-detail/product-master-imported-detail.component'
+          ).then((m) => m.ProductMasterImportedDetailComponent),
+      },
+      {
         path: APPRoutes.GST_HSN_CODE,
         loadComponent: () =>
           import('../pages/gst-hsn-code/gst-hsn-code-list/gst-hsn-code-list').then(

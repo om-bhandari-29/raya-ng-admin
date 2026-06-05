@@ -8,4 +8,14 @@
   (onRefresh)="loadItems()"
   (onSearch)="onSearchChange($event)"
 >
+  <ng-template slot="design_slug" let-item>
+    <a
+      [routerLink]="['/' + appRoutes.PRODUCT_MASTER_IMPORTED_DETAIL, item.design_slug]"
+      target="_blank"
+      class="hover:underline"
+      (click)="$event.stopPropagation()"
+    >
+      {{ item.design_slug }}
+    </a>
+  </ng-template>
 </app-table-layout>

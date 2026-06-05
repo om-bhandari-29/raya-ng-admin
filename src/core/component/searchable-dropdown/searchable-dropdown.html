@@ -27,14 +27,18 @@
 
   @if (isOpen()) {
     <div
-      class="absolute z-50 mt-1 w-full max-h-60 overflow-auto rounded-md border border-gray-200 bg-white shadow-lg"
+      [class.bottom-full]="dropUp()"
+      [class.mb-1]="dropUp()"
+      [class.top-full]="!dropUp()"
+      [class.mt-1]="!dropUp()"
+      class="absolute z-50 w-full max-h-60 overflow-auto rounded-md border border-gray-200 bg-white shadow-lg"
     >
       @if (loading()) {
         <div class="px-3 py-2 text-sm text-gray-500">Loading...</div>
-      } @else if (items().length === 0) {
+      } @else if (filteredItems().length === 0) {
         <div class="px-3 py-2 text-sm text-gray-500">No results found</div>
       } @else {
-        @for (item of items(); track item.id) {
+        @for (item of filteredItems(); track item.id) {
           <div
             (click)="selectItem(item)"
             class="cursor-pointer px-3 py-2 text-sm hover:bg-blue-50 transition-colors"

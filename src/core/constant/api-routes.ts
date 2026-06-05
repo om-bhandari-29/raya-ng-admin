@@ -100,6 +100,8 @@ export const APIRoutes = {
   },
 
   products_import: {
-    GET_BlUEPRINT: '/products-import/blueprints'
+    GET_BlUEPRINT: '/products-import/blueprints',
+    DETAIL: (design_slug: string) => `/products-import/detail/${design_slug}`,
+    CALCULATE_PRICE: '/products-import/calculate-price'
   }
 };
