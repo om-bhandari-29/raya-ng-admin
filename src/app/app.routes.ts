@@ -116,6 +116,13 @@ export const routes: Routes = [
           ),
       },
       {
+        path: APPRoutes.ARCHETYPES,
+        loadComponent: () =>
+          import('../pages/archetypes/archetypes-list/archetypes-list').then(
+            (m) => m.ArchetypesList,
+          ),
+      },
+      {
         path: `${APPRoutes.STONE_DIMENSION}/upsert`,
         loadComponent: () =>
           import('../pages/stone-dimension/stone-dimension-upsert/stone-dimension-upsert').then(

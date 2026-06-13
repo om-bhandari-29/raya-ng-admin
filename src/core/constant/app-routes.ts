@@ -17,6 +17,7 @@ export const APPRoutes = {
   STONE_CLARITY: 'stone-clarity',
   STONE_SHAPE: 'stone-shape',
   STONE_DIMENSION: 'stone-dimension',
+  ARCHETYPES: 'archetypes',
   // STOCK: 'stock',
   // STOCK_ITEM: ['stock', 'item'],
   // STOCK_ITEM_GROUP: ['stock', 'item-group'],

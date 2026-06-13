@@ -97,6 +97,7 @@ export class StoneDimensionList extends ListBase<IStoneDimension> implements OnI
         ),
       );
       if (res.status && res.data) {
+        console.log("data ", res)
         this.items.set(res.data.stones || []);
         if (res.meta) {
           this.meta.set(res.meta);

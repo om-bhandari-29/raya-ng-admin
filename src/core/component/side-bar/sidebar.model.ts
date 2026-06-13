@@ -91,6 +91,13 @@ export const MenuItems: IMenuSideBarItem[] = [
     child: [],
   },
   {
+    name: 'Archetypes',
+    route: APPRoutes.ARCHETYPES,
+    icon: 'bx bx-category',
+    userType: [],
+    child: [],
+  },
+  {
     name: 'Stock',
     route: APPRoutes.STOCK.ROOT,
     icon: 'bx bx-store',

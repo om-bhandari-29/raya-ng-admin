@@ -98,6 +98,9 @@ export const APIRoutes = {
     DELETE: (id: number | string) => `/stone/${id}`,
     COMBO: '/stone/combo',
   },
+  archetypes: {
+    GET_ALL: '/products/archetypes',
+  },
 
   products_import: {
     GET_BlUEPRINT: '/products-import/blueprints',

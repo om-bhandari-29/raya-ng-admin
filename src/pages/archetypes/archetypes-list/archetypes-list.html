@@ -1,0 +1,13 @@
+<app-table-layout
+  [columns]="columns"
+  [data]="items()"
+  [isLoading]="isLoading()"
+  [errorMessage]="errorMessage()"
+  [showPagination]="true"
+  [meta]="meta()"
+  [searchPlaceholder]="'Search archetypes...'"
+  (onRefresh)="loadItems()"
+  (onPageChange)="onPageChange($event)"
+  (onSearch)="onSearchChange($event)"
+>
+</app-table-layout>
