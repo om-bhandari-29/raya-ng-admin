@@ -15,15 +15,28 @@
     <div class="overflow-y-auto pr-1 flex-1 py-1">
         <form [formGroup]="form" class="space-y-4">
             
-            <!-- Shape Name Input -->
-            <div class="space-y-1">
-                <label class="block text-xs font-bold text-slate-500 uppercase tracking-wide">Shape Name</label>
-                <input type="text" formControlName="shape_normalized"
-                    class="w-full rounded-lg border border-slate-200 px-3 py-2 text-sm text-slate-800 outline-none transition focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 bg-slate-50 focus:bg-white"
-                    placeholder="Enter shape name (e.g. ROUND, OVAL, PEAR)" />
-                @if (form.get('shape_normalized')?.touched && form.get('shape_normalized')?.invalid) {
-                    <p class="text-xxs text-red-500 font-semibold mt-1">Shape Name is required.</p>
-                }
+            <!-- Shape Name & Dynamic Size Row -->
+            <div class="grid grid-cols-2 gap-4 items-end">
+                <!-- Shape Name Input -->
+                <div class="space-y-1">
+                    <label class="block text-xs font-bold text-slate-500 uppercase tracking-wide">Shape Name</label>
+                    <input type="text" formControlName="shape_normalized"
+                        class="w-full rounded-lg border border-slate-200 px-3 py-2 text-sm text-slate-800 outline-none transition focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 bg-slate-50 focus:bg-white"
+                        placeholder="Enter shape name (e.g. ROUND, OVAL, PEAR)" />
+                    @if (form.get('shape_normalized')?.touched && form.get('shape_normalized')?.invalid) {
+                        <p class="text-xxs text-red-500 font-semibold mt-1">Shape Name is required.</p>
+                    }
+                </div>
+
+                <!-- Size Dependency Selector -->
+                <div class="flex items-center gap-3 p-3 bg-slate-50 rounded-xl border border-slate-100">
+                    <input type="checkbox" formControlName="is_dynamic_by_size" id="modal-dynamic-check"
+                        class="h-4.5 w-4.5 rounded text-indigo-600 border-slate-300 focus:ring-indigo-500 cursor-pointer" />
+                    <label for="modal-dynamic-check" class="cursor-pointer select-none">
+                        <span class="block text-xs font-bold text-slate-800 uppercase tracking-wide">Dynamic by Size</span>
+                        <span class="block text-[10px] text-slate-400">Enable to configure specific quantities for different ring sizes</span>
+                    </label>
+                </div>
             </div>
 
             <!-- Dimensions Input Row -->
@@ -49,21 +62,11 @@
                 </div>
             </div>
 
-            <!-- Size Dependency Selector -->
-            <div class="flex items-center gap-3 p-3 bg-slate-50 rounded-xl border border-slate-100">
-                <input type="checkbox" formControlName="is_dynamic_by_size" id="modal-dynamic-check"
-                    class="h-4.5 w-4.5 rounded text-indigo-600 border-slate-300 focus:ring-indigo-500 cursor-pointer" />
-                <label for="modal-dynamic-check" class="cursor-pointer select-none">
-                    <span class="block text-xs font-bold text-slate-800 uppercase tracking-wide">Dynamic by Size</span>
-                    <span class="block text-[10px] text-slate-400">Enable to configure specific quantities for different ring sizes</span>
-                </label>
-            </div>
-
             <!-- Dynamic Size Matrix -->
             @if (form.get('is_dynamic_by_size')?.value) {
                 <div class="mt-4 pt-4 border-t border-slate-100 space-y-2">
                     <h4 class="text-xs font-bold text-slate-600 uppercase tracking-wider">Size-Qty Configuration Matrix</h4>
-                    <div class="grid grid-cols-2 gap-2 max-h-64 overflow-y-auto pr-1" [formArrayName]="'size_wt_matrix'">
+                    <div class="grid grid-cols-2 gap-2 max-h-64 overflow-y-auto pr-1" style="scrollbar-width: thin;" [formArrayName]="'size_wt_matrix'">
                         @for (matrixGroup of getSizeWtMatrixArray().controls; track $index) {
                             <div [formGroupName]="$index" class="grid grid-cols-2 gap-2 items-center bg-slate-50/50 p-2 rounded-lg border border-slate-200/40">
                                 <span class="text-xs font-bold text-slate-700 pl-1">
