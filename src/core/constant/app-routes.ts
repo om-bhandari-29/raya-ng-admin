@@ -18,6 +18,8 @@ export const APPRoutes = {
   STONE_SHAPE: 'stone-shape',
   STONE_DIMENSION: 'stone-dimension',
   ARCHETYPES: 'archetypes',
+  ARCHETYPES_DETAIL: 'archetypes/detail',
+  ARCHETYPES_EDIT: 'archetypes/edit',
   // STOCK: 'stock',
   // STOCK_ITEM: ['stock', 'item'],
   // STOCK_ITEM_GROUP: ['stock', 'item-group'],

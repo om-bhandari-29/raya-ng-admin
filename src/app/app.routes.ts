@@ -123,6 +123,20 @@ export const routes: Routes = [
           ),
       },
       {
+        path: `${APPRoutes.ARCHETYPES_DETAIL}/:design_slug`,
+        loadComponent: () =>
+          import('../pages/archetypes/archetype-detail/archetype-detail').then(
+            (m) => m.ArchetypeDetail,
+          ),
+      },
+      {
+        path: `${APPRoutes.ARCHETYPES_EDIT}/:design_slug`,
+        loadComponent: () =>
+          import('../pages/archetypes/archetypes-upsert/archetypes-upsert').then(
+            (m) => m.ArchetypesUpsert,
+          ),
+      },
+      {
         path: `${APPRoutes.STONE_DIMENSION}/upsert`,
         loadComponent: () =>
           import('../pages/stone-dimension/stone-dimension-upsert/stone-dimension-upsert').then(

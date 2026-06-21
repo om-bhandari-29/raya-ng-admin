@@ -97,14 +97,22 @@ export const APIRoutes = {
     UPDATE: (id: number | string) => `/stone/${id}`,
     DELETE: (id: number | string) => `/stone/${id}`,
     COMBO: '/stone/combo',
+    OPTION: '/stone/option'
   },
   archetypes: {
     GET_ALL: '/products/archetypes',
+    GET_DETAIL: (design_slug: string) => `/products/detail/${design_slug}`,
   },
 
   products_import: {
     GET_BlUEPRINT: '/products-import/blueprints',
     DETAIL: (design_slug: string) => `/products-import/detail/${design_slug}`,
-    CALCULATE_PRICE: '/products-import/calculate-price'
+    CALCULATE_PRICE: '/products-import/calculate-price',
+    GET_VARIANT: (design_slug: string) => `/products/variants/${design_slug}`,
+    GET_ZONE_ALLOWEDMTL: (variantId: number) => `/products/variant/${variantId}`,
+  },
+
+  Blueprint_Zone_Config: {
+    UPDATE: '/blueprint-zones/config'
   }
 };

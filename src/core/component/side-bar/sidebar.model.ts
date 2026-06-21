@@ -34,13 +34,13 @@ export const MenuItems: IMenuSideBarItem[] = [
     userType: [],
     child: [],
   },
-  {
-    name: 'Product Master Imported',
-    route: APPRoutes.PRODUCT_MASTER_IMPORTED,
-    icon: 'bx bx-import',
-    userType: [],
-    child: [],
-  },
+  // {
+  //   name: 'Product Master Imported',
+  //   route: APPRoutes.PRODUCT_MASTER_IMPORTED,
+  //   icon: 'bx bx-import',
+  //   userType: [],
+  //   child: [],
+  // },
   {
     name: 'GST HSN Code',
     route: APPRoutes.GST_HSN_CODE,

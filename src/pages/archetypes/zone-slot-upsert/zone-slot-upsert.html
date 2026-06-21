@@ -1,0 +1,93 @@
+<div class="p-6 max-h-[90vh] flex flex-col justify-between space-y-4">
+    <!-- Header -->
+    <div class="flex items-center justify-between border-b border-slate-100 pb-3">
+        <h3 class="text-base font-bold text-slate-800">
+            Edit Slot: <span class="text-indigo-600 font-extrabold">{{ form.get('shape_normalized')?.value || 'N/A' }}</span>
+        </h3>
+        <button type="button" (click)="onCancel()" class="text-slate-400 hover:text-slate-600 transition cursor-pointer">
+            <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+            </svg>
+        </button>
+    </div>
+
+    <!-- Scrollable Form Body -->
+    <div class="overflow-y-auto pr-1 flex-1 py-1">
+        <form [formGroup]="form" class="space-y-4">
+            
+            <!-- Shape Name Input -->
+            <div class="space-y-1">
+                <label class="block text-xs font-bold text-slate-500 uppercase tracking-wide">Shape Name</label>
+                <input type="text" formControlName="shape_normalized"
+                    class="w-full rounded-lg border border-slate-200 px-3 py-2 text-sm text-slate-800 outline-none transition focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 bg-slate-50 focus:bg-white"
+                    placeholder="Enter shape name (e.g. ROUND, OVAL, PEAR)" />
+                @if (form.get('shape_normalized')?.touched && form.get('shape_normalized')?.invalid) {
+                    <p class="text-xxs text-red-500 font-semibold mt-1">Shape Name is required.</p>
+                }
+            </div>
+
+            <!-- Dimensions Input Row -->
+            <div class="grid grid-cols-2 gap-4">
+                <div class="space-y-1">
+                    <label class="block text-xs font-bold text-slate-500 uppercase tracking-wide">Length (mm)</label>
+                    <input type="number" formControlName="dim_l_mm"
+                        class="w-full rounded-lg border border-slate-200 px-3 py-2 text-sm text-slate-800 outline-none transition focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 bg-slate-50 focus:bg-white"
+                        placeholder="Enter length" />
+                    @if (form.get('dim_l_mm')?.touched && form.get('dim_l_mm')?.invalid) {
+                        <p class="text-xxs text-red-500 font-semibold mt-1">Length is required and must be positive.</p>
+                    }
+                </div>
+                
+                <div class="space-y-1">
+                    <label class="block text-xs font-bold text-slate-500 uppercase tracking-wide">Width (mm)</label>
+                    <input type="number" formControlName="dim_w_mm"
+                        class="w-full rounded-lg border border-slate-200 px-3 py-2 text-sm text-slate-800 outline-none transition focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 bg-slate-50 focus:bg-white"
+                        placeholder="Enter width" />
+                    @if (form.get('dim_w_mm')?.touched && form.get('dim_w_mm')?.invalid) {
+                        <p class="text-xxs text-red-500 font-semibold mt-1">Width is required and must be positive.</p>
+                    }
+                </div>
+            </div>
+
+            <!-- Size Dependency Selector -->
+            <div class="flex items-center gap-3 p-3 bg-slate-50 rounded-xl border border-slate-100">
+                <input type="checkbox" formControlName="is_dynamic_by_size" id="modal-dynamic-check"
+                    class="h-4.5 w-4.5 rounded text-indigo-600 border-slate-300 focus:ring-indigo-500 cursor-pointer" />
+                <label for="modal-dynamic-check" class="cursor-pointer select-none">
+                    <span class="block text-xs font-bold text-slate-800 uppercase tracking-wide">Dynamic by Size</span>
+                    <span class="block text-[10px] text-slate-400">Enable to configure specific quantities for different ring sizes</span>
+                </label>
+            </div>
+
+            <!-- Dynamic Size Matrix -->
+            @if (form.get('is_dynamic_by_size')?.value) {
+                <div class="mt-4 pt-4 border-t border-slate-100 space-y-2">
+                    <h4 class="text-xs font-bold text-slate-600 uppercase tracking-wider">Size-Qty Configuration Matrix</h4>
+                    <div class="grid grid-cols-2 gap-2 max-h-64 overflow-y-auto pr-1" [formArrayName]="'size_wt_matrix'">
+                        @for (matrixGroup of getSizeWtMatrixArray().controls; track $index) {
+                            <div [formGroupName]="$index" class="grid grid-cols-2 gap-2 items-center bg-slate-50/50 p-2 rounded-lg border border-slate-200/40">
+                                <span class="text-xs font-bold text-slate-700 pl-1">
+                                    Size {{ matrixGroup.get('ring_size')?.value }}
+                                </span>
+                                <input type="number" formControlName="stone_quantity" placeholder="Quantity"
+                                    class="w-full rounded-md border border-slate-200 px-2 py-1 text-xs text-slate-800 outline-none focus:border-indigo-500 bg-white" />
+                            </div>
+                        }
+                    </div>
+                </div>
+            }
+        </form>
+    </div>
+
+    <!-- Actions Footer -->
+    <div class="flex items-center justify-end gap-3 border-t border-slate-100 pt-3">
+        <button type="button" (click)="onCancel()"
+            class="px-4 py-2 text-xs font-semibold text-slate-600 hover:text-slate-800 hover:bg-slate-100 rounded-lg transition cursor-pointer">
+            Cancel
+        </button>
+        <button type="button" (click)="onSubmit()"
+            class="px-4 py-2 text-xs font-semibold text-white bg-indigo-600 hover:bg-indigo-700 rounded-lg shadow-sm transition cursor-pointer">
+            Save Changes
+        </button>
+    </div>
+</div>

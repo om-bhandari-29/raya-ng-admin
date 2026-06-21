@@ -1,4 +1,5 @@
 import { Component, OnInit, inject } from '@angular/core';
+import { Router } from '@angular/router';
 import { ListBase } from '../../../core/base/list-base';
 import { IGenericResponse } from '../../../core/response/genericResponse.interface';
 import { IArchetype, IArchetypeListResponse } from '../archetypes.response';
@@ -16,6 +17,7 @@ import { BreadcrumbService } from '../../../core/services/breadcrumb.service';
 export class ArchetypesList extends ListBase<IArchetype> implements OnInit {
   private pageTitleService = inject(PageTitleService);
   private breadcrumb = inject(BreadcrumbService);
+  private router = inject(Router);
 
   columns: TableColumn<IArchetype>[] = [
     {
@@ -31,7 +33,7 @@ export class ArchetypesList extends ListBase<IArchetype> implements OnInit {
       type: 'text',
       width: '40%',
       ellipsis: true,
-      cellClass: 'text-blue-600 font-medium',
+      cellClass: 'text-blue-600 font-medium cursor-pointer hover:text-blue-800',
     },
     {
       key: 'variant_name',
@@ -55,6 +57,10 @@ export class ArchetypesList extends ListBase<IArchetype> implements OnInit {
     this.breadcrumb.set([{ label: 'Archetypes' }]);
     this.loadItems();
     this.setHeaderConfig('Archetypes', ''); // Empty button title as it's list view only
+  }
+
+  openDetail(design_slug: string, route: string): void {
+    this.router.navigate([`/${route}`, design_slug]);
   }
 
   async loadItems(): Promise<void> {

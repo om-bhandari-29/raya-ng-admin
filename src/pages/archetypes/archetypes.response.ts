@@ -8,3 +8,55 @@ export interface IArchetype {
 export interface IArchetypeListResponse {
   items: IArchetype[];
 }
+
+export interface IMetalPurity {
+  metal_purity: string;
+  metal_color: string;
+}
+
+export interface ISizeQuantityMatrix {
+  ring_size: string;
+  stone_quantity: number;
+  metal_weight: number | undefined;
+}
+
+export interface IZoneSlot {
+  zone_slot_id: number;
+  shape_normalized: string;
+  dim_l_mm: string;
+  dim_w_mm: string;
+  is_dynamic_by_size: boolean;
+  size_wt_matrix: ISizeQuantityMatrix[];
+}
+
+export interface IArchetypeVariant {
+  variantId: number;
+  variant: string;
+  gender: string;
+  allowed_metals: IMetalPurity[];
+  zone_slots: {
+    ZONE_CENTER: IZoneSlot[];
+    ZONE_SHANK: IZoneSlot[];
+    ZONE_HALO: IZoneSlot[];
+    ZONE_ACCENT: IZoneSlot[];
+    ZONE_GALLERY: IZoneSlot[];
+  }
+}
+
+export interface IArchetypeDetail {
+  design_slug: string;
+  variants: IArchetypeVariant[];
+}
+
+export interface IArchetypeDetailResponse {
+  success: boolean;
+  data: IArchetypeDetail;
+}
+
+export interface IStoneOption {
+  id: number;
+  Stone_name: string;
+  Estimated_Weight_Final_ct: number;
+  Price_per_ct_INR: number;
+  Price_per_ct_USD: number;
+}
