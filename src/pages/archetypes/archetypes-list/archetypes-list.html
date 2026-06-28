@@ -1,7 +1,7 @@
 <app-table-layout [columns]="columns" [data]="items()" [isLoading]="isLoading()" [errorMessage]="errorMessage()"
   [showPagination]="true" [meta]="meta()" [searchPlaceholder]="'Search archetypes...'" (onRefresh)="loadItems()"
-  (onRowClick)="openDetail($any($event).design_slug, appRoutes.ARCHETYPES_DETAIL)"
-  (onEdit)="openDetail($any($event).design_slug, appRoutes.ARCHETYPES_EDIT)" (onPageChange)="onPageChange($event)"
+  (onRowClick)="openDetail($any($event).design_id, appRoutes.ARCHETYPES_DETAIL)"
+  (onEdit)="openDetail($any($event).design_id, appRoutes.ARCHETYPES_EDIT)" (onPageChange)="onPageChange($event)"
   (onSearch)="onSearchChange($event)"
   [topBarActions]="actionsTemplate"
   >

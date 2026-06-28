@@ -93,29 +93,34 @@ export class ArchetypeDetail extends Base implements OnInit {
 
   override ngOnInit(): void {
     super.ngOnInit();
-    const designSlug = this.route.snapshot.paramMap.get('design_slug');
-    if (designSlug) {
-      this.loadDetail(designSlug);
-      this.pageTitleService.setTitle(`Archetype: ${designSlug}`);
-      this.breadcrumb.set([
-        { label: 'Archetypes', url: `/${this.appRoutes.ARCHETYPES}` },
-        { label: designSlug },
-      ]);
+    const designId = this.route.snapshot.paramMap.get('design_slug');
+    if (designId) {
+      this.loadDetail(+designId);
+      this.pageTitleService.setTitle(`Archetype: ${designId}`);
+      // this.breadcrumb.set([
+      //   { label: 'Archetypes', url: `/${this.appRoutes.ARCHETYPES}` },
+      //   { label: designSlug },
+      // ]);
     } else {
       this.toastr.error('Design slug not found');
       this.goBack();
     }
   }
 
-  async loadDetail(designSlug: string): Promise<void> {
+  async loadDetail(designId: number): Promise<void> {
     this.isLoading.set(true);
     this.errorMessage.set(null);
     try {
       const res = await this.httpGetPromise<IArchetypeDetailResponse>(
-        this.apiRoutes.archetypes.GET_DETAIL(designSlug)
+        this.apiRoutes.archetypes.GET_DETAIL(designId)
       );
       if (res.success && res.data) {
         this.detail.set(res.data);
+        this.breadcrumb.set([
+          { label: 'Archetypes', url: `/${this.appRoutes.ARCHETYPES}` },
+          { label: res.data.design_slug },
+        ]);
+
         this.activeVariantIndex.update(() => 0);
 
         // Patch initial values to the form
@@ -249,7 +254,7 @@ export class ArchetypeDetail extends Base implements OnInit {
         this.stoneOptions.update((prev) => ({ ...prev, [zoneKey]: res.data }));
       } else {
         this.stoneOptions.update((prev) => ({ ...prev, [zoneKey]: [] }));
-        
+
       }
       console.log(this.stoneOptions()[zoneKey])
     } catch (error) {

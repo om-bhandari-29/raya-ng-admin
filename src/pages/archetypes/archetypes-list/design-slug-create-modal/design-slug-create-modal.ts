@@ -67,19 +67,19 @@ export class DesignSlugCreateModal extends Base implements OnInit {
       })),
     };
 
-    this.httpPostPromise<IGenericResponse<null>, typeof payload>(
+    this.httpPostPromise<IGenericResponse<number>, typeof payload>(
       this.apiRoutes.products_import.POST_BULK_VARIANT_UNDER_DESIGN, // placeholder until user provides the route
       payload
     )
-      .then((res) => {
+      .then((res: IGenericResponse<number>) => {
         if (res.status) {
-          this.dialogRef.close(design_slug);
+          this.dialogRef.close(res.data); //returns created design slug id
         } else {
           this.toastr.error(res.message || 'Failed to create design slug');
         }
       })
       .catch((err: HttpErrorResponse) => {
-        this.toastr.error(err.message || 'Something went wrong');
+        this.toastr.error(err.error.message);
       })
       .finally(() => {
         this.isBtnLoader.set(false);

@@ -12,10 +12,11 @@ import { ZoneSlotUpsert } from '../zone-slot-upsert/zone-slot-upsert';
 import { BreadcrumbService } from '../../../core/services/breadcrumb.service';
 import { PageTitleService } from '../../../core/services/page-title.service';
 import { VariantEditModal } from './variant-edit-modal/variant-edit-modal';
+import { DecimalPipe } from '@angular/common';
 
 @Component({
   selector: 'app-archetypes-upsert',
-  imports: [ReactiveFormsModule],
+  imports: [ReactiveFormsModule, DecimalPipe],
   templateUrl: './archetypes-upsert.html',
   styleUrl: './archetypes-upsert.scss',
 })
@@ -42,10 +43,10 @@ export class ArchetypesUpsert extends Base implements OnInit {
     this.designSlug = this._activatedRoute.snapshot.params['design_slug'] ?? null;
     if (this.designSlug) {
       this.pageTitleService.setTitle(`Archetype: ${this.designSlug}`);
-      this.breadcrumb.set([
-        { label: 'Archetypes', url: `/${this.appRoutes.ARCHETYPES}` },
-        { label: this.designSlug },
-      ]);
+      // this.breadcrumb.set([
+      //   { label: 'Archetypes', url: `/${this.appRoutes.ARCHETYPES}` },
+      //   { label: this.designSlug },
+      // ]);
       this.getVaraintBySlug(this.designSlug);
     } else {
       this.toastr.error('Design slug not found');
@@ -144,6 +145,10 @@ export class ArchetypesUpsert extends Base implements OnInit {
       .then((res: IGenericResponse<IVariant[]>) => {
         if (res.status) {
           this.designSlugVariant.update(() => res.data);
+          this.breadcrumb.set([
+            { label: 'Archetypes', url: `/${this.appRoutes.ARCHETYPES}` },
+            { label: res.design_slug ?? '' },
+          ]);
         }
         else {
           this.designSlugVariant.update(() => []);

@@ -62,8 +62,8 @@ export class ArchetypesList extends ListBase<IArchetype> implements OnInit {
     this.setHeaderConfig('Archetypes', ''); // Empty button title as it's list view only
   }
 
-  openDetail(design_slug: string, route: string): void {
-    this.router.navigate([`/${route}`, design_slug]);
+  openDetail(design_id: string, route: string): void {
+    this.router.navigate([`/${route}`, design_id]);
   }
 
   async loadItems(): Promise<void> {
@@ -107,7 +107,7 @@ export class ArchetypesList extends ListBase<IArchetype> implements OnInit {
       disableClose: true
     });
 
-    dialogRef.afterClosed().subscribe((res: string | undefined) => {
+    dialogRef.afterClosed().subscribe((res: number | undefined) => {
       if (res) {
         this.toastr.success('Design slug created successfully');
         this.router.navigate([`/${this.appRoutes.ARCHETYPES_EDIT}`, res]);

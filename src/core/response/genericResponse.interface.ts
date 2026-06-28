@@ -10,6 +10,7 @@ export interface IGenericResponse<DType> {
   message: string;
   statusCode: number;
   data: DType;
+  design_slug?: string;
   meta?: IResponseMeta;
 }
 export interface IGenericListResponse<DType> {

@@ -101,7 +101,7 @@ export const APIRoutes = {
   },
   archetypes: {
     GET_ALL: '/products/archetypes',
-    GET_DETAIL: (design_slug: string) => `/products/detail/${design_slug}`,
+    GET_DETAIL: (design_Id: number) => `/products/detail/${design_Id}`,
   },
 
   products_import: {

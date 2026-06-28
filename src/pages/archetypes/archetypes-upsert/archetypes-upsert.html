@@ -123,11 +123,11 @@
                             <div class="grid grid-cols-2 gap-3 text-xs">
                                 <div class="space-y-0.5 bg-slate-50/50 p-2 rounded-lg border border-slate-100">
                                     <span class="block text-xxs font-bold text-slate-400 uppercase tracking-wider">Length</span>
-                                    <span class="text-base font-semibold text-slate-800">{{ slotGroup.get('dim_l_mm')?.value || '0' }}</span>
+                                    <span class="text-base font-semibold text-slate-800">{{ (slotGroup.get('dim_l_mm')?.value | number: '1.0-3') || '0' }}</span>
                                 </div>
                                 <div class="space-y-0.5 bg-slate-50/50 p-2 rounded-lg border border-slate-100">
                                     <span class="block text-xxs font-bold text-slate-400 uppercase tracking-wider">Width</span>
-                                    <span class="text-base font-semibold text-slate-800">{{ slotGroup.get('dim_w_mm')?.value || '0' }}</span>
+                                    <span class="text-base font-semibold text-slate-800">{{ (slotGroup.get('dim_w_mm')?.value | number: '1.0-3') || '0' }}</span>
                                 </div>
                             </div>
 
