@@ -40,6 +40,7 @@ export class TableLayout<T = any> implements AfterContentInit, OnInit, OnDestroy
   @Input() errorMessage: string | null = null;
   @Input() showCheckbox: boolean = true;
   @Input() showActions: boolean = true;
+  @Input() topBarActions?: TemplateRef<any>;
 
   // Search
   @Input() searchPlaceholder: string = 'Search...';

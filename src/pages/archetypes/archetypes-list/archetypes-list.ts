@@ -7,6 +7,8 @@ import { TableLayout } from '../../../core/component/table-layout/table-layout';
 import { TableColumn } from '../../../core/models/table-column.interface';
 import { PageTitleService } from '../../../core/services/page-title.service';
 import { BreadcrumbService } from '../../../core/services/breadcrumb.service';
+import { MatDialog } from '@angular/material/dialog';
+import { DesignSlugCreateModal } from './design-slug-create-modal/design-slug-create-modal';
 
 @Component({
   selector: 'app-archetypes-list',
@@ -18,6 +20,7 @@ export class ArchetypesList extends ListBase<IArchetype> implements OnInit {
   private pageTitleService = inject(PageTitleService);
   private breadcrumb = inject(BreadcrumbService);
   private router = inject(Router);
+  private dialog = inject(MatDialog);
 
   columns: TableColumn<IArchetype>[] = [
     {
@@ -96,5 +99,19 @@ export class ArchetypesList extends ListBase<IArchetype> implements OnInit {
     } finally {
       this.isLoading.set(false);
     }
+  }
+
+  openAddDesignSlugModal(): void {
+    const dialogRef = this.dialog.open(DesignSlugCreateModal, {
+      width: '550px',
+      disableClose: true
+    });
+
+    dialogRef.afterClosed().subscribe((res: string | undefined) => {
+      if (res) {
+        this.toastr.success('Design slug created successfully');
+        this.router.navigate([`/${this.appRoutes.ARCHETYPES_EDIT}`, res]);
+      }
+    });
   }
 }

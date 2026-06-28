@@ -16,6 +16,7 @@ export interface ZoneSlotDetailForm {
     is_dynamic_by_size: FormControl<boolean | null>;
     shape_normalized: FormControl<string | null>;
     size_wt_matrix: FormArray<FormGroup<SizeQuantityMatrixForm>>;
+    fixed_quantity: FormControl<number | null>;
 }
 export interface VariantUpsertForm {
     variantId: FormControl<number | null>;
@@ -47,6 +48,7 @@ export const initializeZoneSlotDetailForm = (
         is_dynamic_by_size: boolean;
         shape_normalized: string;
         size_wt_matrix: ISizeQuantityMatrix[];
+        fixed_quantity: number | null;
     }>
 ): FormGroup<ZoneSlotDetailForm> => {
     let matrixList = data?.size_wt_matrix;
@@ -72,7 +74,8 @@ export const initializeZoneSlotDetailForm = (
             matrixList.map(item =>
                 initializeSizeQuantityMatrixForm(item)
             )
-        )
+        ),
+        fixed_quantity: new FormControl<number | null>(data?.fixed_quantity ?? null)
     });
 };
 

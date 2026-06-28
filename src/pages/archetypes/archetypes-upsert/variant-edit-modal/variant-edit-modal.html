@@ -1,0 +1,68 @@
+<div class="p-6 max-h-[90vh] flex flex-col justify-between space-y-4">
+    <!-- Header -->
+    <div class="flex items-center justify-between border-b border-slate-100 pb-3">
+        <h3 class="text-base font-bold text-slate-800">
+            @if (dialogData.variant_id) {
+                Edit Variant Details <span class="text-xs font-semibold text-slate-400">(ID: {{ dialogData.variant_id }})</span>
+            } @else {
+                Add Variant
+            }
+        </h3>
+        <button type="button" (click)="onCancel()" class="text-slate-400 hover:text-slate-600 transition cursor-pointer">
+            <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+            </svg>
+        </button>
+    </div>
+
+    <!-- Scrollable Form Body -->
+    <div class="overflow-y-auto pr-1 flex-1 py-1">
+        <form [formGroup]="form" class="space-y-4">
+            <!-- Variant Name -->
+            <div class="space-y-1">
+                <label class="block text-xs font-bold text-slate-500 uppercase tracking-wide">Variant Name</label>
+                <input type="text" formControlName="variant_name"
+                    class="w-full rounded-lg border border-slate-200 px-3 py-2 text-sm text-slate-800 outline-none transition focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 bg-slate-50 focus:bg-white"
+                    placeholder="Enter variant name" />
+                @if (form.get('variant_name')?.touched && form.get('variant_name')?.invalid) {
+                    <p class="text-xxs text-red-500 font-semibold mt-1">Variant Name is required.</p>
+                }
+            </div>
+
+            <!-- Gender Dropdown -->
+            <div class="space-y-1">
+                <label class="block text-xs font-bold text-slate-500 uppercase tracking-wide">Gender</label>
+                <select formControlName="target_gender"
+                    class="w-full rounded-lg border border-slate-200 px-3 py-2 text-sm text-slate-800 outline-none transition focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 bg-slate-50 focus:bg-white cursor-pointer">
+                    <option value="" disabled>Select Gender</option>
+                    <option value="Man">Man</option>
+                    <option value="Women">Women</option>
+                    <option value="Unisex">Unisex</option>
+                </select>
+                @if (form.get('target_gender')?.touched && form.get('target_gender')?.invalid) {
+                    <p class="text-xxs text-red-500 font-semibold mt-1">Gender is required.</p>
+                }
+            </div>
+        </form>
+    </div>
+
+    <!-- Actions Footer -->
+    <div class="flex items-center justify-end gap-3 border-t border-slate-100 pt-3">
+        <button type="button" (click)="onCancel()" [disabled]="isBtnLoader()"
+            class="px-4 py-2 text-xs font-semibold text-slate-600 hover:text-slate-800 hover:bg-slate-100 rounded-lg transition cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed">
+            Cancel
+        </button>
+        <button type="button" (click)="onSubmit()" [disabled]="isBtnLoader()"
+            class="px-4 py-2 text-xs font-semibold text-white bg-indigo-600 hover:bg-indigo-700 rounded-lg shadow-sm transition cursor-pointer inline-flex items-center gap-2 disabled:opacity-60 disabled:cursor-not-allowed">
+            @if (isBtnLoader()) {
+                <svg class="animate-spin h-3.5 w-3.5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                    <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                </svg>
+                <span>Saving...</span>
+            } @else {
+                <span>Save Changes</span>
+            }
+        </button>
+    </div>
+</div>

@@ -110,9 +110,14 @@ export const APIRoutes = {
     CALCULATE_PRICE: '/products-import/calculate-price',
     GET_VARIANT: (design_slug: string) => `/products/variants/${design_slug}`,
     GET_ZONE_ALLOWEDMTL: (variantId: number) => `/products/variant/${variantId}`,
+    UPDATE_VARIANT: '/products/variant',
+    POST: '/products/variant',
+    POST_BULK_VARIANT_UNDER_DESIGN: '/products/bulk-variants',
   },
 
   Blueprint_Zone_Config: {
-    UPDATE: '/blueprint-zones/config'
+    UPDATE: '/blueprint-zones/config',
+    POST_STONE_CONFIG: '/blueprint-zones/config'
+
   }
 };

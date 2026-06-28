@@ -27,6 +27,7 @@ export interface IZoneSlot {
   dim_w_mm: string;
   is_dynamic_by_size: boolean;
   size_wt_matrix: ISizeQuantityMatrix[];
+  fixed_quantity: number | null;
 }
 
 export interface IArchetypeVariant {

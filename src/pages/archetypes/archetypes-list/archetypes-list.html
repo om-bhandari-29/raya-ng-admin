@@ -1,15 +1,19 @@
-<app-table-layout
-  [columns]="columns"
-  [data]="items()"
-  [isLoading]="isLoading()"
-  [errorMessage]="errorMessage()"
-  [showPagination]="true"
-  [meta]="meta()"
-  [searchPlaceholder]="'Search archetypes...'"
-  (onRefresh)="loadItems()"
+<app-table-layout [columns]="columns" [data]="items()" [isLoading]="isLoading()" [errorMessage]="errorMessage()"
+  [showPagination]="true" [meta]="meta()" [searchPlaceholder]="'Search archetypes...'" (onRefresh)="loadItems()"
   (onRowClick)="openDetail($any($event).design_slug, appRoutes.ARCHETYPES_DETAIL)"
-  (onEdit)="openDetail($any($event).design_slug, appRoutes.ARCHETYPES_EDIT)"
-  (onPageChange)="onPageChange($event)"
+  (onEdit)="openDetail($any($event).design_slug, appRoutes.ARCHETYPES_EDIT)" (onPageChange)="onPageChange($event)"
   (onSearch)="onSearchChange($event)"
->
+  [topBarActions]="actionsTemplate"
+  >
 </app-table-layout>
+
+
+<ng-template #actionsTemplate>
+  <button type="button" (click)="openAddDesignSlugModal()"
+    class="inline-flex items-center gap-1.5 px-3.5 py-2 text-xs font-semibold text-white bg-indigo-600 hover:bg-indigo-700 rounded-lg shadow-sm transition duration-150 cursor-pointer">
+    <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+    </svg>
+    <span>Add Design Slug</span>
+  </button>
+</ng-template>
