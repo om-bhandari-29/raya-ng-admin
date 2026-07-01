@@ -11,6 +11,8 @@ export interface BaseRingForm {
     variantArchitecture: FormControl<string | null>;
     stoneOriginType: FormControl<string | null>;
     ringSize: FormControl<number | null>;
+    selectedMetalPurity: FormControl<string | null>;
+    selectedMetalColor: FormControl<string | null>;
 
     [RingComponentZone.CENTER]: FormGroup<ZoneForm>;
     [RingComponentZone.SHANK]: FormGroup<ZoneForm>;
@@ -36,6 +38,8 @@ export function createDefaultDevotionRingForm(): FormGroup<BaseRingForm> {
         variantArchitecture: new FormControl<string | null>(null),
         stoneOriginType: new FormControl<string | null>(null),
         ringSize: new FormControl<number | null>(null),
+        selectedMetalPurity: new FormControl<string | null>(null),
+        selectedMetalColor: new FormControl<string | null>(null),
 
         // Dynamically assign the keys using your enum values
         [RingComponentZone.CENTER]: createDefaultZoneForm(),

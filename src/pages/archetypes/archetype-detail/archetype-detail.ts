@@ -47,6 +47,20 @@ export class ArchetypeDetail extends Base implements OnInit {
   // Track selected stone per zone
   selectedStones = signal<Record<string, IStoneOption | null>>({});
 
+  // Track selected metal purity to filter available colors
+  selectedPurity = signal<string | null>(null);
+
+  // Computed allowed colors for the selected metal purity
+  allowedColorsForSelectedPurity = computed(() => {
+    const purity = this.selectedPurity();
+    if (!purity) return [];
+    const variant = this.detail()?.variants?.[this.activeVariantIndex()];
+    const match = variant?.design_variant_allowed_metals?.find(
+      (m) => m.metal_purity === purity
+    );
+    return match ? match.allowed_colors : [];
+  });
+
 
   public activeVariantIndex = signal<number>(0);
 
@@ -129,8 +143,11 @@ export class ArchetypeDetail extends Base implements OnInit {
           variantId: firstVariant?.variantId || null,
           variantArchitecture: firstVariant?.variant || null,
           stoneOriginType: 'Natural',
-          ringSize: null
+          ringSize: null,
+          selectedMetalPurity: null,
+          selectedMetalColor: null
         });
+        this.selectedPurity.set(null);
 
         console.log("this.detailForm ", this.detailForm.value);
       } else {
@@ -151,8 +168,11 @@ export class ArchetypeDetail extends Base implements OnInit {
     const selectedVariant = this.detail()?.variants?.[idx];
     this.detailForm.patchValue({
       variantId: selectedVariant?.variantId || null,
-      variantArchitecture: selectedVariant?.variant || null
+      variantArchitecture: selectedVariant?.variant || null,
+      selectedMetalPurity: null,
+      selectedMetalColor: null
     });
+    this.selectedPurity.set(null);
 
     // Reset all selections when variant changes
     this.selectedShapes.set({});
@@ -279,6 +299,17 @@ export class ArchetypeDetail extends Base implements OnInit {
         stone: stoneId ? String(stoneId) : null
       });
     }
+  }
+
+  onMetalPurityChange(event: Event): void {
+    const selectEl = event.target as HTMLSelectElement;
+    const purity = selectEl.value;
+    this.selectedPurity.set(purity);
+
+    // Reset selected color when purity changes
+    this.detailForm.patchValue({
+      selectedMetalColor: null
+    });
   }
 
   onSave(): void {

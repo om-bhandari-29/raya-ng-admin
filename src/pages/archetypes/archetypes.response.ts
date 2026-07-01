@@ -14,6 +14,16 @@ export interface IMetalPurity {
   metal_color: string;
 }
 
+export interface IAllowedMetal {
+  metal_purity: string;
+  allowed_colors: string[];
+}
+
+export interface ISaveMetalPurity {
+  metal_purity: string;
+  metal_color: string[];
+}
+
 export interface ISizeQuantityMatrix {
   ring_size: string;
   stone_quantity: number;
@@ -42,6 +52,7 @@ export interface IArchetypeVariant {
     ZONE_ACCENT: IZoneSlot[];
     ZONE_GALLERY: IZoneSlot[];
   }
+  design_variant_allowed_metals: Array<IAllowedMetal>;
 }
 
 export interface IArchetypeDetail {

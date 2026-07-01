@@ -66,7 +66,7 @@ export class VariantEditModal extends Base implements OnInit {
         target_gender: target_gender || '',
       };
 
-      this.httpPatchPromise<IGenericResponse<null>, VariantEditPayload>(this.apiRoutes.products_import.UPDATE_VARIANT, payload)
+      this.httpPatchPromise<IGenericResponse<null>, VariantEditPayload>(this.apiRoutes.products_import.UPDATE_VARIANT_ALLOWED_METALS, payload)
         .then((res: IGenericResponse<null>) => {
           if (res.status) {
             this.dialogRef.close(this.form.value);
@@ -84,7 +84,7 @@ export class VariantEditModal extends Base implements OnInit {
         target_gender: target_gender || '',
       };
 
-      this.httpPostPromise<IGenericResponse<number>, VariantCreatePayload>(this.apiRoutes.products_import.UPDATE_VARIANT, payload as VariantCreatePayload)
+      this.httpPostPromise<IGenericResponse<number>, VariantCreatePayload>(this.apiRoutes.products_import.UPDATE_VARIANT_ALLOWED_METALS, payload as VariantCreatePayload)
         .then((res: IGenericResponse<number>) => {
           if (res.status) {
             this.form.value.variant_id = res.data;

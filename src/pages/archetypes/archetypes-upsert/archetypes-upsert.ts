@@ -3,8 +3,8 @@ import { Base } from '../../../core/base/base';
 import { ActivatedRoute, Router } from '@angular/router';
 import { initializeVariantUpsertForm, initializeZoneSlotDetailForm, initializeSizeQuantityMatrixForm, IVariant, VariantUpsertForm, ZoneSlotDetailForm } from './archetypes-upsert.modal';
 import { IGenericResponse } from '../../../core/response/genericResponse.interface';
-import { FormArray, FormGroup, ReactiveFormsModule } from '@angular/forms';
-import { IArchetypeVariant, ISizeQuantityMatrix, IZoneSlot } from '../archetypes.response';
+import { FormArray, FormGroup, FormControl, ReactiveFormsModule } from '@angular/forms';
+import { IArchetypeVariant, ISizeQuantityMatrix, IZoneSlot, IMetalPurity, IAllowedMetal, ISaveMetalPurity } from '../archetypes.response';
 import { RingComponentZone, RingComponentZoneArray } from '../../../core/enum/ring-component.enum';
 import { RingComponentZoneArrayModel } from '../../../core/models/ringComponentZone.interface';
 import { MatDialog } from '@angular/material/dialog';
@@ -13,6 +13,8 @@ import { BreadcrumbService } from '../../../core/services/breadcrumb.service';
 import { PageTitleService } from '../../../core/services/page-title.service';
 import { VariantEditModal } from './variant-edit-modal/variant-edit-modal';
 import { DecimalPipe } from '@angular/common';
+import { MetalPurity } from '../../../core/enum/metal-purity.enum';
+import { MetalColor } from '../../../core/enum/metal-color.enum';
 
 @Component({
   selector: 'app-archetypes-upsert',
@@ -33,6 +35,25 @@ export class ArchetypesUpsert extends Base implements OnInit {
   private router = inject(Router);
 
   public activeZone = signal<string>(RingComponentZone.CENTER);
+  public activeTab = signal<'metal' | 'stone'>('metal');
+  public allowedMetals = signal<ISaveMetalPurity[]>([]);
+
+  public metalSpecsForm = new FormGroup({
+    GOLD_14K: new FormGroup({
+      YELLOW: new FormControl<boolean>(false, { nonNullable: true }),
+      WHITE: new FormControl<boolean>(false, { nonNullable: true }),
+      ROSE: new FormControl<boolean>(false, { nonNullable: true })
+    }),
+    GOLD_18K: new FormGroup({
+      YELLOW: new FormControl<boolean>(false, { nonNullable: true }),
+      WHITE: new FormControl<boolean>(false, { nonNullable: true }),
+      ROSE: new FormControl<boolean>(false, { nonNullable: true })
+    }),
+    PLATINUM_950: new FormGroup({
+      PLATINUM: new FormControl<boolean>(false, { nonNullable: true })
+    })
+  });
+
   constructor(private _activatedRoute: ActivatedRoute) {
     super();
   }
@@ -62,9 +83,63 @@ export class ArchetypesUpsert extends Base implements OnInit {
     return group.get('size_wt_matrix') as FormArray;
   }
 
+  public getVariantAllowedMetals(vId: number | string) {
+    this.httpGetPromise<IGenericResponse<IAllowedMetal[]>>(this.apiRoutes.products_import.GET_ALLOWED_METALS(vId))
+      .then((res) => {
+        if (res.status && res.data) {
+          const mappedMetals: ISaveMetalPurity[] = [];
+          res.data.forEach(item => {
+            if (item.allowed_colors) {
+              mappedMetals.push({
+                metal_purity: item.metal_purity,
+                metal_color: item.allowed_colors
+              });
+            }
+          });
+          this.allowedMetals.set(mappedMetals);
+
+          // Reset and populate metal specifications form matrix
+          this.metalSpecsForm.reset({
+            GOLD_14K: { YELLOW: false, WHITE: false, ROSE: false },
+            GOLD_18K: { YELLOW: false, WHITE: false, ROSE: false },
+            PLATINUM_950: { PLATINUM: false }
+          });
+
+          res.data.forEach(item => {
+            const purity = item.metal_purity;
+            const purityGroup = this.metalSpecsForm.get(purity) as FormGroup;
+            if (purityGroup && item.allowed_colors) {
+              item.allowed_colors.forEach(color => {
+                const colorControl = purityGroup.get(color) as FormControl;
+                if (colorControl) {
+                  colorControl.setValue(true);
+                }
+              });
+            }
+          });
+        } else {
+          this.allowedMetals.set([]);
+          this.metalSpecsForm.reset();
+        }
+        this.cdr.detectChanges();
+      })
+      .catch((err) => {
+        this.allowedMetals.set([]);
+        this.metalSpecsForm.reset();
+        this.cdr.detectChanges();
+      });
+  }
+
   public getZoneAllowedMtl() {
     const vId = this.variantUpsertForm.controls.variantId.value ?? null;
-    if (!vId) return;
+    if (!vId) {
+      this.allowedMetals.set([]);
+      this.metalSpecsForm.reset();
+      return;
+    }
+
+    this.getVariantAllowedMetals(vId);
+
     this.httpGetPromise<IGenericResponse<IArchetypeVariant>>(this.apiRoutes.products_import.GET_ZONE_ALLOWEDMTL(vId))
       .then((res) => {
         if (res.status) {
@@ -99,6 +174,60 @@ export class ArchetypesUpsert extends Base implements OnInit {
         }
         this.cdr.detectChanges();
       })
+  }
+
+  public saveMetalSpecs() {
+    const vId = this.variantUpsertForm.controls.variantId.value ?? null;
+    if (!vId) {
+      this.toastr.error('No variant selected');
+      return;
+    }
+
+    const allowedMetalsPayload: ISaveMetalPurity[] = [];
+    const formValue = this.metalSpecsForm.getRawValue();
+
+    // 14K GOLD
+    const gold14Colors: string[] = [];
+    if (formValue.GOLD_14K.YELLOW) gold14Colors.push('YELLOW');
+    if (formValue.GOLD_14K.WHITE) gold14Colors.push('WHITE');
+    if (formValue.GOLD_14K.ROSE) gold14Colors.push('ROSE');
+    if (gold14Colors.length > 0) {
+      allowedMetalsPayload.push({ metal_purity: 'GOLD_14K', metal_color: gold14Colors });
+    }
+
+    // 18K GOLD
+    const gold18Colors: string[] = [];
+    if (formValue.GOLD_18K.YELLOW) gold18Colors.push('YELLOW');
+    if (formValue.GOLD_18K.WHITE) gold18Colors.push('WHITE');
+    if (formValue.GOLD_18K.ROSE) gold18Colors.push('ROSE');
+    if (gold18Colors.length > 0) {
+      allowedMetalsPayload.push({ metal_purity: 'GOLD_18K', metal_color: gold18Colors });
+    }
+
+    // PLATINUM 950
+    const platColors: string[] = [];
+    if (formValue.PLATINUM_950.PLATINUM) platColors.push('PLATINUM');
+    if (platColors.length > 0) {
+      allowedMetalsPayload.push({ metal_purity: 'PLATINUM_950', metal_color: platColors });
+    }
+
+    this.httpPostPromise<IGenericResponse<null>, any>(this.apiRoutes.products_import.UPDATE_VARIANT_ALLOWED_METALS, {
+      variant_id: vId,
+      allowed_metals: allowedMetalsPayload
+    })
+      .then((res) => {
+        if (res.status) {
+          this.allowedMetals.set(allowedMetalsPayload);
+          this.toastr.success('Metal specifications updated successfully');
+          this.activeTab.update(() => "stone")
+        } else {
+          this.toastr.error(res.message || 'Failed to update metal specifications');
+        }
+        this.cdr.detectChanges();
+      })
+      .catch((err) => {
+        this.toastr.error(err.message || 'An error occurred while saving specifications');
+      });
   }
 
   public openEditModal(index: number) {
