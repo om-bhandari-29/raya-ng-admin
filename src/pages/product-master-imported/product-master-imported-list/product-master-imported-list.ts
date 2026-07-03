@@ -14,8 +14,7 @@ import { BreadcrumbService } from '../../../core/services/breadcrumb.service';
   styleUrl: './product-master-imported-list.scss',
 })
 export class ProductMasterImportedList extends ListBase<IProductMasterImported> implements OnInit {
-  private pageTitleService = inject(PageTitleService);
-  private breadcrumb = inject(BreadcrumbService);
+
 
   columns: TableColumn<IProductMasterImported>[] = [
     {

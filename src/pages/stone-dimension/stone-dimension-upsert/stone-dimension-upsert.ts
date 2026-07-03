@@ -39,8 +39,6 @@ interface StoneDimensionForm {
 export class StoneDimensionUpsert extends Base implements OnInit {
   private route = inject(ActivatedRoute);
   private router = inject(Router);
-  private pageTitleService = inject(PageTitleService);
-  private breadcrumb = inject(BreadcrumbService);
 
   itemName = signal<number>(0);
   isEditMode = signal<boolean>(false);

@@ -17,7 +17,7 @@ import { APPRoutes } from '../../../core/constant/app-routes';
 })
 export class GroupItemList extends ListBase<IGroupItem> implements OnInit {
   private router = inject(Router);
-  private breadcrumb = inject(BreadcrumbService);
+  
 
   columns: TableColumn<IGroupItem>[] = [
     {

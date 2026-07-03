@@ -25,8 +25,6 @@ import { RING_SIZES } from '../../../core/enum/ring-component.enum';
 export class ArchetypeDetail extends Base implements OnInit {
   private route = inject(ActivatedRoute);
   private router = inject(Router);
-  private breadcrumb = inject(BreadcrumbService);
-  private pageTitleService = inject(PageTitleService);
 
   public detail = signal<IArchetypeDetail | null>(null);
   public detailForm: FormGroup<BaseRingForm> = createDefaultDevotionRingForm();

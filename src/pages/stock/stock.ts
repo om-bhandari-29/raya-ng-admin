@@ -11,6 +11,7 @@ import { APPRoutes } from '../../core/constant/app-routes';
 })
 export class Stock implements OnInit {
   private breadcrumb = inject(BreadcrumbService);
+  
   readonly routes = APPRoutes;
 
   ngOnInit(): void {

@@ -1,0 +1,149 @@
+<!-- Header -->
+<div class="flex items-center justify-between px-6 py-4 border-b border-slate-200">
+  <h2 class="text-base font-semibold text-slate-800">
+    <!-- {{ isEditMode() ? 'Edit Metal Purity' : 'Add Metal Purity' }} -->
+    {{ modalTitle() }}
+  </h2>
+  <button
+    type="button"
+    (click)="onCancel()"
+    class="text-slate-400 hover:text-slate-600 transition-colors rounded-lg p-1"
+  >
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      class="h-5 w-5"
+      fill="none"
+      viewBox="0 0 24 24"
+      stroke="currentColor"
+      stroke-width="2"
+    >
+      <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+    </svg>
+  </button>
+</div>
+
+<!-- Loading -->
+@if (isLoading()) {
+  <div class="flex items-center justify-center gap-2 px-6 py-10 text-slate-400 text-sm">
+    <svg
+      class="animate-spin h-5 w-5"
+      xmlns="http://www.w3.org/2000/svg"
+      fill="none"
+      viewBox="0 0 24 24"
+    >
+      <circle
+        class="opacity-25"
+        cx="12"
+        cy="12"
+        r="10"
+        stroke="currentColor"
+        stroke-width="4"
+      ></circle>
+      <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z"></path>
+    </svg>
+    Loading...
+  </div>
+}
+
+<!-- Form -->
+@if (!isLoading()) {
+  <form [formGroup]="form" (ngSubmit)="onSubmit()" novalidate>
+    <div class="px-6 py-5 space-y-5">
+      <!-- Error banner -->
+      @if (errorMessage()) {
+        <div
+          class="flex items-center gap-2 px-4 py-3 rounded-lg text-sm text-red-600 bg-red-50 border border-red-200"
+        >
+          <svg class="h-4 w-4 shrink-0" fill="currentColor" viewBox="0 0 20 20">
+            <path
+              fill-rule="evenodd"
+              d="M10 18a8 8 0 100-16 8 8 0 000 16zm-.75-11.25a.75.75 0 011.5 0v4.5a.75.75 0 01-1.5 0v-4.5zm.75 7.5a.75.75 0 100-1.5.75.75 0 000 1.5z"
+              clip-rule="evenodd"
+            />
+          </svg>
+          {{ errorMessage() }}
+        </div>
+      }
+
+      <!-- Name -->
+      <div class="flex flex-col gap-1.5">
+        <label for="name" class="font-medium" style="font-size: 13px; color: #525252">
+          Name <span class="text-red-500">*</span>
+        </label>
+        <input
+          id="name"
+          type="text"
+          formControlName="name"
+          placeholder="Enter metal purity name"
+          class="w-full rounded-lg px-2 py-1 text-sm text-slate-800 placeholder-slate-400 outline-none transition focus:ring-2 focus:ring-gray-200 focus:border-gray-200 bg-[#f3f3f3]"
+          [class.border-red-400]="nameControl.invalid && nameControl.touched"
+          [class.border-slate-300]="!(nameControl.invalid && nameControl.touched)"
+        />
+        @if (nameControl.invalid && nameControl.touched) {
+          @if (nameControl.errors?.['required']) {
+            <p class="text-xs text-red-500">Name is required.</p>
+          } @else if (nameControl.errors?.['minlength']) {
+            <p class="text-xs text-red-500">Name must be at least 2 characters.</p>
+          }
+        }
+      </div>
+
+      <!-- Code -->
+      <div class="flex flex-col gap-1.5">
+        <label for="code" class="font-medium" style="font-size: 13px; color: #525252">
+          Code <span class="text-red-500">*</span>
+        </label>
+        <input
+          id="code"
+          type="text"
+          formControlName="code"
+          placeholder="Enter metal purity code"
+          class="w-full rounded-lg px-2 py-1 text-sm text-slate-800 placeholder-slate-400 outline-none transition focus:ring-2 focus:ring-gray-200 focus:border-gray-200 bg-[#f3f3f3]"
+          [class.border-red-400]="codeControl.invalid && codeControl.touched"
+          [class.border-slate-300]="!(codeControl.invalid && codeControl.touched)"
+        />
+        @if (codeControl.invalid && codeControl.touched) {
+          @if (codeControl.errors?.['required']) {
+            <p class="text-xs text-red-500">Code is required.</p>
+          }
+        }
+      </div>
+    </div>
+
+    <!-- Footer -->
+    <div class="flex items-center justify-end gap-3 px-6 py-4 border-t border-slate-200">
+      <button
+        type="button"
+        (click)="onCancel()"
+        class="px-4 py-2 rounded-lg text-sm font-medium text-slate-600 bg-slate-100 hover:bg-slate-200 transition-colors"
+      >
+        Cancel
+      </button>
+      <button
+        type="submit"
+        [disabled]="isSaving()"
+        class="inline-flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 disabled:opacity-60 disabled:cursor-not-allowed transition-colors"
+      >
+        @if (isSaving()) {
+          <svg
+            class="animate-spin h-4 w-4"
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+          >
+            <circle
+              class="opacity-25"
+              cx="12"
+              cy="12"
+              r="10"
+              stroke="currentColor"
+              stroke-width="4"
+            ></circle>
+            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z"></path>
+          </svg>
+        }
+        {{ isEditMode() ? 'Update' : 'Create' }}
+      </button>
+    </div>
+  </form>
+}

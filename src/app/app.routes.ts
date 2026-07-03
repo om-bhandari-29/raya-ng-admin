@@ -2,6 +2,7 @@ import { Routes } from '@angular/router';
 import { APPRoutes } from '../core/constant/app-routes';
 import { Layout } from '../core/component/layout/layout';
 import { StoneMasterType, StoneMasterLabel } from '../core/enum/stone-master.enum';
+import { MetalMasterLabel, MetalMasterType } from '../core/enum/metal-master.enum';
 
 export const routes: Routes = [
   {
@@ -48,9 +49,9 @@ export const routes: Routes = [
       {
         path: `${APPRoutes.PRODUCT_MASTER_IMPORTED_DETAIL}/:design_slug`,
         loadComponent: () =>
-          import(
-            '../pages/product-master-imported/product-master-imported-detail/product-master-imported-detail.component'
-          ).then((m) => m.ProductMasterImportedDetailComponent),
+          import('../pages/product-master-imported/product-master-imported-detail/product-master-imported-detail.component').then(
+            (m) => m.ProductMasterImportedDetailComponent,
+          ),
       },
       {
         path: APPRoutes.GST_HSN_CODE,
@@ -114,6 +115,18 @@ export const routes: Routes = [
           import('../pages/stone-dimension/stone-dimension-list/stone-dimension-list').then(
             (m) => m.StoneDimensionList,
           ),
+      },
+      {
+        path: APPRoutes.METAL_PURITY,
+        loadComponent: () =>
+          import('../pages/metal-purity/metal-purity').then((m) => m.MetalPurity),
+        data: { MetalMasterType: MetalMasterType.PURITY, MetalMasterLabel: MetalMasterLabel.PURITY },
+      },
+      {
+        path: APPRoutes.METAL_COLOR,
+        loadComponent: () =>
+          import('../pages/metal-purity/metal-purity').then((m) => m.MetalPurity),
+        data: { MetalMasterType: MetalMasterType.COLOR, MetalMasterLabel: MetalMasterLabel.COLOR },
       },
       {
         path: APPRoutes.ARCHETYPES,

@@ -16,7 +16,7 @@ import { APPRoutes } from '../../../core/constant/app-routes';
 })
 export class ItemList extends ListBase<IItem> implements OnInit {
   private router = inject(Router);
-  private breadcrumb = inject(BreadcrumbService);
+  
 
   columns: TableColumn<IItem>[] = [
     {

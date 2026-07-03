@@ -97,7 +97,7 @@ export const APIRoutes = {
     UPDATE: (id: number | string) => `/stone/${id}`,
     DELETE: (id: number | string) => `/stone/${id}`,
     COMBO: '/stone/combo',
-    OPTION: '/stone/option'
+    OPTION: '/stone/option',
   },
   archetypes: {
     GET_ALL: '/products/archetypes',
@@ -110,7 +110,8 @@ export const APIRoutes = {
     CALCULATE_PRICE: '/products-import/calculate-price',
     GET_VARIANT: (design_slug: string) => `/products/variants/${design_slug}`,
     GET_ZONE_ALLOWEDMTL: (variantId: number) => `/products/variant/${variantId}`,
-    GET_ALLOWED_METALS: (variantId: number | string) => `/products/variant/${variantId}/allowed-metals`,
+    GET_ALLOWED_METALS: (variantId: number | string) =>
+      `/products/variant/${variantId}/allowed-metals`,
     UPDATE_VARIANT_ALLOWED_METALS: '/products/variant/allowed-metals',
     POST: '/products/variant',
     POST_BULK_VARIANT_UNDER_DESIGN: '/products/bulk-variants',
@@ -118,7 +119,27 @@ export const APIRoutes = {
 
   Blueprint_Zone_Config: {
     UPDATE: '/blueprint-zones/config',
-    POST_STONE_CONFIG: '/blueprint-zones/config'
+    POST_STONE_CONFIG: '/blueprint-zones/config',
+  },
 
-  }
+  Metal_Purity: {
+    CREATE: '/metal-purity',
+    GET_ALL: '/metal-purity',
+    GET_COMBO: '/metal-purity/combo',
+    GET_BY_ID: (id: number | string) => `/metal-purity/${id}`,
+    UPDATE: (id: number | string) => `/metal-purity/${id}`,
+    DELETE: (id: number | string) => `/metal-purity/${id}`,
+  },
+
+  Metal_Color: {
+    CREATE: '/metal-color',
+    GET_ALL: '/metal-color',
+    GET_COMBO: '/metal-color/combo',
+    GET_BY_ID: (id: number | string) => `/metal-color/${id}`,
+    UPDATE: (id: number | string) => `/metal-color/${id}`,
+    DELETE: (id: number | string) => `/metal-color/${id}`,
+    // GET_BY_ID: '/metal-color/:id',
+    // UPDATE: '/metal-color/:id',
+    // DELETE: '/metal-color/:id',
+  },
 };

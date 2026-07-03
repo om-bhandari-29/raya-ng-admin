@@ -9,6 +9,8 @@ import { environment } from '../../environment/dev.env';
 import { variable } from '../enum/variable.enum';
 import { ActionService } from '../services/action.service';
 import { SidebarService } from '../component/side-bar/sidebar.service';
+import { PageTitleService } from '../services/page-title.service';
+import { BreadcrumbService } from '../services/breadcrumb.service';
 
 @Component({
   selector: 'app-base',
@@ -29,11 +31,18 @@ export class Base {
 
   private httpClient: HttpClient = inject(HttpClient);
 
+  public pageTitleService = inject(PageTitleService);
+  public breadcrumb = inject(BreadcrumbService);
+
   ngOnInit(): void {
     this.listenToActionButton();
   }
 
-  public httpGetPromise<RType>(url: string, showLoader: boolean = true, queryParams?: Record<string, string | number | boolean>): Promise<RType> {
+  public httpGetPromise<RType>(
+    url: string,
+    showLoader: boolean = true,
+    queryParams?: Record<string, string | number | boolean>,
+  ): Promise<RType> {
     const getPromise: Promise<RType> = new Promise((resolve, reject) => {
       const sub: Subscription = this.httpClient
         .get<RType>(this.apiBaseUrl + url, {
@@ -123,7 +132,11 @@ export class Base {
     });
   }
 
-  public httpDeletePromise<T>(url: string, showLoader: boolean = true, queryParams?: Record<string, string | number | boolean>): Promise<T> {
+  public httpDeletePromise<T>(
+    url: string,
+    showLoader: boolean = true,
+    queryParams?: Record<string, string | number | boolean>,
+  ): Promise<T> {
     return new Promise((resolve, reject) => {
       this.httpClient
         .delete<T>(this.apiBaseUrl + url, {

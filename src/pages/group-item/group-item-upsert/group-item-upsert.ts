@@ -29,7 +29,7 @@ export interface GroupItemForm {
 export class GroupItemUpsert extends Base implements OnInit {
   private route = inject(ActivatedRoute);
   private router = inject(Router);
-  private breadcrumb = inject(BreadcrumbService);
+  
 
   isEditMode = signal<boolean>(false);
   isLoading = signal<boolean>(false);

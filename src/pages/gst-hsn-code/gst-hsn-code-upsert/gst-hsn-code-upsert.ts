@@ -21,7 +21,7 @@ export interface GstHsnCodeForm {
 export class GstHsnCodeUpsert extends Base implements OnInit {
   private route = inject(ActivatedRoute);
   private router = inject(Router);
-  private breadcrumb = inject(BreadcrumbService);
+  
 
   isEditMode = signal<boolean>(false);
   isLoading = signal<boolean>(false);

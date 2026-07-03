@@ -20,6 +20,9 @@ export const APPRoutes = {
   ARCHETYPES: 'archetypes',
   ARCHETYPES_DETAIL: 'archetypes/detail',
   ARCHETYPES_EDIT: 'archetypes/edit',
+  METAL_PURITY: 'metal-purity',
+  METAL_COLOR: 'metal-color',
+
   // STOCK: 'stock',
   // STOCK_ITEM: ['stock', 'item'],
   // STOCK_ITEM_GROUP: ['stock', 'item-group'],

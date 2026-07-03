@@ -17,8 +17,6 @@ import { DesignSlugCreateModal } from './design-slug-create-modal/design-slug-cr
   styleUrl: './archetypes-list.scss',
 })
 export class ArchetypesList extends ListBase<IArchetype> implements OnInit {
-  private pageTitleService = inject(PageTitleService);
-  private breadcrumb = inject(BreadcrumbService);
   private router = inject(Router);
   private dialog = inject(MatDialog);
 

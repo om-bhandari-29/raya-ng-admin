@@ -30,8 +30,6 @@ export class ArchetypesUpsert extends Base implements OnInit {
   public variantUpsertForm: FormGroup<VariantUpsertForm> = initializeVariantUpsertForm();
   public ringComponentZoneArray: Signal<RingComponentZoneArrayModel[]> = signal(RingComponentZoneArray()).asReadonly();
 
-  private breadcrumb = inject(BreadcrumbService);
-  private pageTitleService = inject(PageTitleService);
   private router = inject(Router);
 
   public activeZone = signal<string>(RingComponentZone.CENTER);

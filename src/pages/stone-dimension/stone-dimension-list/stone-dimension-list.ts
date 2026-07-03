@@ -18,8 +18,7 @@ import { SidebarMode } from '../../../core/enum/sidebar-mode.enum';
 })
 export class StoneDimensionList extends ListBase<IStoneDimension> implements OnInit {
   private router = inject(Router);
-  private pageTitleService = inject(PageTitleService);
-  private breadcrumb = inject(BreadcrumbService);
+
 
   columns: TableColumn<IStoneDimension>[] = [
     {
