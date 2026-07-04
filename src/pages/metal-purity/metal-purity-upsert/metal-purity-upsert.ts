@@ -3,7 +3,7 @@ import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angula
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { Base } from '../../../core/base/base';
 import { IGenericResponse } from '../../../core/response/genericResponse.interface';
-import { RMetalPurity } from '../metal-purity.response';
+import { RMetalPurity } from '../../../core/response/metal-purity.response';
 import { HttpErrorResponse } from '@angular/common/http';
 import { MetalMasterType } from '../../../core/enum/metal-master.enum';
 

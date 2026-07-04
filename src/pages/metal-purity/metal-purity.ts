@@ -1,7 +1,7 @@
 import { Component, OnInit, inject } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { ListBase } from '../../core/base/list-base';
-import { RMetalPurity } from './metal-purity.response';
+import { RMetalPurity } from '../../core/response/metal-purity.response';
 import { IGenericListResponse } from '../../core/response/genericResponse.interface';
 import { TableColumn } from '../../core/models/table-column.interface';
 import { TableLayout } from '../../core/component/table-layout/table-layout';

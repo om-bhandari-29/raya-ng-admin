@@ -129,6 +129,7 @@ export const APIRoutes = {
     GET_BY_ID: (id: number | string) => `/metal-purity/${id}`,
     UPDATE: (id: number | string) => `/metal-purity/${id}`,
     DELETE: (id: number | string) => `/metal-purity/${id}`,
+    GET_BY_VARIANT_ID: (variantId: number | string) => `/metal-purity/variant/${variantId}`,
   },
 
   Metal_Color: {
@@ -138,6 +139,7 @@ export const APIRoutes = {
     GET_BY_ID: (id: number | string) => `/metal-color/${id}`,
     UPDATE: (id: number | string) => `/metal-color/${id}`,
     DELETE: (id: number | string) => `/metal-color/${id}`,
+
     // GET_BY_ID: '/metal-color/:id',
     // UPDATE: '/metal-color/:id',
     // DELETE: '/metal-color/:id',

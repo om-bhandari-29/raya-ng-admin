@@ -1,10 +1,32 @@
-import { Component, signal, Signal, WritableSignal, inject, ChangeDetectorRef, OnInit } from '@angular/core';
+import {
+  Component,
+  signal,
+  Signal,
+  WritableSignal,
+  inject,
+  ChangeDetectorRef,
+  OnInit,
+} from '@angular/core';
 import { Base } from '../../../core/base/base';
 import { ActivatedRoute, Router } from '@angular/router';
-import { initializeVariantUpsertForm, initializeZoneSlotDetailForm, initializeSizeQuantityMatrixForm, IVariant, VariantUpsertForm, ZoneSlotDetailForm } from './archetypes-upsert.modal';
+import {
+  initializeVariantUpsertForm,
+  initializeZoneSlotDetailForm,
+  initializeSizeQuantityMatrixForm,
+  IVariant,
+  VariantUpsertForm,
+  ZoneSlotDetailForm,
+} from './archetypes-upsert.modal';
 import { IGenericResponse } from '../../../core/response/genericResponse.interface';
 import { FormArray, FormGroup, FormControl, ReactiveFormsModule } from '@angular/forms';
-import { IArchetypeVariant, ISizeQuantityMatrix, IZoneSlot, IMetalPurity, IAllowedMetal, ISaveMetalPurity } from '../archetypes.response';
+import {
+  IArchetypeVariant,
+  ISizeQuantityMatrix,
+  IZoneSlot,
+  IMetalPurity,
+  IAllowedMetal,
+  ISaveMetalPurity,
+} from '../archetypes.response';
 import { RingComponentZone, RingComponentZoneArray } from '../../../core/enum/ring-component.enum';
 import { RingComponentZoneArrayModel } from '../../../core/models/ringComponentZone.interface';
 import { MatDialog } from '@angular/material/dialog';
@@ -15,6 +37,7 @@ import { VariantEditModal } from './variant-edit-modal/variant-edit-modal';
 import { DecimalPipe } from '@angular/common';
 import { MetalPurity } from '../../../core/enum/metal-purity.enum';
 import { MetalColor } from '../../../core/enum/metal-color.enum';
+import { RMetalPurity } from '../../../core/response/metal-purity.response';
 
 @Component({
   selector: 'app-archetypes-upsert',
@@ -28,29 +51,19 @@ export class ArchetypesUpsert extends Base implements OnInit {
 
   public designSlugVariant: WritableSignal<IVariant[]> = signal([]);
   public variantUpsertForm: FormGroup<VariantUpsertForm> = initializeVariantUpsertForm();
-  public ringComponentZoneArray: Signal<RingComponentZoneArrayModel[]> = signal(RingComponentZoneArray()).asReadonly();
+  public ringComponentZoneArray: Signal<RingComponentZoneArrayModel[]> =
+    signal(RingComponentZoneArray()).asReadonly();
 
   private router = inject(Router);
 
   public activeZone = signal<string>(RingComponentZone.CENTER);
   public activeTab = signal<'metal' | 'stone'>('metal');
   public allowedMetals = signal<ISaveMetalPurity[]>([]);
+  public metalPurity: WritableSignal<RMetalPurity[]> = signal([]);
+  public metalColor: WritableSignal<RMetalPurity[]> = signal([]);
 
-  public metalSpecsForm = new FormGroup({
-    GOLD_14K: new FormGroup({
-      YELLOW: new FormControl<boolean>(false, { nonNullable: true }),
-      WHITE: new FormControl<boolean>(false, { nonNullable: true }),
-      ROSE: new FormControl<boolean>(false, { nonNullable: true })
-    }),
-    GOLD_18K: new FormGroup({
-      YELLOW: new FormControl<boolean>(false, { nonNullable: true }),
-      WHITE: new FormControl<boolean>(false, { nonNullable: true }),
-      ROSE: new FormControl<boolean>(false, { nonNullable: true })
-    }),
-    PLATINUM_950: new FormGroup({
-      PLATINUM: new FormControl<boolean>(false, { nonNullable: true })
-    })
-  });
+
+  public metalSpecsForm = new FormGroup<Record<string, FormGroup>>({});
 
   constructor(private _activatedRoute: ActivatedRoute) {
     super();
@@ -62,15 +75,36 @@ export class ArchetypesUpsert extends Base implements OnInit {
     this.designSlug = this._activatedRoute.snapshot.params['design_slug'] ?? null;
     if (this.designSlug) {
       this.pageTitleService.setTitle(`Archetype: ${this.designSlug}`);
-      // this.breadcrumb.set([
-      //   { label: 'Archetypes', url: `/${this.appRoutes.ARCHETYPES}` },
-      //   { label: this.designSlug },
-      // ]);
       this.getVaraintBySlug(this.designSlug);
     } else {
       this.toastr.error('Design slug not found');
       this.goBack();
     }
+
+    this.getMetalPurityCombo(this.apiRoutes.Metal_Purity.GET_COMBO).then((purityData) => {
+      this.metalPurity.set(purityData);
+      return this.getMetalPurityCombo(this.apiRoutes.Metal_Color.GET_COMBO);
+    }).then((colorData) => {
+      this.metalColor.set(colorData);
+      this.initDynamicMetalSpecsForm();
+    });
+  }
+
+  private initDynamicMetalSpecsForm() {
+    const purityList = this.metalPurity();
+    const colorList = this.metalColor();
+    
+    // Clear and build dynamic form controls
+    const newFormGroupConfig: Record<string, FormGroup> = {};
+    purityList.forEach((purity) => {
+      const colorGroupConfig: Record<string, FormControl<boolean>> = {};
+      colorList.forEach((color) => {
+        colorGroupConfig[color.code] = new FormControl<boolean>(false, { nonNullable: true });
+      });
+      newFormGroupConfig[purity.code] = new FormGroup(colorGroupConfig);
+    });
+
+    this.metalSpecsForm = new FormGroup(newFormGroupConfig);
   }
 
   public getZoneFormArray(zoneName: string): FormArray<FormGroup<ZoneSlotDetailForm>> {
@@ -82,37 +116,44 @@ export class ArchetypesUpsert extends Base implements OnInit {
   }
 
   public getVariantAllowedMetals(vId: number | string) {
-    this.httpGetPromise<IGenericResponse<IAllowedMetal[]>>(this.apiRoutes.products_import.GET_ALLOWED_METALS(vId))
+    this.httpGetPromise<IGenericResponse<any[]>>(
+      this.apiRoutes.products_import.GET_ALLOWED_METALS(vId),
+    )
       .then((res) => {
         if (res.status && res.data) {
           const mappedMetals: ISaveMetalPurity[] = [];
-          res.data.forEach(item => {
-            if (item.allowed_colors) {
+          res.data.forEach((item) => {
+            if (item.allowed_color_ids) {
               mappedMetals.push({
-                metal_purity: item.metal_purity,
-                metal_color: item.allowed_colors
+                metal_purity: String(item.metal_purity_id),
+                metal_color: item.allowed_color_ids.map(String),
               });
             }
           });
           this.allowedMetals.set(mappedMetals);
 
-          // Reset and populate metal specifications form matrix
-          this.metalSpecsForm.reset({
-            GOLD_14K: { YELLOW: false, WHITE: false, ROSE: false },
-            GOLD_18K: { YELLOW: false, WHITE: false, ROSE: false },
-            PLATINUM_950: { PLATINUM: false }
-          });
+          // Reset the form
+          this.metalSpecsForm.reset();
 
-          res.data.forEach(item => {
-            const purity = item.metal_purity;
-            const purityGroup = this.metalSpecsForm.get(purity) as FormGroup;
-            if (purityGroup && item.allowed_colors) {
-              item.allowed_colors.forEach(color => {
-                const colorControl = purityGroup.get(color) as FormControl;
-                if (colorControl) {
-                  colorControl.setValue(true);
-                }
-              });
+          res.data.forEach((item) => {
+            const purityObj = this.metalPurity().find(p => String(p.id) === String(item.metal_purity_id));
+            const purityKey = purityObj ? purityObj.code : '';
+
+            if (purityKey) {
+              const purityGroup = this.metalSpecsForm.get(purityKey) as FormGroup;
+              if (purityGroup && item.allowed_color_ids) {
+                item.allowed_color_ids.forEach((colorVal: any) => {
+                  const colorObj = this.metalColor().find(c => String(c.id) === String(colorVal));
+                  const colorKey = colorObj ? colorObj.code : '';
+                  
+                  if (colorKey) {
+                    const colorControl = purityGroup.get(colorKey) as FormControl;
+                    if (colorControl) {
+                      colorControl.setValue(true);
+                    }
+                  }
+                });
+              }
             }
           });
         } else {
@@ -138,40 +179,41 @@ export class ArchetypesUpsert extends Base implements OnInit {
 
     this.getVariantAllowedMetals(vId);
 
-    this.httpGetPromise<IGenericResponse<IArchetypeVariant>>(this.apiRoutes.products_import.GET_ZONE_ALLOWEDMTL(vId))
-      .then((res) => {
-        if (res.status) {
-          // Clear existing form arrays before pushing new items
-          Object.keys(this.variantUpsertForm.controls).forEach((key) => {
-            if (key !== 'variantId') {
-              const array = this.variantUpsertForm.get(key) as FormArray;
-              if (array) {
-                array.clear();
-              }
+    this.httpGetPromise<IGenericResponse<IArchetypeVariant>>(
+      this.apiRoutes.products_import.GET_ZONE_ALLOWEDMTL(vId),
+    ).then((res) => {
+      if (res.status) {
+        // Clear existing form arrays before pushing new items
+        Object.keys(this.variantUpsertForm.controls).forEach((key) => {
+          if (key !== 'variantId') {
+            const array = this.variantUpsertForm.get(key) as FormArray;
+            if (array) {
+              array.clear();
             }
-          });
+          }
+        });
 
-          Object.keys(res.data.zone_slots).forEach((val) => {
-            const zone = val as keyof typeof res.data.zone_slots;
-            const zoneSlot: Array<IZoneSlot> = res.data.zone_slots[zone];
-            if (zoneSlot.length) {
-              zoneSlot.forEach((value: IZoneSlot) => {
-                const size_wt_matrix: Array<ISizeQuantityMatrix> = value.size_wt_matrix ?? [];
-                const parsedV = {
-                  ...value,
-                  dim_w_mm: Number(value.dim_w_mm),
-                  dim_l_mm: Number(value.dim_l_mm),
-                  size_wt_matrix
-                }
-                this.variantUpsertForm.controls[zone].push(initializeZoneSlotDetailForm(parsedV));
-              });
-            }
-          })
-        } else {
-          this.variantUpsertForm = initializeVariantUpsertForm();
-        }
-        this.cdr.detectChanges();
-      })
+        Object.keys(res.data.zone_slots).forEach((val) => {
+          const zone = val as keyof typeof res.data.zone_slots;
+          const zoneSlot: Array<IZoneSlot> = res.data.zone_slots[zone];
+          if (zoneSlot.length) {
+            zoneSlot.forEach((value: IZoneSlot) => {
+              const size_wt_matrix: Array<ISizeQuantityMatrix> = value.size_wt_matrix ?? [];
+              const parsedV = {
+                ...value,
+                dim_w_mm: Number(value.dim_w_mm),
+                dim_l_mm: Number(value.dim_l_mm),
+                size_wt_matrix,
+              };
+              this.variantUpsertForm.controls[zone].push(initializeZoneSlotDetailForm(parsedV));
+            });
+          }
+        });
+      } else {
+        this.variantUpsertForm = initializeVariantUpsertForm();
+      }
+      this.cdr.detectChanges();
+    });
   }
 
   public saveMetalSpecs() {
@@ -181,43 +223,43 @@ export class ArchetypesUpsert extends Base implements OnInit {
       return;
     }
 
-    const allowedMetalsPayload: ISaveMetalPurity[] = [];
+    const allowedMetalsPayload: any[] = [];
     const formValue = this.metalSpecsForm.getRawValue();
 
-    // 14K GOLD
-    const gold14Colors: string[] = [];
-    if (formValue.GOLD_14K.YELLOW) gold14Colors.push('YELLOW');
-    if (formValue.GOLD_14K.WHITE) gold14Colors.push('WHITE');
-    if (formValue.GOLD_14K.ROSE) gold14Colors.push('ROSE');
-    if (gold14Colors.length > 0) {
-      allowedMetalsPayload.push({ metal_purity: 'GOLD_14K', metal_color: gold14Colors });
-    }
+    // Iterate dynamically and map codes to IDs
+    this.metalPurity().forEach((purity) => {
+      const purityGroupValue = formValue[purity.code];
+      if (purityGroupValue) {
+        const allowedColors: number[] = [];
+        this.metalColor().forEach((color) => {
+          if (purityGroupValue[color.code]) {
+            allowedColors.push(color.id);
+          }
+        });
+        if (allowedColors.length > 0) {
+          allowedMetalsPayload.push({
+            metal_purity: purity.id,
+            metal_color: allowedColors,
+          });
+        }
+      }
+    });
 
-    // 18K GOLD
-    const gold18Colors: string[] = [];
-    if (formValue.GOLD_18K.YELLOW) gold18Colors.push('YELLOW');
-    if (formValue.GOLD_18K.WHITE) gold18Colors.push('WHITE');
-    if (formValue.GOLD_18K.ROSE) gold18Colors.push('ROSE');
-    if (gold18Colors.length > 0) {
-      allowedMetalsPayload.push({ metal_purity: 'GOLD_18K', metal_color: gold18Colors });
-    }
+    console.log("allowedMetalsPayload ", allowedMetalsPayload);
+    // return;
 
-    // PLATINUM 950
-    const platColors: string[] = [];
-    if (formValue.PLATINUM_950.PLATINUM) platColors.push('PLATINUM');
-    if (platColors.length > 0) {
-      allowedMetalsPayload.push({ metal_purity: 'PLATINUM_950', metal_color: platColors });
-    }
-
-    this.httpPostPromise<IGenericResponse<null>, any>(this.apiRoutes.products_import.UPDATE_VARIANT_ALLOWED_METALS, {
-      variant_id: vId,
-      allowed_metals: allowedMetalsPayload
-    })
+    this.httpPostPromise<IGenericResponse<null>, any>(
+      this.apiRoutes.products_import.UPDATE_VARIANT_ALLOWED_METALS,
+      {
+        variant_id: vId,
+        allowed_metals: allowedMetalsPayload,
+      },
+    )
       .then((res) => {
         if (res.status) {
           this.allowedMetals.set(allowedMetalsPayload);
           this.toastr.success('Metal specifications updated successfully');
-          this.activeTab.update(() => "stone")
+          this.activeTab.update(() => 'stone');
         } else {
           this.toastr.error(res.message || 'Failed to update metal specifications');
         }
@@ -242,8 +284,8 @@ export class ArchetypesUpsert extends Base implements OnInit {
         size_wt_matrix: slotGroup.get('size_wt_matrix')?.value || [],
         zone_type: this.activeZone(),
         fixed_quantity: slotGroup.get('fixed_quantity')?.value,
-        variant_id: this.variantUpsertForm.controls.variantId.value
-      }
+        variant_id: this.variantUpsertForm.controls.variantId.value,
+      },
     });
 
     dialogRef.afterClosed().subscribe((result) => {
@@ -260,7 +302,7 @@ export class ArchetypesUpsert extends Base implements OnInit {
           dim_l_mm: result.dim_l_mm,
           dim_w_mm: result.dim_w_mm,
           is_dynamic_by_size: result.is_dynamic_by_size,
-          fixed_quantity: result.fixed_quantity
+          fixed_quantity: result.fixed_quantity,
         });
         this.cdr.detectChanges();
       }
@@ -268,7 +310,9 @@ export class ArchetypesUpsert extends Base implements OnInit {
   }
 
   private getVaraintBySlug(design_slug: string) {
-    this.httpGetPromise<IGenericResponse<IVariant[]>>(this.apiRoutes.products_import.GET_VARIANT(design_slug))
+    this.httpGetPromise<IGenericResponse<IVariant[]>>(
+      this.apiRoutes.products_import.GET_VARIANT(design_slug),
+    )
       .then((res: IGenericResponse<IVariant[]>) => {
         if (res.status) {
           this.designSlugVariant.update(() => res.data);
@@ -276,22 +320,22 @@ export class ArchetypesUpsert extends Base implements OnInit {
             { label: 'Archetypes', url: `/${this.appRoutes.ARCHETYPES}` },
             { label: res.design_slug ?? '' },
           ]);
-        }
-        else {
+        } else {
           this.designSlugVariant.update(() => []);
         }
         this.cdr.detectChanges();
-      }).catch((err) => {
+      })
+      .catch((err) => {
         this.designSlugVariant.update(() => []);
         this.cdr.detectChanges();
-      })
+      });
   }
 
   public openVariantEditModal() {
     const vId = this.variantUpsertForm.controls.variantId.value ?? null;
     if (!vId) return;
 
-    const selectedVariant = this.designSlugVariant().find(v => v.variantId === vId);
+    const selectedVariant = this.designSlugVariant().find((v) => v.variantId === vId);
     if (!selectedVariant) return;
 
     const dialogRef = this.dialog.open(VariantEditModal, {
@@ -301,15 +345,19 @@ export class ArchetypesUpsert extends Base implements OnInit {
         variant_id: selectedVariant.variantId,
         variant_name: selectedVariant.variant_name,
         target_gender: selectedVariant.target_gender,
-        design_slug: this.designSlug
-      }
+        design_slug: this.designSlug,
+      },
     });
 
     dialogRef.afterClosed().subscribe((result) => {
       if (result) {
         // Update local list
-        this.designSlugVariant.update(variants =>
-          variants.map(v => v.variantId === vId ? { ...v, variant_name: result.variant_name, target_gender: result.target_gender } : v)
+        this.designSlugVariant.update((variants) =>
+          variants.map((v) =>
+            v.variantId === vId
+              ? { ...v, variant_name: result.variant_name, target_gender: result.target_gender }
+              : v,
+          ),
         );
         this.toastr.success('Variant details updated successfully');
         this.cdr.detectChanges();
@@ -325,18 +373,21 @@ export class ArchetypesUpsert extends Base implements OnInit {
         variant_id: 0,
         variant_name: '',
         target_gender: '',
-        design_slug: this.designSlug ?? ''
-      }
+        design_slug: this.designSlug ?? '',
+      },
     });
 
     dialogRef.afterClosed().subscribe((result) => {
       if (result) {
         if (this.designSlug) {
-          this.designSlugVariant.update((oldval) => [...oldval, {
-            target_gender: result.target_gender,
-            variant_name: result.variant_name,
-            variantId: result.variant_id
-          }]);
+          this.designSlugVariant.update((oldval) => [
+            ...oldval,
+            {
+              target_gender: result.target_gender,
+              variant_name: result.variant_name,
+              variantId: result.variant_id,
+            },
+          ]);
         }
         this.toastr.success('Variant created successfully');
         this.cdr.detectChanges();
@@ -357,8 +408,8 @@ export class ArchetypesUpsert extends Base implements OnInit {
         size_wt_matrix: [],
         zone_type: this.activeZone(),
         fixed_quantity: null,
-        variant_id: this.variantUpsertForm.controls.variantId.value
-      }
+        variant_id: this.variantUpsertForm.controls.variantId.value,
+      },
     });
 
     dialogRef.afterClosed().subscribe((result) => {
@@ -371,12 +422,25 @@ export class ArchetypesUpsert extends Base implements OnInit {
           dim_w_mm: result.dim_w_mm,
           is_dynamic_by_size: result.is_dynamic_by_size,
           fixed_quantity: result.fixed_quantity,
-          size_wt_matrix: result.size_wt_matrix || []
+          size_wt_matrix: result.size_wt_matrix || [],
         });
         zoneArray.push(newSlotGroup);
         this.cdr.detectChanges();
       }
     });
+  }
+
+  private getMetalPurityCombo(api: string): Promise<RMetalPurity[]> {
+    return this.httpGetPromise<IGenericResponse<RMetalPurity[]>>(api)
+      .then((res) => {
+        if (res.status && res.data) {
+          return res.data;
+        }
+        return [];
+      })
+      .catch(() => {
+        return [];
+      });
   }
 
   goBack(): void {

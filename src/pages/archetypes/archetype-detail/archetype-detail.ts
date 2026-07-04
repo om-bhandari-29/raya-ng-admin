@@ -1,4 +1,4 @@
-import { Component, OnInit, Signal, computed, inject, signal } from '@angular/core';
+import { Component, OnInit, Signal, WritableSignal, computed, inject, signal } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Base } from '../../../core/base/base';
 import {
@@ -10,10 +10,19 @@ import {
 import { BreadcrumbService } from '../../../core/services/breadcrumb.service';
 import { PageTitleService } from '../../../core/services/page-title.service';
 import { CommonModule } from '@angular/common';
-import { FormControl, FormGroup, ReactiveFormsModule, ɵInternalFormsSharedModule } from '@angular/forms';
+import {
+  FormControl,
+  FormGroup,
+  ReactiveFormsModule,
+  ɵInternalFormsSharedModule,
+} from '@angular/forms';
 import { BaseRingForm, createDefaultDevotionRingForm } from '../archetypes.model';
-import { IGenericResponse } from '../../../core/response/genericResponse.interface';
+import {
+  IGenericListResponse,
+  IGenericResponse,
+} from '../../../core/response/genericResponse.interface';
 import { RING_SIZES } from '../../../core/enum/ring-component.enum';
+import { RMetalPurity } from '../../../core/response/metal-purity.response';
 
 @Component({
   selector: 'app-archetype-detail',
@@ -53,16 +62,19 @@ export class ArchetypeDetail extends Base implements OnInit {
     const purity = this.selectedPurity();
     if (!purity) return [];
     const variant = this.detail()?.variants?.[this.activeVariantIndex()];
-    const match = variant?.design_variant_allowed_metals?.find(
-      (m) => m.metal_purity === purity
-    );
+    const match = variant?.design_variant_allowed_metals?.find((m) => m.metal_purity === purity);
     return match ? match.allowed_colors : [];
   });
 
-
   public activeVariantIndex = signal<number>(0);
 
-  public selectedVariantZonesStone: Signal<{ zones: string[]; stonesByZone: Map<string, IZoneSlot[]> }> = computed(() => {
+  public metalPurity: WritableSignal<RMetalPurity[]> = signal([]);
+  public metalColor: WritableSignal<RMetalPurity[]> = signal([]);
+
+  public selectedVariantZonesStone: Signal<{
+    zones: string[];
+    stonesByZone: Map<string, IZoneSlot[]>;
+  }> = computed(() => {
     if (!this.detail()) {
       return {
         zones: [],
@@ -94,7 +106,6 @@ export class ArchetypeDetail extends Base implements OnInit {
     };
   });
 
-
   readonly zoneDisplayNames: Record<string, string> = {
     ZONE_CENTER: 'Center',
     ZONE_SHANK: 'Shank',
@@ -109,10 +120,6 @@ export class ArchetypeDetail extends Base implements OnInit {
     if (designId) {
       this.loadDetail(+designId);
       this.pageTitleService.setTitle(`Archetype: ${designId}`);
-      // this.breadcrumb.set([
-      //   { label: 'Archetypes', url: `/${this.appRoutes.ARCHETYPES}` },
-      //   { label: designSlug },
-      // ]);
     } else {
       this.toastr.error('Design slug not found');
       this.goBack();
@@ -124,7 +131,7 @@ export class ArchetypeDetail extends Base implements OnInit {
     this.errorMessage.set(null);
     try {
       const res = await this.httpGetPromise<IArchetypeDetailResponse>(
-        this.apiRoutes.archetypes.GET_DETAIL(designId)
+        this.apiRoutes.archetypes.GET_DETAIL(designId),
       );
       if (res.success && res.data) {
         this.detail.set(res.data);
@@ -143,11 +150,11 @@ export class ArchetypeDetail extends Base implements OnInit {
           stoneOriginType: 'Natural',
           ringSize: null,
           selectedMetalPurity: null,
-          selectedMetalColor: null
+          selectedMetalColor: null,
         });
         this.selectedPurity.set(null);
 
-        console.log("this.detailForm ", this.detailForm.value);
+        this.getMetalPurityByVariantId(firstVariant?.variantId || 0);
       } else {
         this.errorMessage.set('Failed to load design details.');
       }
@@ -168,7 +175,7 @@ export class ArchetypeDetail extends Base implements OnInit {
       variantId: selectedVariant?.variantId || null,
       variantArchitecture: selectedVariant?.variant || null,
       selectedMetalPurity: null,
-      selectedMetalColor: null
+      selectedMetalColor: null,
     });
     this.selectedPurity.set(null);
 
@@ -179,22 +186,60 @@ export class ArchetypeDetail extends Base implements OnInit {
     this.selectedStones.set({});
 
     // Reset nested zone form controls inside detailForm
-    this.getZoneKeys().forEach(zoneKey => {
+    this.getZoneKeys().forEach((zoneKey) => {
       const zoneGroup = this.detailForm.get(zoneKey) as FormGroup;
       if (zoneGroup) {
         zoneGroup.patchValue({
           shape: null,
-          stone: null
+          stone: null,
         });
       }
     });
+
+    this.getMetalPurityByVariantId(selectedVariant?.variantId || 0);
+  }
+
+  private getMetalPurityByVariantId(variantId: number): void {
+    this.httpGetPromise<IGenericResponse<RMetalPurity[]>>(
+      this.apiRoutes.Metal_Purity.GET_BY_VARIANT_ID(variantId),
+    )
+      .then((res) => {
+        if (res.status) {
+          this.metalPurity.update(() => res.data);
+        } else {
+          this.metalPurity.update(() => []);
+        }
+      })
+      .catch((error) => {
+        console.error('Error fetching metal purity:', error);
+        this.metalPurity.update(() => []);
+      });
+  }
+
+  private getMetalColorByVariantId(purity: number): void {
+    const param = {
+      variantId : this.detailForm.controls.variantId.value ?? 0,
+      metalPurityId : purity,
+    }
+    this.httpGetPromise<IGenericResponse<RMetalPurity[]>>(this.apiRoutes.Metal_Color.GET_COMBO, undefined, param)
+      .then((res) => {
+        if (res.status) {
+          this.metalColor.set(res.data);
+        } else {
+          this.metalColor.set([]);
+        }
+      })
+      .catch((error) => {
+        console.error('Error fetching metal color:', error);
+        this.metalColor.set([]);
+      });
   }
 
   getZoneKeys(): string[] {
     const variant = this.detail()?.variants?.[this.activeVariantIndex()];
     if (!variant) return [];
     const zones = Object.keys(variant.zone_slots).filter(
-      (key) => (variant.zone_slots as Record<string, IZoneSlot[]>)[key]?.length > 0
+      (key) => (variant.zone_slots as Record<string, IZoneSlot[]>)[key]?.length > 0,
     );
 
     Object.entries(variant.zone_slots).forEach(([key, value]: [string, IZoneSlot[]]) => {
@@ -238,7 +283,7 @@ export class ArchetypeDetail extends Base implements OnInit {
     if (zoneGroup) {
       zoneGroup.patchValue({
         shape: shapeId,
-        stone: null // Reset stone when shape changes
+        stone: null, // Reset stone when shape changes
       });
     }
 
@@ -247,11 +292,11 @@ export class ArchetypeDetail extends Base implements OnInit {
   }
 
   async fetchStonesForZone(zoneKey: string, shapeId: string): Promise<void> {
-
-    const selectedShapeObj: IZoneSlot | null = this.selectedVariantZonesStone()
-      .stonesByZone.get(zoneKey)
-      ?.find((val) => val.zone_slot_id === Number(shapeId)) ?? null;
-    console.log("selectedShapeObj ", selectedShapeObj)
+    const selectedShapeObj: IZoneSlot | null =
+      this.selectedVariantZonesStone()
+        .stonesByZone.get(zoneKey)
+        ?.find((val) => val.zone_slot_id === Number(shapeId)) ?? null;
+    console.log('selectedShapeObj ', selectedShapeObj);
 
     this.stoneLoading.update((prev) => ({ ...prev, [zoneKey]: true }));
 
@@ -266,15 +311,14 @@ export class ArchetypeDetail extends Base implements OnInit {
       const res = await this.httpGetPromise<IGenericResponse<IStoneOption[]>>(
         this.apiRoutes.stone_dimension.OPTION,
         false,
-        queryParam
+        queryParam,
       );
       if (res.status) {
         this.stoneOptions.update((prev) => ({ ...prev, [zoneKey]: res.data }));
       } else {
         this.stoneOptions.update((prev) => ({ ...prev, [zoneKey]: [] }));
-
       }
-      console.log(this.stoneOptions()[zoneKey])
+      console.log(this.stoneOptions()[zoneKey]);
     } catch (error) {
       console.error('Error fetching stones:', error);
       this.stoneOptions.update((prev) => ({ ...prev, [zoneKey]: [] }));
@@ -294,7 +338,7 @@ export class ArchetypeDetail extends Base implements OnInit {
     const zoneGroup = this.detailForm.get(zoneKey) as FormGroup;
     if (zoneGroup) {
       zoneGroup.patchValue({
-        stone: stoneId ? String(stoneId) : null
+        stone: stoneId ? String(stoneId) : null,
       });
     }
   }
@@ -304,9 +348,13 @@ export class ArchetypeDetail extends Base implements OnInit {
     const purity = selectEl.value;
     this.selectedPurity.set(purity);
 
+    console.log('Selected Metal Purity:', purity);
+
+    this.getMetalColorByVariantId(purity ? Number(purity) : 0);
+
     // Reset selected color when purity changes
     this.detailForm.patchValue({
-      selectedMetalColor: null
+      selectedMetalColor: null,
     });
   }
 

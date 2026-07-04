@@ -190,9 +190,9 @@
                 <select formControlName="selectedMetalPurity" (change)="onMetalPurityChange($event)"
                   class="w-full bg-slate-50 border border-slate-200 text-slate-800 text-sm rounded-xl pl-3.5 pr-10 py-3 appearance-none cursor-pointer focus:bg-white focus:border-indigo-600 focus:ring-4 focus:ring-indigo-100 transition duration-150 ease-in-out font-semibold shadow-sm">
                   <option value="" disabled selected>Choose metal purity</option>
-                  @for (metal of selectedVariant.design_variant_allowed_metals; track metal.metal_purity) {
-                  <option [value]="metal.metal_purity">
-                    {{ metal.metal_purity }}
+                  @for (metal of metalPurity(); track metal.id) {
+                  <option [value]="metal.id">
+                    {{ metal.name }}
                   </option>
                   }
                 </select>
@@ -215,9 +215,9 @@
                   <option value="" disabled selected>
                     {{ selectedPurity() ? 'Choose metal color' : 'Select metal purity first' }}
                   </option>
-                  @for (color of allowedColorsForSelectedPurity(); track color) {
-                  <option [value]="color">
-                    {{ color | titlecase }}
+                  @for (color of metalColor(); track color) {
+                  <option [value]="color.id">
+                    {{ color.name }}
                   </option>
                   }
                 </select>
