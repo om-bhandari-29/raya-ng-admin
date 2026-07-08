@@ -93,6 +93,17 @@ export class Base {
       params: this.buildParams(queryParams),
     });
   }
+  public httpPatchObservable<RType, PType>(
+    url: string,
+    payload: PType,
+    showLoader: boolean = true,
+    queryParams?: Record<string, string | number | boolean>,
+  ): Observable<RType> {
+    return this.httpClient.patch<RType>(this.apiBaseUrl + url, payload, {
+      headers: this.getHeaderWithLoaderConfigure(showLoader),
+      params: this.buildParams(queryParams),
+    });
+  }
 
   public httpPutPromise<RType, PType>(
     url: string,

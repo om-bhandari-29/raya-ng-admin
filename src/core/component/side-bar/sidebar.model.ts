@@ -91,15 +91,8 @@ export const MenuItems: IMenuSideBarItem[] = [
     child: [],
   },
   {
-    name: 'Metal Purity',
-    route: APPRoutes.METAL_PURITY,
-    icon: 'bx bx-crown',
-    userType: [],
-    child: [],
-  },
-  {
-    name: 'Metal Color',
-    route: APPRoutes.METAL_COLOR,
+    name: 'Metal',
+    route: APPRoutes.METAL_MASTER,
     icon: 'bx bx-palette',
     userType: [],
     child: [],

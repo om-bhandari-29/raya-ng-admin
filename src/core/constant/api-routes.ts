@@ -122,6 +122,16 @@ export const APIRoutes = {
     POST_STONE_CONFIG: '/blueprint-zones/config',
   },
 
+  Metal_Master: {
+    CREATE: '/metal-master',
+    GET_ALL: '/metal-master',
+    GET_COMBO: '/metal-master/combo',
+    GET_BY_ID: (id: number | string) => `/metal-master/${id}`,
+    UPDATE: (id: number | string) => `/metal-master/${id}`,
+    DELETE: (id: number | string) => `/metal-master/${id}`,
+    GET_BY_VARIANT_ID: (variantId: number | string) => `/metal-master/variant/${variantId}`,
+  },
+
   Metal_Purity: {
     CREATE: '/metal-purity',
     GET_ALL: '/metal-purity',
@@ -129,16 +139,6 @@ export const APIRoutes = {
     GET_BY_ID: (id: number | string) => `/metal-purity/${id}`,
     UPDATE: (id: number | string) => `/metal-purity/${id}`,
     DELETE: (id: number | string) => `/metal-purity/${id}`,
-    GET_BY_VARIANT_ID: (variantId: number | string) => `/metal-purity/variant/${variantId}`,
-  },
-
-  Metal_Color: {
-    CREATE: '/metal-color',
-    GET_ALL: '/metal-color',
-    GET_COMBO: '/metal-color/combo',
-    GET_BY_ID: (id: number | string) => `/metal-color/${id}`,
-    UPDATE: (id: number | string) => `/metal-color/${id}`,
-    DELETE: (id: number | string) => `/metal-color/${id}`,
 
     // GET_BY_ID: '/metal-color/:id',
     // UPDATE: '/metal-color/:id',

@@ -22,7 +22,7 @@ import {
   IGenericResponse,
 } from '../../../core/response/genericResponse.interface';
 import { RING_SIZES } from '../../../core/enum/ring-component.enum';
-import { RMetalPurity } from '../../../core/response/metal-purity.response';
+import { RMetal } from '../../../core/response/metal-purity.response';
 
 @Component({
   selector: 'app-archetype-detail',
@@ -68,8 +68,8 @@ export class ArchetypeDetail extends Base implements OnInit {
 
   public activeVariantIndex = signal<number>(0);
 
-  public metalPurity: WritableSignal<RMetalPurity[]> = signal([]);
-  public metalColor: WritableSignal<RMetalPurity[]> = signal([]);
+  public metalPurity: WritableSignal<RMetal[]> = signal([]);
+  public metalColor: WritableSignal<RMetal[]> = signal([]);
 
   public selectedVariantZonesStone: Signal<{
     zones: string[];
@@ -200,8 +200,8 @@ export class ArchetypeDetail extends Base implements OnInit {
   }
 
   private getMetalPurityByVariantId(variantId: number): void {
-    this.httpGetPromise<IGenericResponse<RMetalPurity[]>>(
-      this.apiRoutes.Metal_Purity.GET_BY_VARIANT_ID(variantId),
+    this.httpGetPromise<IGenericResponse<RMetal[]>>(
+      this.apiRoutes.Metal_Master.GET_BY_VARIANT_ID(variantId),
     )
       .then((res) => {
         if (res.status) {
@@ -221,7 +221,7 @@ export class ArchetypeDetail extends Base implements OnInit {
       variantId : this.detailForm.controls.variantId.value ?? 0,
       metalPurityId : purity,
     }
-    this.httpGetPromise<IGenericResponse<RMetalPurity[]>>(this.apiRoutes.Metal_Color.GET_COMBO, undefined, param)
+    this.httpGetPromise<IGenericResponse<RMetal[]>>(this.apiRoutes.Metal_Purity.GET_COMBO, undefined, param)
       .then((res) => {
         if (res.status) {
           this.metalColor.set(res.data);

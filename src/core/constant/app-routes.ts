@@ -20,8 +20,7 @@ export const APPRoutes = {
   ARCHETYPES: 'archetypes',
   ARCHETYPES_DETAIL: 'archetypes/detail',
   ARCHETYPES_EDIT: 'archetypes/edit',
-  METAL_PURITY: 'metal-purity',
-  METAL_COLOR: 'metal-color',
+  METAL_MASTER: 'metal-master',
 
   // STOCK: 'stock',
   // STOCK_ITEM: ['stock', 'item'],

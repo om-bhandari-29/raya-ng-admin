@@ -37,7 +37,7 @@ import { VariantEditModal } from './variant-edit-modal/variant-edit-modal';
 import { DecimalPipe } from '@angular/common';
 import { MetalPurity } from '../../../core/enum/metal-purity.enum';
 import { MetalColor } from '../../../core/enum/metal-color.enum';
-import { RMetalPurity } from '../../../core/response/metal-purity.response';
+import { RMetal } from '../../../core/response/metal-purity.response';
 
 @Component({
   selector: 'app-archetypes-upsert',
@@ -59,8 +59,8 @@ export class ArchetypesUpsert extends Base implements OnInit {
   public activeZone = signal<string>(RingComponentZone.CENTER);
   public activeTab = signal<'metal' | 'stone'>('metal');
   public allowedMetals = signal<ISaveMetalPurity[]>([]);
-  public metalPurity: WritableSignal<RMetalPurity[]> = signal([]);
-  public metalColor: WritableSignal<RMetalPurity[]> = signal([]);
+  public metalPurity: WritableSignal<RMetal[]> = signal([]);
+  public metalColor: WritableSignal<RMetal[]> = signal([]);
 
 
   public metalSpecsForm = new FormGroup<Record<string, FormGroup>>({});
@@ -81,9 +81,9 @@ export class ArchetypesUpsert extends Base implements OnInit {
       this.goBack();
     }
 
-    this.getMetalPurityCombo(this.apiRoutes.Metal_Purity.GET_COMBO).then((purityData) => {
+    this.getMetalPurityCombo(this.apiRoutes.Metal_Master.GET_COMBO).then((purityData) => {
       this.metalPurity.set(purityData);
-      return this.getMetalPurityCombo(this.apiRoutes.Metal_Color.GET_COMBO);
+      return this.getMetalPurityCombo(this.apiRoutes.Metal_Purity.GET_COMBO);
     }).then((colorData) => {
       this.metalColor.set(colorData);
       this.initDynamicMetalSpecsForm();
@@ -95,16 +95,16 @@ export class ArchetypesUpsert extends Base implements OnInit {
     const colorList = this.metalColor();
     
     // Clear and build dynamic form controls
-    const newFormGroupConfig: Record<string, FormGroup> = {};
-    purityList.forEach((purity) => {
-      const colorGroupConfig: Record<string, FormControl<boolean>> = {};
-      colorList.forEach((color) => {
-        colorGroupConfig[color.code] = new FormControl<boolean>(false, { nonNullable: true });
-      });
-      newFormGroupConfig[purity.code] = new FormGroup(colorGroupConfig);
-    });
+    // const newFormGroupConfig: Record<string, FormGroup> = {};
+    // purityList.forEach((purity) => {
+    //   const colorGroupConfig: Record<string, FormControl<boolean>> = {};
+    //   colorList.forEach((color) => {
+    //     colorGroupConfig[color.code] = new FormControl<boolean>(false, { nonNullable: true });
+    //   });
+    //   newFormGroupConfig[purity.code] = new FormGroup(colorGroupConfig);
+    // });
 
-    this.metalSpecsForm = new FormGroup(newFormGroupConfig);
+    // this.metalSpecsForm = new FormGroup(newFormGroupConfig);
   }
 
   public getZoneFormArray(zoneName: string): FormArray<FormGroup<ZoneSlotDetailForm>> {
@@ -135,27 +135,27 @@ export class ArchetypesUpsert extends Base implements OnInit {
           // Reset the form
           this.metalSpecsForm.reset();
 
-          res.data.forEach((item) => {
-            const purityObj = this.metalPurity().find(p => String(p.id) === String(item.metal_purity_id));
-            const purityKey = purityObj ? purityObj.code : '';
+          // res.data.forEach((item) => {
+          //   const purityObj = this.metalPurity().find(p => String(p.id) === String(item.metal_purity_id));
+          //   const purityKey = purityObj ? purityObj.code : '';
 
-            if (purityKey) {
-              const purityGroup = this.metalSpecsForm.get(purityKey) as FormGroup;
-              if (purityGroup && item.allowed_color_ids) {
-                item.allowed_color_ids.forEach((colorVal: any) => {
-                  const colorObj = this.metalColor().find(c => String(c.id) === String(colorVal));
-                  const colorKey = colorObj ? colorObj.code : '';
+          //   if (purityKey) {
+          //     const purityGroup = this.metalSpecsForm.get(purityKey) as FormGroup;
+          //     if (purityGroup && item.allowed_color_ids) {
+          //       item.allowed_color_ids.forEach((colorVal: any) => {
+          //         const colorObj = this.metalColor().find(c => String(c.id) === String(colorVal));
+          //         const colorKey = colorObj ? colorObj.code : '';
                   
-                  if (colorKey) {
-                    const colorControl = purityGroup.get(colorKey) as FormControl;
-                    if (colorControl) {
-                      colorControl.setValue(true);
-                    }
-                  }
-                });
-              }
-            }
-          });
+          //         if (colorKey) {
+          //           const colorControl = purityGroup.get(colorKey) as FormControl;
+          //           if (colorControl) {
+          //             colorControl.setValue(true);
+          //           }
+          //         }
+          //       });
+          //     }
+          //   }
+          // });
         } else {
           this.allowedMetals.set([]);
           this.metalSpecsForm.reset();
@@ -227,23 +227,23 @@ export class ArchetypesUpsert extends Base implements OnInit {
     const formValue = this.metalSpecsForm.getRawValue();
 
     // Iterate dynamically and map codes to IDs
-    this.metalPurity().forEach((purity) => {
-      const purityGroupValue = formValue[purity.code];
-      if (purityGroupValue) {
-        const allowedColors: number[] = [];
-        this.metalColor().forEach((color) => {
-          if (purityGroupValue[color.code]) {
-            allowedColors.push(color.id);
-          }
-        });
-        if (allowedColors.length > 0) {
-          allowedMetalsPayload.push({
-            metal_purity: purity.id,
-            metal_color: allowedColors,
-          });
-        }
-      }
-    });
+    // this.metalPurity().forEach((purity) => {
+    //   const purityGroupValue = formValue[purity.code];
+    //   if (purityGroupValue) {
+    //     const allowedColors: number[] = [];
+    //     this.metalColor().forEach((color) => {
+    //       if (purityGroupValue[color.code]) {
+    //         allowedColors.push(color.id);
+    //       }
+    //     });
+    //     if (allowedColors.length > 0) {
+    //       allowedMetalsPayload.push({
+    //         metal_purity: purity.id,
+    //         metal_color: allowedColors,
+    //       });
+    //     }
+    //   }
+    // });
 
     console.log("allowedMetalsPayload ", allowedMetalsPayload);
     // return;
@@ -430,8 +430,8 @@ export class ArchetypesUpsert extends Base implements OnInit {
     });
   }
 
-  private getMetalPurityCombo(api: string): Promise<RMetalPurity[]> {
-    return this.httpGetPromise<IGenericResponse<RMetalPurity[]>>(api)
+  private getMetalPurityCombo(api: string): Promise<RMetal[]> {
+    return this.httpGetPromise<IGenericResponse<RMetal[]>>(api)
       .then((res) => {
         if (res.status && res.data) {
           return res.data;

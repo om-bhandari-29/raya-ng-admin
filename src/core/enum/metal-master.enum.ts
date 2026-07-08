@@ -1,6 +1,6 @@
 export enum MetalMasterType {
+  METAL = 'metal',
   PURITY = 'purity',
-  COLOR = 'color',
 }
 
 export enum MetalMasterLabel {

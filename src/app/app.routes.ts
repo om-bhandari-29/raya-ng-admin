@@ -117,16 +117,9 @@ export const routes: Routes = [
           ),
       },
       {
-        path: APPRoutes.METAL_PURITY,
+        path: APPRoutes.METAL_MASTER,
         loadComponent: () =>
-          import('../pages/metal-purity/metal-purity').then((m) => m.MetalPurity),
-        data: { MetalMasterType: MetalMasterType.PURITY, MetalMasterLabel: MetalMasterLabel.PURITY },
-      },
-      {
-        path: APPRoutes.METAL_COLOR,
-        loadComponent: () =>
-          import('../pages/metal-purity/metal-purity').then((m) => m.MetalPurity),
-        data: { MetalMasterType: MetalMasterType.COLOR, MetalMasterLabel: MetalMasterLabel.COLOR },
+          import('../pages/metal-master/metal-master').then((m) => m.MetalMaster)
       },
       {
         path: APPRoutes.ARCHETYPES,
