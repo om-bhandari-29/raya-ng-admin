@@ -126,6 +126,7 @@ export const APIRoutes = {
     CREATE: '/metal-master',
     GET_ALL: '/metal-master',
     GET_COMBO: '/metal-master/combo',
+    GET_PURITIES: '/metal-master/purities',
     GET_BY_ID: (id: number | string) => `/metal-master/${id}`,
     UPDATE: (id: number | string) => `/metal-master/${id}`,
     DELETE: (id: number | string) => `/metal-master/${id}`,
