@@ -38,6 +38,7 @@ import { DecimalPipe } from '@angular/common';
 import { MetalPurity } from '../../../core/enum/metal-purity.enum';
 import { MetalColor } from '../../../core/enum/metal-color.enum';
 import { RMetal } from '../../../core/response/metal-purity.response';
+import { RAllowedMetal } from './archetypes-upsert.response';
 
 @Component({
   selector: 'app-archetypes-upsert',
@@ -146,17 +147,17 @@ export class ArchetypesUpsert extends Base implements OnInit {
   }
 
   public getVariantAllowedMetals(vId: number | string) {
-    this.httpGetPromise<IGenericResponse<any[]>>(
+    this.httpGetPromise<IGenericResponse<RAllowedMetal[]>>(
       this.apiRoutes.products_import.GET_ALLOWED_METALS(vId),
     )
       .then((res) => {
         if (res.status && res.data) {
           const mappedMetals: ISaveMetalPurity[] = [];
           res.data.forEach((item) => {
-            if (item.allowed_color_ids) {
+            if (item.allowed_metal_purities_id) {
               mappedMetals.push({
-                metal_purity: String(item.metal_purity_id),
-                metal_color: item.allowed_color_ids.map(String),
+                metal_master_id: String(item.metal_master_id),
+                allowed_metal_purities_id: item.allowed_metal_purities_id.map((purity) => String(purity.metal_purity_id)),
               });
             }
           });
@@ -166,16 +167,14 @@ export class ArchetypesUpsert extends Base implements OnInit {
           this.metalSpecsForm.reset();
 
           res.data.forEach((item) => {
-            const purityId = String(item.metal_purity_id);
-            if (item.allowed_color_ids) {
-              item.allowed_color_ids.forEach((metalIdVal: any) => {
-                const metalIdKey = String(metalIdVal);
-                const purityGroup = this.metalSpecsForm.get(metalIdKey) as FormGroup;
-                if (purityGroup) {
-                  const purityControl = purityGroup.get(purityId) as FormControl;
-                  if (purityControl) {
-                    purityControl.setValue(true);
-                  }
+            const metalMasterId = String(item.metal_master_id);
+            const metalGroup = this.metalSpecsForm.get(metalMasterId) as FormGroup;
+            if (metalGroup && item.allowed_metal_purities_id) {
+              item.allowed_metal_purities_id.forEach((purityObj: any) => {
+                const purityIdKey = String(purityObj.metal_purity_id);
+                const purityControl = metalGroup.get(purityIdKey) as FormControl;
+                if (purityControl) {
+                  purityControl.setValue(true);
                 }
               });
             }

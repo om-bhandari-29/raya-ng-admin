@@ -20,8 +20,8 @@ export interface IAllowedMetal {
 }
 
 export interface ISaveMetalPurity {
-  metal_purity: string;
-  metal_color: string[];
+  metal_master_id: string;
+  allowed_metal_purities_id: string[];
 }
 
 export interface ISizeQuantityMatrix {
@@ -40,6 +40,11 @@ export interface IZoneSlot {
   fixed_quantity: number | null;
 }
 
+export interface IWeightMatrixEntry {
+  ring_size: string;
+  base_metal_weight_gm: number;
+}
+
 export interface IArchetypeVariant {
   variantId: number;
   variant: string;
@@ -51,8 +56,9 @@ export interface IArchetypeVariant {
     ZONE_HALO: IZoneSlot[];
     ZONE_ACCENT: IZoneSlot[];
     ZONE_GALLERY: IZoneSlot[];
-  }
+  };
   design_variant_allowed_metals: Array<IAllowedMetal>;
+  weight_matrix?: IWeightMatrixEntry[];
 }
 
 export interface IArchetypeDetail {

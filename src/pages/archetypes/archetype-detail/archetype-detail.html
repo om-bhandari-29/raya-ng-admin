@@ -1,385 +1,831 @@
 <div class="max-w-6xl mx-auto p-4 md:p-8 text-slate-800 antialiased selection:bg-indigo-100">
-
   <!-- LOADING STATE -->
   @if (isLoading()) {
-  <div
-    class="flex flex-col items-center justify-center min-h-[400px] bg-white rounded-2xl border border-slate-100 shadow-sm p-8 space-y-4 animate-fade-in">
-    <div class="w-12 h-12 border-4 border-indigo-600 border-t-transparent rounded-full animate-spin"></div>
-    <p class="text-slate-500 font-medium tracking-wide text-sm">Loading design details...</p>
-  </div>
+    <div
+      class="flex flex-col items-center justify-center min-h-[400px] bg-white rounded-2xl border border-slate-100 shadow-sm p-8 space-y-4 animate-fade-in"
+    >
+      <div
+        class="w-12 h-12 border-4 border-indigo-600 border-t-transparent rounded-full animate-spin"
+      ></div>
+      <p class="text-slate-500 font-medium tracking-wide text-sm">Loading design details...</p>
+    </div>
   }
 
   <!-- ERROR STATE -->
   @else if (errorMessage()) {
-  <div
-    class="flex flex-col items-center justify-center min-h-[400px] bg-rose-50/50 rounded-2xl border border-rose-100 p-8 max-w-md mx-auto text-center shadow-sm">
-    <div class="p-3 bg-rose-100 text-rose-600 rounded-full mb-4">
-      <svg xmlns="http://www.w3.org/2000/svg" class="w-8 h-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-          d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L4.082 16.5c-.77.833.192 2.5 1.732 2.5z" />
-      </svg>
+    <div
+      class="flex flex-col items-center justify-center min-h-[400px] bg-rose-50/50 rounded-2xl border border-rose-100 p-8 max-w-md mx-auto text-center shadow-sm"
+    >
+      <div class="p-3 bg-rose-100 text-rose-600 rounded-full mb-4">
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          class="w-8 h-8"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke="currentColor"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L4.082 16.5c-.77.833.192 2.5 1.732 2.5z"
+          />
+        </svg>
+      </div>
+      <p class="text-rose-900 font-semibold text-lg mb-2">Something went wrong</p>
+      <p class="text-rose-600/80 text-sm mb-6 max-w-xs">{{ errorMessage() }}</p>
+      <button
+        (click)="goBack()"
+        class="inline-flex items-center justify-center gap-2 px-5 py-2.5 bg-white border border-rose-200 text-rose-700 font-medium text-sm rounded-xl shadow-sm hover:bg-rose-50 active:bg-rose-100 transition duration-200 focus:outline-none focus:ring-2 focus:ring-rose-500 focus:ring-offset-2"
+      >
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          class="w-4 h-4"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke="currentColor"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M10 19l-7-7m0 0l7-7m-7 7h18"
+          />
+        </svg>
+        Go Back
+      </button>
     </div>
-    <p class="text-rose-900 font-semibold text-lg mb-2">Something went wrong</p>
-    <p class="text-rose-600/80 text-sm mb-6 max-w-xs">{{ errorMessage() }}</p>
-    <button (click)="goBack()"
-      class="inline-flex items-center justify-center gap-2 px-5 py-2.5 bg-white border border-rose-200 text-rose-700 font-medium text-sm rounded-xl shadow-sm hover:bg-rose-50 active:bg-rose-100 transition duration-200 focus:outline-none focus:ring-2 focus:ring-rose-500 focus:ring-offset-2">
-      <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
-      </svg>
-      Go Back
-    </button>
-  </div>
   }
 
   <!-- CONTENT STATE -->
   @else if (detail()) {
-  <form [formGroup]="detailForm" (ngSubmit)="onSave()" class="space-y-8">
+    <form [formGroup]="detailForm" (ngSubmit)="onSave()" class="space-y-8">
+      <!-- Page Header -->
+      <header class="flex items-center justify-between gap-4 mb-8 pb-6 border-b border-slate-100">
+        <div class="flex items-center gap-4">
+          <button
+            type="button"
+            (click)="goBack()"
+            class="inline-flex items-center justify-center w-10 h-10 bg-white hover:bg-slate-50 border border-slate-200 text-slate-600 rounded-xl transition duration-150 shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
+            aria-label="Back to archetypes list"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              class="w-5 h-5"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M15 19l-7-7 7-7"
+              />
+            </svg>
+          </button>
+          <div>
+            <h1 class="text-2xl md:text-3xl font-bold text-slate-900 tracking-tight uppercase">
+              {{ detail()?.design_slug }}
+            </h1>
+            <p class="text-sm text-slate-500 mt-0.5">
+              {{ detail()?.variants?.length || 0 }} variant{{
+                (detail()?.variants?.length || 0) > 1 ? 's' : ''
+              }}
+              available
+            </p>
+          </div>
+        </div>
 
-    <!-- Page Header -->
-    <header class="flex items-center justify-between gap-4 mb-8 pb-6 border-b border-slate-100">
-      <div class="flex items-center gap-4">
-        <button type="button" (click)="goBack()"
-          class="inline-flex items-center justify-center w-10 h-10 bg-white hover:bg-slate-50 border border-slate-200 text-slate-600 rounded-xl transition duration-150 shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
-          aria-label="Back to archetypes list">
-          <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
-          </svg>
-        </button>
         <div>
-          <h1 class="text-2xl md:text-3xl font-bold text-slate-900 tracking-tight uppercase">{{ detail()?.design_slug }}
-          </h1>
-          <p class="text-sm text-slate-500 mt-0.5">{{ detail()?.variants?.length || 0 }} variant{{
-            (detail()?.variants?.length || 0) > 1 ? 's' : '' }} available</p>
+          <button
+            type="submit"
+            [disabled]="detailForm.pristine || detailForm.invalid"
+            class="inline-flex items-center justify-center gap-2 px-5 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white font-medium text-sm rounded-xl shadow-sm hover:shadow transition duration-200 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              class="w-4 h-4"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1 4l-3 3m0 0l-3-3m3 3V4"
+              />
+            </svg>
+            Save Changes
+          </button>
         </div>
-      </div>
+      </header>
 
-      <div>
-        <button type="submit" [disabled]="detailForm.pristine || detailForm.invalid"
-          class="inline-flex items-center justify-center gap-2 px-5 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white font-medium text-sm rounded-xl shadow-sm hover:shadow transition duration-200 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed">
-          <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-              d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1 4l-3 3m0 0l-3-3m3 3V4" />
-          </svg>
-          Save Changes
-        </button>
-      </div>
-    </header>
-
-    <!-- TWO-COLUMN WORKSPACE: LEFT (IMAGE SHOWCASE) | RIGHT (CONFIGURATIONS) -->
-    <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
-
-      <!-- LEFT COLUMN: STICKY DUMMY PRODUCT VISUALIZER -->
-      <div class="lg:col-span-5 lg:sticky lg:top-6 space-y-4">
-        <div
-          class="aspect-square w-full rounded-3xl bg-slate-100 border border-slate-200 overflow-hidden shadow-inner flex items-center justify-center relative group">
-          <img src="https://images.unsplash.com/photo-1605100804763-247f67b3557e?auto=format&fit=crop&w=800&q=80"
-            alt="Customizable Luxury Ring Showcase View"
-            class="object-cover w-full h-full transform transition duration-700 group-hover:scale-105" />
+      <!-- TWO-COLUMN WORKSPACE: LEFT (IMAGE SHOWCASE) | RIGHT (CONFIGURATIONS) -->
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+        <!-- LEFT COLUMN: STICKY DUMMY PRODUCT VISUALIZER -->
+        <div class="lg:col-span-5 lg:sticky lg:top-6 space-y-4">
           <div
-            class="absolute bottom-4 left-4 bg-slate-900/80 backdrop-blur-md px-3 py-1.5 rounded-xl border border-white/10 text-[11px] font-medium tracking-wide text-white flex items-center gap-2 shadow-lg">
-            <span class="w-2 h-2 rounded-full bg-indigo-400 animate-pulse"></span>
-            Live Preview
+            class="aspect-square w-full rounded-3xl bg-slate-100 border border-slate-200 overflow-hidden shadow-inner flex items-center justify-center relative group"
+          >
+            <img
+              src="https://images.unsplash.com/photo-1605100804763-247f67b3557e?auto=format&fit=crop&w=800&q=80"
+              alt="Customizable Luxury Ring Showcase View"
+              class="object-cover w-full h-full transform transition duration-700 group-hover:scale-105"
+            />
+            <div
+              class="absolute bottom-4 left-4 bg-slate-900/80 backdrop-blur-md px-3 py-1.5 rounded-xl border border-white/10 text-[11px] font-medium tracking-wide text-white flex items-center gap-2 shadow-lg"
+            >
+              <span class="w-2 h-2 rounded-full bg-indigo-400 animate-pulse"></span>
+              Live Preview
+            </div>
           </div>
+          <p class="text-center text-xs text-slate-400 font-medium">
+            Visual accurately updates depending on chosen zone profiles.
+          </p>
         </div>
-        <p class="text-center text-xs text-slate-400 font-medium">
-          Visual accurately updates depending on chosen zone profiles.
-        </p>
-      </div>
 
-      <!-- RIGHT COLUMN: MASTER FORMS AND METADATA OPTIONS -->
-      <div class="lg:col-span-7 space-y-6">
+        <!-- RIGHT COLUMN: MASTER FORMS AND METADATA OPTIONS -->
+        <div class="lg:col-span-7 space-y-6">
+          <!-- Step 1: Core Configuration (Variant & Stone Type) -->
+          <section class="bg-white p-6 rounded-2xl border border-slate-100 shadow-sm space-y-4">
+            <div class="flex items-center gap-3 pb-2 border-b border-slate-50">
+              <span
+                class="flex items-center justify-center w-7 h-7 rounded-full bg-indigo-50 text-indigo-600 font-bold text-sm"
+                >1</span
+              >
+              <h2 class="text-lg font-bold text-slate-900">Base Settings</h2>
+            </div>
 
-        <!-- Step 1: Core Configuration (Variant & Stone Type) -->
-        <section class="bg-white p-6 rounded-2xl border border-slate-100 shadow-sm space-y-4">
-          <div class="flex items-center gap-3 pb-2 border-b border-slate-50">
-            <span
-              class="flex items-center justify-center w-7 h-7 rounded-full bg-indigo-50 text-indigo-600 font-bold text-sm">1</span>
-            <h2 class="text-lg font-bold text-slate-900">Base Settings</h2>
-          </div>
+            <!-- Dropdown Inputs Grid Row -->
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+              <!-- Variant Select -->
+              <div class="space-y-1.5">
+                <label class="block text-xs font-semibold text-slate-500 tracking-wider uppercase"
+                  >Variant Architecture</label
+                >
+                <div class="relative">
+                  <select
+                    class="w-full bg-slate-50 border border-slate-200 text-slate-800 text-sm rounded-xl pl-3.5 pr-10 py-3 appearance-none cursor-pointer focus:bg-white focus:border-indigo-600 focus:ring-4 focus:ring-indigo-100 transition duration-150 ease-in-out font-semibold shadow-sm"
+                    (change)="onVariantChange(+$any($event.target).value)"
+                    [value]="activeVariantIndex()"
+                  >
+                    @for (variant of detail()?.variants; track variant.variant; let idx = $index) {
+                      <option [value]="idx">
+                        {{ variant.variant }} ({{ variant.gender | titlecase }})
+                      </option>
+                    }
+                  </select>
+                  <div
+                    class="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none text-slate-400"
+                  >
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      class="w-4 h-4"
+                      viewBox="0 0 20 20"
+                      fill="currentColor"
+                    >
+                      <path
+                        fill-rule="evenodd"
+                        d="M5.23 7.21a.75.75 0 011.06.02L10 11.168l3.71-3.938a.75.75 0 111.08 1.04l-4.25 4.5a.75.75 0 01-1.08 0l-4.25-4.5a.75.75 0 01.02-1.06z"
+                        clip-rule="evenodd"
+                      />
+                    </svg>
+                  </div>
+                </div>
+              </div>
 
-          <!-- Dropdown Inputs Grid Row -->
-          <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+              <!-- New Stone Type Select -->
+              <div class="space-y-1.5">
+                <label class="block text-xs font-semibold text-slate-500 tracking-wider uppercase"
+                  >Stone Origin Type</label
+                >
+                <div class="relative">
+                  <select
+                    formControlName="stoneOriginType"
+                    class="w-full bg-slate-50 border border-slate-200 text-slate-800 text-sm rounded-xl pl-3.5 pr-10 py-3 appearance-none cursor-pointer focus:bg-white focus:border-indigo-600 focus:ring-4 focus:ring-indigo-100 transition duration-150 ease-in-out font-semibold shadow-sm"
+                  >
+                    <option value="Natural" selected>Natural Diamond / Gemstone</option>
+                    <option value="Labgrown">Lab Grown Diamond</option>
+                  </select>
+                  <div
+                    class="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none text-slate-400"
+                  >
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      class="w-4 h-4"
+                      viewBox="0 0 20 20"
+                      fill="currentColor"
+                    >
+                      <path
+                        fill-rule="evenodd"
+                        d="M5.23 7.21a.75.75 0 011.06.02L10 11.168l3.71-3.938a.75.75 0 111.08 1.04l-4.25 4.5a.75.75 0 01-1.08 0l-4.25-4.5a.75.75 0 01.02-1.06z"
+                        clip-rule="evenodd"
+                      />
+                    </svg>
+                  </div>
+                </div>
+              </div>
 
-            <!-- Variant Select -->
-            <div class="space-y-1.5">
-              <label class="block text-xs font-semibold text-slate-500 tracking-wider uppercase">Variant
-                Architecture</label>
-              <div class="relative">
-                <select
-                  class="w-full bg-slate-50 border border-slate-200 text-slate-800 text-sm rounded-xl pl-3.5 pr-10 py-3 appearance-none cursor-pointer focus:bg-white focus:border-indigo-600 focus:ring-4 focus:ring-indigo-100 transition duration-150 ease-in-out font-semibold shadow-sm"
-                  (change)="onVariantChange(+$any($event.target).value)" [value]="activeVariantIndex()">
-                  @for (variant of detail()?.variants; track variant.variant; let idx = $index) {
-                  <option [value]="idx">
-                    {{ variant.variant }} ({{ variant.gender | titlecase }})
-                  </option>
-                  }
-                </select>
-                <div class="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none text-slate-400">
-                  <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" viewBox="0 0 20 20" fill="currentColor">
-                    <path fill-rule="evenodd"
-                      d="M5.23 7.21a.75.75 0 011.06.02L10 11.168l3.71-3.938a.75.75 0 111.08 1.04l-4.25 4.5a.75.75 0 01-1.08 0l-4.25-4.5a.75.75 0 01.02-1.06z"
-                      clip-rule="evenodd" />
-                  </svg>
+              <!-- Ring Size Select -->
+              <div class="space-y-1.5">
+                <label class="block text-xs font-semibold text-slate-500 tracking-wider uppercase"
+                  >Ring Size</label
+                >
+                <div class="relative">
+                  <select
+                    formControlName="ringSize"
+                    class="w-full bg-slate-50 border border-slate-200 text-slate-800 text-sm rounded-xl pl-3.5 pr-10 py-3 appearance-none cursor-pointer focus:bg-white focus:border-indigo-600 focus:ring-4 focus:ring-indigo-100 transition duration-150 ease-in-out font-semibold shadow-sm"
+                  >
+                    <option value="" disabled selected>Choose ring size</option>
+                    @for (size of ringSizes; track size) {
+                      <option [value]="size">{{ size }}</option>
+                    }
+                  </select>
+                  <div
+                    class="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none text-slate-400"
+                  >
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      class="w-4 h-4"
+                      viewBox="0 0 20 20"
+                      fill="currentColor"
+                    >
+                      <path
+                        fill-rule="evenodd"
+                        d="M5.23 7.21a.75.75 0 011.06.02L10 11.168l3.71-3.938a.75.75 0 111.08 1.04l-4.25 4.5a.75.75 0 01-1.08 0l-4.25-4.5a.75.75 0 01.02-1.06z"
+                        clip-rule="evenodd"
+                      />
+                    </svg>
+                  </div>
                 </div>
               </div>
             </div>
 
-            <!-- New Stone Type Select -->
-            <div class="space-y-1.5">
-              <label class="block text-xs font-semibold text-slate-500 tracking-wider uppercase">Stone Origin
-                Type</label>
-              <div class="relative">
-                <select formControlName="stoneOriginType"
-                  class="w-full bg-slate-50 border border-slate-200 text-slate-800 text-sm rounded-xl pl-3.5 pr-10 py-3 appearance-none cursor-pointer focus:bg-white focus:border-indigo-600 focus:ring-4 focus:ring-indigo-100 transition duration-150 ease-in-out font-semibold shadow-sm">
-                  <option value="Natural" selected>Natural Diamond / Gemstone</option>
-                  <option value="Labgrown">Lab Grown Diamond</option>
-                </select>
-                <div class="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none text-slate-400">
-                  <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" viewBox="0 0 20 20" fill="currentColor">
-                    <path fill-rule="evenodd"
-                      d="M5.23 7.21a.75.75 0 011.06.02L10 11.168l3.71-3.938a.75.75 0 111.08 1.04l-4.25 4.5a.75.75 0 01-1.08 0l-4.25-4.5a.75.75 0 01.02-1.06z"
-                      clip-rule="evenodd" />
-                  </svg>
+            <!-- Baseline Metal Weight Display -->
+            @if (selectedRingSize() && getSelectedMetalWeight() > 0) {
+              <div
+                class="mt-4 flex items-center justify-between bg-slate-50 p-3.5 rounded-xl border border-slate-100 text-xs font-semibold text-slate-600 animate-fade-in"
+              >
+                <div class="flex items-center gap-1.5">
+                  <span class="text-slate-400 font-bold uppercase text-[10px] tracking-wider"
+                    >Selected Ring Size:</span
+                  >
+                  <span
+                    class="text-slate-900 font-bold bg-white px-2 py-0.5 rounded border border-slate-200"
+                    >{{ selectedRingSize() }}</span
+                  >
+                </div>
+                <div class="flex items-center gap-1.5 text-right">
+                  <span class="text-slate-400 font-bold uppercase text-[10px] tracking-wider"
+                    >Est. Baseline Metal Weight:</span
+                  >
+                  <span
+                    class="text-indigo-600 font-bold text-sm bg-white px-2 py-0.5 rounded border border-slate-200"
+                    >{{ getSelectedMetalWeight() }} gm</span
+                  >
                 </div>
               </div>
-            </div>
+            }
+          </section>
+          <!-- <pre>{{ selectedVariantZonesStone() | json }}</pre> -->
 
-            <!-- Ring Size Select -->
-            <div class="space-y-1.5">
-              <label class="block text-xs font-semibold text-slate-500 tracking-wider uppercase">Ring Size</label>
-              <div class="relative">
-                <select formControlName="ringSize"
-                  class="w-full bg-slate-50 border border-slate-200 text-slate-800 text-sm rounded-xl pl-3.5 pr-10 py-3 appearance-none cursor-pointer focus:bg-white focus:border-indigo-600 focus:ring-4 focus:ring-indigo-100 transition duration-150 ease-in-out font-semibold shadow-sm">
-                  <option value="" disabled selected>Choose ring size</option>
-                  @for (size of ringSizes; track size) {
-                  <option [value]="size">{{ size }}</option>
-                  }
-                </select>
-                <div class="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none text-slate-400">
-                  <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" viewBox="0 0 20 20" fill="currentColor">
-                    <path fill-rule="evenodd"
-                      d="M5.23 7.21a.75.75 0 011.06.02L10 11.168l3.71-3.938a.75.75 0 111.08 1.04l-4.25 4.5a.75.75 0 01-1.08 0l-4.25-4.5a.75.75 0 01.02-1.06z"
-                      clip-rule="evenodd" />
-                  </svg>
-                </div>
-              </div>
-            </div>
+          @if (detail()?.variants?.[activeVariantIndex()]) {
+            @let selectedVariant = detail()!.variants[activeVariantIndex()];
 
-          </div>
-        </section>
-        <!-- <pre>{{ selectedVariantZonesStone() | json }}</pre> -->
-
-        @if (detail()?.variants?.[activeVariantIndex()]) {
-        @let selectedVariant = detail()!.variants[activeVariantIndex()];
-
-        <!-- Step 2: Metal Settings Configuration -->
-        <section class="bg-white p-6 rounded-2xl border border-slate-100 shadow-sm space-y-4 animate-fade-in">
-          <div class="flex items-center gap-3 pb-2 border-b border-slate-50">
-            <span
-              class="flex items-center justify-center w-7 h-7 rounded-full bg-indigo-50 text-indigo-600 font-bold text-sm">2</span>
-            <h2 class="text-lg font-bold text-slate-900">Metal Settings</h2>
-          </div>
-
-          <!-- Dropdown Inputs Grid Row -->
-          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-
-            <!-- Metal Purity Select -->
-            <div class="space-y-1.5">
-              <label class="block text-xs font-semibold text-slate-500 tracking-wider uppercase">Metal Purity</label>
-              <div class="relative">
-                <select formControlName="selectedMetalPurity" (change)="onMetalPurityChange($event)"
-                  class="w-full bg-slate-50 border border-slate-200 text-slate-800 text-sm rounded-xl pl-3.5 pr-10 py-3 appearance-none cursor-pointer focus:bg-white focus:border-indigo-600 focus:ring-4 focus:ring-indigo-100 transition duration-150 ease-in-out font-semibold shadow-sm">
-                  <option value="" disabled selected>Choose metal purity</option>
-                  @for (metal of metalPurity(); track metal.id) {
-                  <option [value]="metal.id">
-                    {{ metal.name }}
-                  </option>
-                  }
-                </select>
-                <div class="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none text-slate-400">
-                  <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" viewBox="0 0 20 20" fill="currentColor">
-                    <path fill-rule="evenodd"
-                      d="M5.23 7.21a.75.75 0 011.06.02L10 11.168l3.71-3.938a.75.75 0 111.08 1.04l-4.25 4.5a.75.75 0 01-1.08 0l-4.25-4.5a.75.75 0 01.02-1.06z"
-                      clip-rule="evenodd" />
-                  </svg>
-                </div>
-              </div>
-            </div>
-
-            <!-- Metal Color Select -->
-            <div class="space-y-1.5">
-              <label class="block text-xs font-semibold text-slate-500 tracking-wider uppercase">Metal Color</label>
-              <div class="relative">
-                <select formControlName="selectedMetalColor" [disabled]="!selectedPurity()"
-                  class="w-full bg-slate-50 border border-slate-200 text-slate-800 text-sm rounded-xl pl-3.5 pr-10 py-3 appearance-none cursor-pointer focus:bg-white focus:border-indigo-600 focus:ring-4 focus:ring-indigo-100 transition duration-150 ease-in-out font-semibold shadow-sm disabled:opacity-50 disabled:cursor-not-allowed">
-                  <option value="" disabled selected>
-                    {{ selectedPurity() ? 'Choose metal color' : 'Select metal purity first' }}
-                  </option>
-                  @for (color of metalColor(); track color) {
-                  <option [value]="color.id">
-                    {{ color.name }}
-                  </option>
-                  }
-                </select>
-                <div class="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none text-slate-400">
-                  <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" viewBox="0 0 20 20" fill="currentColor">
-                    <path fill-rule="evenodd"
-                      d="M5.23 7.21a.75.75 0 011.06.02L10 11.168l3.71-3.938a.75.75 0 111.08 1.04l-4.25 4.5a.75.75 0 01-1.08 0l-4.25-4.5a.75.75 0 01.02-1.06z"
-                      clip-rule="evenodd" />
-                  </svg>
-                </div>
-              </div>
-            </div>
-
-          </div>
-        </section>
-
-        <!-- Step 3: Zone Slots Configuration -->
-        <section class="bg-white p-6 rounded-2xl border border-slate-100 shadow-sm space-y-6">
-          <div class="flex items-center gap-3">
-            <span
-              class="flex items-center justify-center w-7 h-7 rounded-full bg-indigo-50 text-indigo-600 font-bold text-sm">3</span>
-            <h2 class="text-lg font-bold text-slate-900">Select Shape &amp; Stone per Zone</h2>
-          </div>
-
-          <div class="divide-y divide-slate-100">
-            @for (zoneKey of selectedVariantZonesStone().zones; track zoneKey) {
-            <div class="py-5 first:pt-0 last:pb-0 space-y-4 group transition-all" [formGroupName]="zoneKey"
-              [class.bg-emerald-50\/20="-mx-2 px-2 rounded-xl border border-transparent" ]
-              [class.border-emerald-100]="selectedStones()[zoneKey]">
-
-              <!-- Zone Row Info Header -->
-              <div class="flex flex-wrap items-center justify-between gap-2">
-                <div class="flex items-center gap-2">
-                  <span class="w-2.5 h-2.5 rounded-full transition-colors"
-                    [class.bg-emerald-500]="selectedStones()[zoneKey]"
-                    [class.bg-slate-300]="!selectedStones()[zoneKey]"></span>
-                  <h3 class="font-semibold text-slate-900 text-sm sm:text-base">{{ zoneDisplayNames[zoneKey] || zoneKey
-                    }}
-                  </h3>
-                  <span class="text-xs px-2 py-0.5 bg-slate-100 text-slate-600 rounded-full font-medium">
-                    {{ selectedVariantZonesStone().stonesByZone.get(zoneKey)?.length }} Shape{{
-                    (selectedVariantZonesStone().stonesByZone.get(zoneKey)?.length ?? 0) > 1 ? 's' : '' }}
-                  </span>
-                </div>
+            <!-- Step 2: Metal Settings Configuration -->
+            <section
+              class="bg-white p-6 rounded-2xl border border-slate-100 shadow-sm space-y-4 animate-fade-in"
+            >
+              <div class="flex items-center gap-3 pb-2 border-b border-slate-50">
+                <span
+                  class="flex items-center justify-center w-7 h-7 rounded-full bg-indigo-50 text-indigo-600 font-bold text-sm"
+                  >2</span
+                >
+                <h2 class="text-lg font-bold text-slate-900">Metal Settings</h2>
               </div>
 
-              <!-- Dropdowns Responsive Grid Layout -->
+              <!-- Dropdown Inputs Grid Row -->
               <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <!-- Shape Dropdown -->
+                <!-- Metal Purity Select -->
                 <div class="space-y-1.5">
                   <label class="block text-xs font-semibold text-slate-500 tracking-wider uppercase"
-                    [attr.for]="'shape-' + zoneKey">Shape</label>
+                    >Metal</label
+                  >
                   <div class="relative">
-                    <select [id]="'shape-' + zoneKey"
-                      class="w-full bg-slate-50 border border-slate-200 text-slate-800 text-sm rounded-xl pl-3.5 pr-10 py-2.5 appearance-none cursor-pointer focus:bg-white focus:border-indigo-600 focus:ring-4 focus:ring-indigo-100 transition duration-150 ease-in-out font-medium"
-                      formControlName="shape" (change)="onShapeSelect(zoneKey, $event)">
-                      <option value="" disabled selected>Choose shape</option>
-                      @for (shape of selectedVariantZonesStone().stonesByZone.get(zoneKey); track shape.zone_slot_id) {
-                      <option [value]="shape.zone_slot_id">{{ shape.shape_normalized }}</option>
+                    <select
+                      formControlName="selectedMetalPurity"
+                      (change)="onMetalPurityChange($event)"
+                      class="w-full bg-slate-50 border border-slate-200 text-slate-800 text-sm rounded-xl pl-3.5 pr-10 py-3 appearance-none cursor-pointer focus:bg-white focus:border-indigo-600 focus:ring-4 focus:ring-indigo-100 transition duration-150 ease-in-out font-semibold shadow-sm"
+                    >
+                      <option value="" disabled selected>Choose metal</option>
+                      @for (metal of allowedMetals(); track metal.metal_master_id) {
+                        <option [value]="metal.metal_master_id">
+                          {{ metal.metal_master }}
+                        </option>
                       }
                     </select>
-                  </div>
-                </div>
-
-                <!-- Stone Dropdown (appears after shape is selected) -->
-                @if (selectedShapes()[zoneKey]) {
-                <div class="space-y-1.5 animate-fade-in">
-                  <label class="block text-xs font-semibold text-slate-500 tracking-wider uppercase"
-                    [attr.for]="'stone-' + zoneKey">Stone</label>
-
-                  @if (stoneLoading()[zoneKey]) {
-                  <div
-                    class="flex items-center gap-2 text-xs font-medium text-indigo-600 bg-indigo-50/50 border border-indigo-100/60 h-[42px] px-4 rounded-xl">
-                    <div class="w-4 h-4 border-2 border-indigo-600 border-t-transparent rounded-full animate-spin">
-                    </div>
-                    <span>Fetching stones...</span>
-                  </div>
-                  } @else {
-                  <div class="relative">
-                    <select [id]="'stone-' + zoneKey"
-                      class="w-full bg-slate-50 border border-slate-200 text-slate-800 text-sm rounded-xl pl-3.5 pr-10 py-2.5 appearance-none cursor-pointer focus:bg-white focus:border-indigo-600 focus:ring-4 focus:ring-indigo-100 transition duration-150 ease-in-out font-medium"
-                      formControlName="stone" (change)="onStoneSelect(zoneKey, $event)">
-                      <option value="" disabled selected>Select stone</option>
-                      @for (stone of stoneOptions()[zoneKey]; track stone.id) {
-                      <option [value]="stone.id">
-                        {{ stone.Stone_name }} — {{ stone.Estimated_Weight_Final_ct }} ct
-                      </option>
-                      }
-                    </select>
-                    <div class="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none text-slate-400">
-                      <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" viewBox="0 0 20 20" fill="currentColor">
-                        <path fill-rule="evenodd"
+                    <div
+                      class="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none text-slate-400"
+                    >
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        class="w-4 h-4"
+                        viewBox="0 0 20 20"
+                        fill="currentColor"
+                      >
+                        <path
+                          fill-rule="evenodd"
                           d="M5.23 7.21a.75.75 0 011.06.02L10 11.168l3.71-3.938a.75.75 0 111.08 1.04l-4.25 4.5a.75.75 0 01-1.08 0l-4.25-4.5a.75.75 0 01.02-1.06z"
-                          clip-rule="evenodd" />
+                          clip-rule="evenodd"
+                        />
                       </svg>
                     </div>
                   </div>
-                  }
                 </div>
+
+                <!-- Metal Color Select -->
+                <div class="space-y-1.5">
+                  <label class="block text-xs font-semibold text-slate-500 tracking-wider uppercase"
+                    >Metal Purity</label
+                  >
+                  <div class="relative">
+                    <select
+                      formControlName="selectedMetalColor"
+                      [disabled]="!selectedPurity()"
+                      class="w-full bg-slate-50 border border-slate-200 text-slate-800 text-sm rounded-xl pl-3.5 pr-10 py-3 appearance-none cursor-pointer focus:bg-white focus:border-indigo-600 focus:ring-4 focus:ring-indigo-100 transition duration-150 ease-in-out font-semibold shadow-sm disabled:opacity-50 disabled:cursor-not-allowed"
+                    >
+                      <option value="" disabled selected>
+                        {{ selectedPurity() ? 'Choose metal purity' : 'Select metal first' }}
+                      </option>
+                      @for (color of metalColor(); track color.metal_purity_id) {
+                        <option [value]="color.metal_purity_id">
+                          {{ color.metal_purity_name }}
+                        </option>
+                      }
+                    </select>
+                    <div
+                      class="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none text-slate-400"
+                    >
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        class="w-4 h-4"
+                        viewBox="0 0 20 20"
+                        fill="currentColor"
+                      >
+                        <path
+                          fill-rule="evenodd"
+                          d="M5.23 7.21a.75.75 0 011.06.02L10 11.168l3.71-3.938a.75.75 0 111.08 1.04l-4.25 4.5a.75.75 0 01-1.08 0l-4.25-4.5a.75.75 0 01.02-1.06z"
+                          clip-rule="evenodd"
+                        />
+                      </svg>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </section>
+
+            <!-- Step 3: Zone Slots Configuration -->
+            <section class="bg-white p-6 rounded-2xl border border-slate-100 shadow-sm space-y-6">
+              <div class="flex items-center gap-3">
+                <span
+                  class="flex items-center justify-center w-7 h-7 rounded-full bg-indigo-50 text-indigo-600 font-bold text-sm"
+                  >3</span
+                >
+                <h2 class="text-lg font-bold text-slate-900">Select Shape &amp; Stone per Zone</h2>
+              </div>
+
+              <div class="divide-y divide-slate-100">
+                @for (zoneKey of selectedVariantZonesStone().zones; track zoneKey) {
+                  <div
+                    class="py-5 first:pt-0 last:pb-0 space-y-4 group transition-all"
+                    [formGroupName]="zoneKey"
+                    [class.bg-emerald-50\/20="-mx-2 px-2 rounded-xl border border-transparent" ]
+                    [class.border-emerald-100]="selectedStones()[zoneKey]"
+                  >
+                    <!-- Zone Row Info Header -->
+                    <div class="flex flex-wrap items-center justify-between gap-2">
+                      <div class="flex items-center gap-2">
+                        <span
+                          class="w-2.5 h-2.5 rounded-full transition-colors"
+                          [class.bg-emerald-500]="selectedStones()[zoneKey]"
+                          [class.bg-slate-300]="!selectedStones()[zoneKey]"
+                        ></span>
+                        <h3 class="font-semibold text-slate-900 text-sm sm:text-base">
+                          {{ zoneDisplayNames[zoneKey] || zoneKey }}
+                        </h3>
+                        <span
+                          class="text-xs px-2 py-0.5 bg-slate-100 text-slate-600 rounded-full font-medium"
+                        >
+                          {{
+                            selectedVariantZonesStone().stonesByZone.get(zoneKey)?.length
+                          }}
+                          Shape{{
+                            (selectedVariantZonesStone().stonesByZone.get(zoneKey)?.length ?? 0) > 1
+                              ? 's'
+                              : ''
+                          }}
+                        </span>
+                      </div>
+                    </div>
+
+                    <!-- Dropdowns Responsive Grid Layout -->
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                      <!-- Shape Dropdown -->
+                      <div class="space-y-1.5">
+                        <label
+                          class="block text-xs font-semibold text-slate-500 tracking-wider uppercase"
+                          [attr.for]="'shape-' + zoneKey"
+                          >Shape</label
+                        >
+                        <div class="relative">
+                          <select
+                            [id]="'shape-' + zoneKey"
+                            class="w-full bg-slate-50 border border-slate-200 text-slate-800 text-sm rounded-xl pl-3.5 pr-10 py-2.5 appearance-none cursor-pointer focus:bg-white focus:border-indigo-600 focus:ring-4 focus:ring-indigo-100 transition duration-150 ease-in-out font-medium"
+                            formControlName="shape"
+                            (change)="onShapeSelect(zoneKey, $event)"
+                          >
+                            <option value="" disabled selected>Choose shape</option>
+                            @for (
+                              shape of selectedVariantZonesStone().stonesByZone.get(zoneKey);
+                              track shape.zone_slot_id
+                            ) {
+                              <option [value]="shape.zone_slot_id">
+                                {{ shape.shape_normalized }}
+                              </option>
+                            }
+                          </select>
+                        </div>
+                      </div>
+
+                      <!-- Stone Dropdown (appears after shape is selected) -->
+                      @if (selectedShapes()[zoneKey]) {
+                        <div class="space-y-1.5 animate-fade-in">
+                          <label
+                            class="block text-xs font-semibold text-slate-500 tracking-wider uppercase"
+                            [attr.for]="'stone-' + zoneKey"
+                            >Stone</label
+                          >
+
+                          @if (stoneLoading()[zoneKey]) {
+                            <div
+                              class="flex items-center gap-2 text-xs font-medium text-indigo-600 bg-indigo-50/50 border border-indigo-100/60 h-[42px] px-4 rounded-xl"
+                            >
+                              <div
+                                class="w-4 h-4 border-2 border-indigo-600 border-t-transparent rounded-full animate-spin"
+                              ></div>
+                              <span>Fetching stones...</span>
+                            </div>
+                          } @else {
+                            <div class="relative">
+                              <select
+                                [id]="'stone-' + zoneKey"
+                                class="w-full bg-slate-50 border border-slate-200 text-slate-800 text-sm rounded-xl pl-3.5 pr-10 py-2.5 appearance-none cursor-pointer focus:bg-white focus:border-indigo-600 focus:ring-4 focus:ring-indigo-100 transition duration-150 ease-in-out font-medium"
+                                formControlName="stone"
+                                (change)="onStoneSelect(zoneKey, $event)"
+                              >
+                                <option value="" disabled selected>Select stone</option>
+                                @for (stone of stoneOptions()[zoneKey]; track stone.id) {
+                                  <option [value]="stone.id">
+                                    {{ stone.Stone_name }} —
+                                    {{ stone.Estimated_Weight_Final_ct }} ct
+                                  </option>
+                                }
+                              </select>
+                              <div
+                                class="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none text-slate-400"
+                              >
+                                <svg
+                                  xmlns="http://www.w3.org/2000/svg"
+                                  class="w-4 h-4"
+                                  viewBox="0 0 20 20"
+                                  fill="currentColor"
+                                >
+                                  <path
+                                    fill-rule="evenodd"
+                                    d="M5.23 7.21a.75.75 0 011.06.02L10 11.168l3.71-3.938a.75.75 0 111.08 1.04l-4.25 4.5a.75.75 0 01-1.08 0l-4.25-4.5a.75.75 0 01.02-1.06z"
+                                    clip-rule="evenodd"
+                                  />
+                                </svg>
+                              </div>
+                            </div>
+                          }
+                        </div>
+                      }
+                    </div>
+
+                    <!-- Selected Stone Summary Badge Panel -->
+                    @if (selectedStones()[zoneKey]) {
+                      @let stone = selectedStones()[zoneKey]!;
+                      <div
+                        class="flex flex-wrap items-center gap-x-4 gap-y-2 bg-slate-50 p-3 rounded-xl border border-slate-100 text-xs text-slate-600 font-medium"
+                      >
+                        <div class="flex items-center gap-1.5">
+                          <span
+                            class="text-slate-400 font-semibold uppercase text-[10px] tracking-wider"
+                            >Stone:</span
+                          >
+                          <span class="text-slate-900">{{ stone.Stone_name }}</span>
+                        </div>
+                        <div class="w-1 h-1 bg-slate-300 rounded-full hidden sm:block"></div>
+                        <div class="flex items-center gap-1.5">
+                          <span
+                            class="text-slate-400 font-semibold uppercase text-[10px] tracking-wider"
+                            >Weight:</span
+                          >
+                          <span class="text-slate-900"
+                            >{{ stone.Estimated_Weight_Final_ct }} ct</span
+                          >
+                        </div>
+                        <div
+                          class="sm:ml-auto text-indigo-600 bg-indigo-50 px-2.5 py-1 rounded-lg border border-indigo-100/50 text-xs font-semibold"
+                        >
+                          ₹{{ stone.Price_per_ct_INR | number }} / ${{
+                            stone.Price_per_ct_USD | number
+                          }}
+                          per ct
+                        </div>
+                      </div>
+                    }
+                  </div>
                 }
               </div>
+            </section>
 
-              <!-- Selected Stone Summary Badge Panel -->
-              @if (selectedStones()[zoneKey]) {
-              @let stone = selectedStones()[zoneKey]!;
+            <!-- Allowed Metals Card Component -->
+            <section
+              class="bg-white rounded-2xl border border-slate-100 shadow-sm overflow-hidden hidden"
+            >
               <div
-                class="flex flex-wrap items-center gap-x-4 gap-y-2 bg-slate-50 p-3 rounded-xl border border-slate-100 text-xs text-slate-600 font-medium">
-                <div class="flex items-center gap-1.5">
-                  <span class="text-slate-400 font-semibold uppercase text-[10px] tracking-wider">Stone:</span>
-                  <span class="text-slate-900">{{ stone.Stone_name }}</span>
+                class="bg-gradient-to-r from-slate-900 to-slate-800 p-5 text-white flex items-center gap-3"
+              >
+                <div class="p-2 bg-white/10 text-amber-400 rounded-xl backdrop-blur-md">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    class="w-5 h-5"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z"
+                    />
+                  </svg>
                 </div>
-                <div class="w-1 h-1 bg-slate-300 rounded-full hidden sm:block"></div>
-                <div class="flex items-center gap-1.5">
-                  <span class="text-slate-400 font-semibold uppercase text-[10px] tracking-wider">Weight:</span>
-                  <span class="text-slate-900">{{ stone.Estimated_Weight_Final_ct }} ct</span>
+                <div>
+                  <h2 class="font-bold tracking-wide text-sm sm:text-base">Allowed Metals</h2>
+                  <p class="text-xs text-slate-300">
+                    {{ selectedVariant.allowed_metals.length }} material combinations matching
+                    criteria
+                  </p>
                 </div>
+              </div>
+
+              <div class="p-5">
+                <div class="grid grid-cols-2 sm:grid-cols-3 gap-2">
+                  @for (
+                    metal of selectedVariant.allowed_metals;
+                    track metal.metal_purity + metal.metal_color
+                  ) {
+                    <div
+                      class="flex flex-col p-3 bg-slate-50 hover:bg-indigo-50/20 hover:border-indigo-200 border border-slate-200/60 rounded-xl transition group duration-150"
+                    >
+                      <span class="text-xs font-bold text-slate-900 tracking-wide">{{
+                        metal.metal_purity
+                      }}</span>
+                      <span
+                        class="text-[10px] font-semibold text-slate-500 group-hover:text-indigo-600 capitalize mt-0.5"
+                        >{{ metal.metal_color }}</span
+                      >
+                    </div>
+                  }
+                </div>
+              </div>
+            </section>
+
+            <!-- Selection Summary & Estimates Card -->
+            @if (hasAnyStoneSelected()) {
+              <section
+                class="bg-white rounded-2xl border border-slate-100 shadow-sm overflow-hidden mt-6 animate-fade-in"
+              >
                 <div
-                  class="sm:ml-auto text-indigo-600 bg-indigo-50 px-2.5 py-1 rounded-lg border border-indigo-100/50 text-xs font-semibold">
-                  ₹{{ stone.Price_per_ct_INR| number }} / ${{ stone.Price_per_ct_USD| number }}
+                  class="bg-gradient-to-r from-indigo-900 to-slate-800 p-5 text-white flex items-center gap-3"
+                >
+                  <div class="p-2 bg-white/10 text-emerald-400 rounded-xl backdrop-blur-md">
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      class="w-5 h-5"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke="currentColor"
+                    >
+                      <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-width="2"
+                        d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z"
+                      />
+                    </svg>
+                  </div>
+                  <div>
+                    <h2 class="font-bold tracking-wide text-sm sm:text-base">
+                      Selection Summary & Estimate
+                    </h2>
+                    <p class="text-xs text-slate-300">
+                      Live estimate based on current stone selections
+                    </p>
+                  </div>
                 </div>
-              </div>
-              }
-            </div>
+
+                <div class="p-6 space-y-6">
+                  <!-- Zone wise breakdown grid -->
+                  <div class="space-y-1">
+                    @for (zoneKey of getZoneKeys(); track zoneKey) {
+                      @if (selectedStones()[zoneKey]) {
+                        @let stone = selectedStones()[zoneKey]!;
+                        @let qty = getStoneQuantity(zoneKey);
+                        @let totalWeight = (stone.Estimated_Weight_Final_ct ?? 0) * qty;
+                        @let rawInr =
+                          stone.Price_per_ct_INR * (stone.Estimated_Weight_Final_ct ?? 0) * qty;
+                        @let rawUsd =
+                          stone.Price_per_ct_USD * (stone.Estimated_Weight_Final_ct ?? 0) * qty;
+
+                        <div
+                          class="grid grid-cols-12 items-center gap-4 py-3 border-b border-slate-100 last:border-0 text-sm"
+                        >
+                          <!-- Zone Details -->
+                          <div class="col-span-5 flex flex-col min-w-0">
+                            <span
+                              class="font-bold text-[10px] tracking-wider uppercase text-indigo-600/90"
+                              >{{ zoneDisplayNames[zoneKey] || zoneKey }}</span
+                            >
+                            <span class="text-slate-800 text-sm font-semibold truncate mt-0.5"
+                              >{{ getSelectedShapeName(zoneKey) }} • {{ stone.Stone_name }}</span
+                            >
+                          </div>
+
+                          <!-- Quantity -->
+                          <div class="col-span-2 text-center">
+                            <span
+                              class="text-[9px] font-bold text-slate-400 block uppercase tracking-wider mb-0.5"
+                              >Qty</span
+                            >
+                            <span
+                              class="text-slate-800 font-bold bg-slate-100/80 px-2.5 py-0.5 rounded-md text-xs inline-block"
+                              >{{ qty }}</span
+                            >
+                          </div>
+
+                          <!-- Weight -->
+                          <div class="col-span-2 text-right">
+                            <span
+                              class="text-[9px] font-bold text-slate-400 block uppercase tracking-wider mb-0.5"
+                              >Weight</span
+                            >
+                            <span class="text-slate-700 font-bold block text-sm"
+                              >{{ +totalWeight.toFixed(4) }} ct</span
+                            >
+                            <span class="text-slate-400 text-xs block mt-0.5"
+                              >{{ +(totalWeight * 0.2).toFixed(5) }} g</span
+                            >
+                          </div>
+
+                          <!-- Price -->
+                          <div class="col-span-3 text-right">
+                            <span
+                              class="text-[9px] font-bold text-slate-400 block uppercase tracking-wider mb-0.5"
+                              >Price</span
+                            >
+                            <span class="font-bold text-slate-800 block text-xs"
+                              >₹{{ +rawInr.toFixed(2) }}</span
+                            >
+                            <span class="text-indigo-600 font-semibold text-[11px] block mt-0.5"
+                              >${{ rawUsd | number: '1.0-3' }}</span
+                            >
+                          </div>
+                        </div>
+                      }
+                    }
+                  </div>
+
+                  <!-- Grand Totals footer -->
+                  <div
+                    class="pt-5 border-t border-slate-200 flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-slate-50/70 -mx-6 -mb-6 p-6"
+                  >
+                    @let grandWt = getGrandTotalWeight();
+                    @let grandInr = getGrandTotalPriceINR();
+                    @let grandUsd = getGrandTotalPriceUSD();
+                    <div>
+                      <p class="text-[10px] font-bold text-slate-400 uppercase tracking-wider">
+                        Total Est. Weight
+                      </p>
+                      <p class="text-lg font-black text-slate-900 mt-0.5">
+                        {{ +grandWt.toFixed(4) }} ct
+                        <span class="text-slate-500 font-medium text-xs"
+                          >({{ +(grandWt * 0.2).toFixed(5) }} g)</span
+                        >
+                      </p>
+                    </div>
+                    <div class="sm:text-right">
+                      <p class="text-[10px] font-bold text-slate-400 uppercase tracking-wider">
+                        Total Est. Stone Price
+                      </p>
+                      <p class="text-xl font-black text-indigo-600 mt-0.5">
+                        ₹{{ +grandInr.toFixed(2) }}
+                        <span class="text-slate-300 font-light mx-1">/</span>
+                        ${{ grandUsd | number: '1.0-3' }}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </section>
             }
-          </div>
-        </section>
 
-        <!-- Allowed Metals Card Component -->
-        <section class="bg-white rounded-2xl border border-slate-100 shadow-sm overflow-hidden">
-          <div class="bg-gradient-to-r from-slate-900 to-slate-800 p-5 text-white flex items-center gap-3">
-            <div class="p-2 bg-white/10 text-amber-400 rounded-xl backdrop-blur-md">
-              <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24"
-                stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                  d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z" />
-              </svg>
-            </div>
-            <div>
-              <h2 class="font-bold tracking-wide text-sm sm:text-base">Allowed Metals</h2>
-              <p class="text-xs text-slate-300">{{ selectedVariant.allowed_metals.length }} material combinations
-                matching
-                criteria</p>
-            </div>
-          </div>
+            <!-- Metal Details Card -->
+            @if (selectedRingSize() && getSelectedMetalWeight() > 0) {
+              <section
+                class="bg-white rounded-2xl border border-slate-100 shadow-sm overflow-hidden mt-6 animate-fade-in"
+              >
+                <div
+                  class="bg-gradient-to-r from-slate-900 to-slate-800 p-5 text-white flex items-center gap-3"
+                >
+                  <div class="p-2 bg-white/10 text-amber-400 rounded-xl backdrop-blur-md">
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      class="w-5 h-5"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke="currentColor"
+                    >
+                      <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-width="2"
+                        d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z"
+                      />
+                    </svg>
+                  </div>
+                  <div>
+                    <h2 class="font-bold tracking-wide text-sm sm:text-base">
+                      Metal Details
+                    </h2>
+                    <p class="text-xs text-slate-300">
+                      Estimated baseline weight and rates for selected ring size & metal
+                    </p>
+                  </div>
+                </div>
 
-          <div class="p-5">
-            <div class="grid grid-cols-2 sm:grid-cols-3 gap-2">
-              @for (metal of selectedVariant.allowed_metals; track metal.metal_purity + metal.metal_color) {
-              <div
-                class="flex flex-col p-3 bg-slate-50 hover:bg-indigo-50/20 hover:border-indigo-200 border border-slate-200/60 rounded-xl transition group duration-150">
-                <span class="text-xs font-bold text-slate-900 tracking-wide">{{ metal.metal_purity }}</span>
-                <span class="text-[10px] font-semibold text-slate-500 group-hover:text-indigo-600 capitalize mt-0.5">{{
-                  metal.metal_color }}</span>
-              </div>
-              }
-            </div>
-          </div>
-        </section>
-        }
+                <div class="p-6 space-y-4 text-sm">
+                  <div class="flex items-center justify-between">
+                    <div>
+                      <span class="text-slate-800 font-semibold block"
+                        >Est. Baseline Metal Weight (Size {{ selectedRingSize() }})</span
+                      >
+                    </div>
+                    <div class="text-right font-black text-slate-900 text-lg">
+                      {{ getSelectedMetalWeight() }} gm
+                    </div>
+                  </div>
+
+                  @if (getSelectedMetalPurityDetails(); as purity) {
+                    <div class="pt-4 border-t border-slate-100 space-y-3">
+                      <div
+                        class="flex items-center justify-between text-xs text-slate-500 font-medium"
+                      >
+                        <div>
+                          <span>Rate per Gram ({{ purity.metal_purity_name }})</span>
+                        </div>
+                        <div class="text-right font-semibold text-slate-700">
+                          ₹{{ purity.rate_per_gram_inr | number }} / ${{
+                            purity.rate_per_gram_usd | number
+                          }}
+                        </div>
+                      </div>
+
+                      <div class="flex items-center justify-between font-bold text-slate-900 mt-1">
+                        <div>
+                          <span>Est. Metal Price</span>
+                        </div>
+                        <div class="text-right text-indigo-600 text-lg font-black">
+                          ₹{{ (purity.rate_per_gram_inr * getSelectedMetalWeight()) | number }}
+                          <span class="text-slate-300 font-light mx-1">/</span>
+                          ${{
+                            (purity.rate_per_gram_usd * getSelectedMetalWeight()) | number: '1.0-3'
+                          }}
+                        </div>
+                      </div>
+                    </div>
+                  }
+                </div>
+              </section>
+            }
+          }
+        </div>
       </div>
-    </div>
-
-  </form>
+    </form>
   }
 </div>
