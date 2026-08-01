@@ -7,6 +7,7 @@ import { MetalMasterType } from '../../core/enum/metal-master.enum';
 import { CommonModule } from '@angular/common';
 import { MetalPurityDialogData } from './metal-master-upsert/metal-master-upsert.model';
 import { MetalPurityUpsert } from './metal-master-upsert/metal-purity-upsert';
+import { MetalType, metalTypesArray } from '../../core/enum/metal-type.enum';
 
 @Component({
   selector: 'app-metal-master',
@@ -17,7 +18,7 @@ import { MetalPurityUpsert } from './metal-master-upsert/metal-purity-upsert';
 export class MetalMaster extends ListBase<RMetal> implements OnInit {
   private dialog = inject(MatDialog);
 
-  public selectedMetal: WritableSignal<number | null> = signal<number | null>(null);
+  public selectedMetal: WritableSignal<MetalType> = signal<MetalType>(MetalType.GOLD);
   public metals: WritableSignal<RMetal[]> = signal<RMetal[]>([]);
   public metalPurityList: WritableSignal<RMetalPurity[]> = signal<RMetalPurity[]>([]);
 
@@ -25,8 +26,10 @@ export class MetalMaster extends ListBase<RMetal> implements OnInit {
     super.ngOnInit();
     this.pageTitleService.setTitle('Metals');
     this.breadcrumb.set([{ label: 'Metals' }]);
-    this.loadItems();
+    // this.loadItems();
     this.setHeaderConfig('Metals', '');
+    this.metals.update(() => metalTypesArray);
+    this.loadMetalPurity();
   }
 
   public onUpsertMetalClick(id: number = 0): void {
@@ -41,7 +44,7 @@ export class MetalMaster extends ListBase<RMetal> implements OnInit {
     const data: MetalPurityDialogData = {
       itemId,
       metalMasterType,
-      metalMasterId: this.selectedMetal() || undefined,
+      metalType: this.selectedMetal(),
     };
 
     const dialogRef = this.dialog.open(MetalPurityUpsert, {
@@ -52,7 +55,7 @@ export class MetalMaster extends ListBase<RMetal> implements OnInit {
 
     dialogRef.afterClosed().subscribe((saved: boolean) => {
       if (saved) {
-        if(metalMasterType === MetalMasterType.METAL){
+        if (metalMasterType === MetalMasterType.METAL) {
           this.loadItems();
         } else {
           this.loadMetalPurity();
@@ -61,7 +64,7 @@ export class MetalMaster extends ListBase<RMetal> implements OnInit {
     });
   }
 
-  public updateSelectedMetal(metalId: number){
+  public updateSelectedMetal(metalId: number) {
     this.selectedMetal.update(() => metalId);
     this.loadMetalPurity();
   }
@@ -87,7 +90,7 @@ export class MetalMaster extends ListBase<RMetal> implements OnInit {
 
       if (res.status && res.data) {
         this.metals.update(() => res.data.items || []);
-        this.selectedMetal.update(() => (res.data.items.length > 0 ? res.data.items[0].id : null));
+        // this.selectedMetal.update(() => (res.data.items.length > 0 ? res.data.items[0].id : null));
         this.loadMetalPurity();
         if (res.meta) {
           this.meta.set(res.meta);
@@ -109,10 +112,10 @@ export class MetalMaster extends ListBase<RMetal> implements OnInit {
     this.errorMessage.set(null);
 
     const payload: Record<string, string | number> = {
-      metal_id: this.selectedMetal() ?? 0,
+      metal_type: this.selectedMetal() ?? 0,
       page: this.meta().page,
       limit: this.meta().limit,
-      search: this.searchTerm(),
+      search: this.searchTerm() ?? undefined,
     };
 
     this.httpGetPromise<IGenericListResponse<RMetalPurity>>(

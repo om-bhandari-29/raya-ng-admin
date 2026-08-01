@@ -65,25 +65,56 @@
       }
 
       <!-- Name -->
-      <div class="flex flex-col gap-1.5">
-        <label for="name" class="font-medium" style="font-size: 13px; color: #525252">
-          Name <span class="text-red-500">*</span>
-        </label>
-        <input
-          id="name"
-          type="text"
-          formControlName="name"
-          placeholder="Enter metal purity name"
-          class="w-full rounded-lg px-2 py-1 text-sm text-slate-800 placeholder-slate-400 outline-none transition focus:ring-2 focus:ring-gray-200 focus:border-gray-200 bg-[#f3f3f3]"
-          [class.border-red-400]="form.controls.name.invalid && form.controls.name.touched"
-          [class.border-slate-300]="!(form.controls.name.invalid && form.controls.name.touched)"
-        />
-        @if (form.controls.name.invalid && form.controls.name.touched) {
-          @if (form.controls.name.errors?.['required']) {
-            <p class="text-xs text-red-500">Name is required.</p>
-          } @else if (form.controls.name.errors?.['minlength']) {
-            <p class="text-xs text-red-500">Name must be at least 2 characters.</p>
-          }
+      <div class="grid gap-1.5" [class.grid-cols-2]="dialogData.metalMasterType === MetalMasterType.PURITY" [class.grid-cols-1]="dialogData.metalMasterType === MetalMasterType.METAL">
+        <div [class.col-span-1]="true">
+          <div class="flex flex-col gap-1.5">
+            <label for="name" class="font-medium" style="font-size: 13px; color: #525252">
+              Name <span class="text-red-500">*</span>
+            </label>
+            <input
+              id="name"
+              type="text"
+              formControlName="name"
+              placeholder="Enter metal purity name"
+              class="w-full rounded-lg px-2 py-1 text-sm text-slate-800 placeholder-slate-400 outline-none transition focus:ring-2 focus:ring-gray-200 focus:border-gray-200 bg-[#f3f3f3]"
+              [class.border-red-400]="form.controls.name.invalid && form.controls.name.touched"
+              [class.border-slate-300]="!(form.controls.name.invalid && form.controls.name.touched)"
+            />
+            @if (form.controls.name.invalid && form.controls.name.touched) {
+              @if (form.controls.name.errors?.['required']) {
+                <p class="text-xs text-red-500">Name is required.</p>
+              } @else if (form.controls.name.errors?.['minlength']) {
+                <p class="text-xs text-red-500">Name must be at least 2 characters.</p>
+              }
+            }
+          </div>
+        </div>
+
+        @if (dialogData.metalMasterType === MetalMasterType.PURITY) {
+          <div class="col-span-1">
+            <div class="flex flex-col gap-1.5">
+              <label for="purity_code" class="font-medium" style="font-size: 13px; color: #525252">
+                Purity Code <span class="text-red-500">*</span>
+              </label>
+              <select
+                id="purity_code"
+                formControlName="purity_code"
+                class="w-full rounded-lg px-2 py-1 text-sm text-slate-800 outline-none transition focus:ring-2 focus:ring-gray-200 focus:border-gray-200 bg-[#f3f3f3] border"
+                [class.border-red-400]="form.controls.purity_code.invalid && form.controls.purity_code.touched"
+                [class.border-slate-300]="!(form.controls.purity_code.invalid && form.controls.purity_code.touched)"
+              >
+                <option value="" disabled>Select Purity Code</option>
+                @for (item of purityCombo(); track item.id) {
+                  <option [value]="item.id">{{ item.id }}</option>
+                }
+              </select>
+              @if (form.controls.purity_code.invalid && form.controls.purity_code.touched) {
+                @if (form.controls.purity_code.errors?.['required']) {
+                  <p class="text-xs text-red-500">Purity Code is required.</p>
+                }
+              }
+            </div>
+          </div>
         }
       </div>
       @if (dialogData.metalMasterType === MetalMasterType.PURITY) {

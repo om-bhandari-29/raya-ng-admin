@@ -1,4 +1,4 @@
-import { Component, OnInit, inject, signal } from '@angular/core';
+import { Component, OnInit, inject, signal, WritableSignal } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { Base } from '../../../core/base/base';
@@ -11,6 +11,13 @@ import {
   MetalPurityDialogData,
   MetalPurityForm,
 } from './metal-master-upsert.model';
+import { enumToArray, enumToArrayModel } from '../../../core/utility';
+import { MetalType } from '../../../core/enum/metal-type.enum';
+import {
+  GoldPurityCodeEnum,
+  PlatinumPurityCodeEnum,
+  SilverPurityCodeEnum,
+} from '../../../core/enum/metal-purity.enum';
 
 @Component({
   selector: 'app-metal-purity-upsert',
@@ -22,6 +29,8 @@ export class MetalPurityUpsert extends Base implements OnInit {
   private dialogRef = inject(MatDialogRef<MetalPurityUpsert>);
   public dialogData = inject<MetalPurityDialogData>(MAT_DIALOG_DATA);
   public readonly MetalMasterType = MetalMasterType;
+
+  public purityCombo: WritableSignal<enumToArrayModel[]> = signal([]);
 
   public modalTitle = signal<string>('');
 
@@ -41,6 +50,18 @@ export class MetalPurityUpsert extends Base implements OnInit {
 
     this.setTitle();
     this.updateFormValidation();
+
+    switch (this.dialogData.metalType) {
+      case MetalType.GOLD:
+        this.purityCombo.update(() => enumToArray(GoldPurityCodeEnum));
+        break;
+      case MetalType.SILVER:
+        this.purityCombo.update(() => enumToArray(SilverPurityCodeEnum));
+        break;
+      default:
+        this.purityCombo.update(() => enumToArray(PlatinumPurityCodeEnum));
+        break;
+    }
   }
 
   private async loadItem(): Promise<void> {
@@ -87,6 +108,7 @@ export class MetalPurityUpsert extends Base implements OnInit {
           this.form.patchValue({
             name: response.data.name,
             purity: response.data.purity,
+            purity_code: response.data.purity_code,
             percentage: Number(response.data.percentage),
             rate_per_gram_inr: Number(response.data.rate_per_gram_inr),
             rate_per_gram_usd: Number(response.data.rate_per_gram_usd),
@@ -157,12 +179,16 @@ export class MetalPurityUpsert extends Base implements OnInit {
 
     const payload = {
       purity: formdata.purity,
+      purity_code: formdata.purity_code,
       name: formdata.name,
-      metal_id: this.dialogData.metalMasterId,
+      metal_type: this.dialogData.metalType,
       percentage: formdata.percentage,
       rate_per_gram_inr: formdata.rate_per_gram_inr,
       rate_per_gram_usd: formdata.rate_per_gram_usd,
     };
+
+    // console.log(payload);
+    // return;
 
     (this.dialogData.itemId
       ? this.httpPatchObservable<IGenericResponse<RMetalPurity>, typeof payload>(
@@ -195,6 +221,7 @@ export class MetalPurityUpsert extends Base implements OnInit {
     this.form.controls.name.updateValueAndValidity();
     if (this.dialogData.metalMasterType === MetalMasterType.PURITY) {
       this.form.controls.purity.setValidators([Validators.required]);
+      this.form.controls.purity_code.setValidators([Validators.required]);
       this.form.controls.percentage.setValidators([
         Validators.required,
         Validators.min(0),
@@ -204,6 +231,7 @@ export class MetalPurityUpsert extends Base implements OnInit {
       this.form.controls.rate_per_gram_usd.setValidators([Validators.required, Validators.min(0)]);
 
       this.form.controls.purity.updateValueAndValidity();
+      this.form.controls.purity_code.updateValueAndValidity();
       this.form.controls.percentage.updateValueAndValidity();
       this.form.controls.rate_per_gram_inr.updateValueAndValidity();
       this.form.controls.rate_per_gram_usd.updateValueAndValidity();
