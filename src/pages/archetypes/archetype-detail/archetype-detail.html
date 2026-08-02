@@ -127,7 +127,7 @@
         <!-- LEFT COLUMN: STICKY DUMMY PRODUCT VISUALIZER -->
         <div class="lg:col-span-5 lg:sticky lg:top-6 space-y-4">
           <div
-            class="hidden aspect-square w-full rounded-3xl bg-slate-100 border border-slate-200 overflow-hidden shadow-inner flex items-center justify-center relative group"
+            class="aspect-square w-full rounded-3xl bg-slate-100 border border-slate-200 overflow-hidden shadow-inner flex items-center justify-center relative group"
           >
             <img
               src="https://images.unsplash.com/photo-1605100804763-247f67b3557e?auto=format&fit=crop&w=800&q=80"
@@ -322,7 +322,7 @@
                       <option value="" disabled selected>Choose metal</option>
                       @for (metal of allowedMetals(); track metal.metal_type) {
                         <option [value]="metal.metal_type">
-                          {{ metal.metal_master }}
+                          {{ MetalType[metal.metal_type] }}
                         </option>
                       }
                     </select>
@@ -353,6 +353,7 @@
                   <div class="relative">
                     <select
                       formControlName="selectedMetalColor"
+                      (change)="onMetalColorChange($event)"
                       [disabled]="!selectedPurity()"
                       class="w-full bg-slate-50 border border-slate-200 text-slate-800 text-sm rounded-xl pl-3.5 pr-10 py-3 appearance-none cursor-pointer focus:bg-white focus:border-indigo-600 focus:ring-4 focus:ring-indigo-100 transition duration-150 ease-in-out font-semibold shadow-sm disabled:opacity-50 disabled:cursor-not-allowed"
                     >
@@ -418,9 +419,7 @@
                         <span
                           class="text-xs px-2 py-0.5 bg-slate-100 text-slate-600 rounded-full font-medium"
                         >
-                          {{
-                            selectedVariantZonesStone().stonesByZone.get(zoneKey)?.length
-                          }}
+                          {{ selectedVariantZonesStone().stonesByZone.get(zoneKey)?.length }}
                           Shape{{
                             (selectedVariantZonesStone().stonesByZone.get(zoneKey)?.length ?? 0) > 1
                               ? 's'
@@ -770,9 +769,7 @@
                     </svg>
                   </div>
                   <div>
-                    <h2 class="font-bold tracking-wide text-sm sm:text-base">
-                      Metal Details
-                    </h2>
+                    <h2 class="font-bold tracking-wide text-sm sm:text-base">Metal Details</h2>
                     <p class="text-xs text-slate-300">
                       Estimated baseline weight and rates for selected ring size & metal
                     </p>
@@ -811,10 +808,10 @@
                           <span>Est. Metal Price</span>
                         </div>
                         <div class="text-right text-indigo-600 text-lg font-black">
-                          ₹{{ (purity.rate_per_gram_inr * getSelectedMetalWeight()) | number }}
+                          ₹{{ purity.rate_per_gram_inr * getSelectedMetalWeight() | number }}
                           <span class="text-slate-300 font-light mx-1">/</span>
                           ${{
-                            (purity.rate_per_gram_usd * getSelectedMetalWeight()) | number: '1.0-3'
+                            purity.rate_per_gram_usd * getSelectedMetalWeight() | number: '1.0-3'
                           }}
                         </div>
                       </div>

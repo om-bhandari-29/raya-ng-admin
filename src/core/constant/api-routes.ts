@@ -133,6 +133,7 @@ export const APIRoutes = {
   },
 
   Metal_Purity: {
+    CALCULATE_WEIGHT: '/metal-purity/calculate-weight',
     GET_MASTER_PURITIES: '/metal-purity/master/purities',
     CREATE: '/metal-purity',
     GET_ALL: '/metal-purity',

@@ -1,3 +1,4 @@
+import { MetalType } from './../../../core/enum/metal-type.enum';
 import { Component, OnInit, Signal, WritableSignal, computed, inject, signal } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Base } from '../../../core/base/base';
@@ -24,6 +25,7 @@ import {
 import { RING_SIZES } from '../../../core/enum/ring-component.enum';
 import { RMetal } from '../../../core/response/metal-purity.response';
 import { RAllowedMetal } from '../archetypes-upsert/archetypes-upsert.response';
+import { HttpErrorResponse } from '@angular/common/http';
 
 @Component({
   selector: 'app-archetype-detail',
@@ -39,6 +41,7 @@ export class ArchetypeDetail extends Base implements OnInit {
   public detail = signal<IArchetypeDetail | null>(null);
   public detailForm: FormGroup<BaseRingForm> = createDefaultDevotionRingForm();
   public ringSizes = RING_SIZES;
+  public readonly MetalType = MetalType;
 
   isLoading = signal<boolean>(false);
   errorMessage = signal<string | null>(null);
@@ -68,6 +71,7 @@ export class ArchetypeDetail extends Base implements OnInit {
   });
 
   public activeVariantIndex = signal<number>(0);
+  public calculatedWeights = signal<{ ringSize: string; targetWeight: number }[]>([]);
 
   public allowedMetals = signal<RAllowedMetal[]>([]);
   public metalColor = signal<
@@ -190,6 +194,13 @@ export class ArchetypeDetail extends Base implements OnInit {
   getSelectedMetalWeight(): number {
     const size = this.selectedRingSize();
     if (!size) return 0;
+
+    const calcWeights = this.calculatedWeights();
+    if (calcWeights && calcWeights.length > 0) {
+      const entry = calcWeights.find((w) => String(w.ringSize) === String(size));
+      if (entry) return entry.targetWeight;
+    }
+
     const variant = this.detail()?.variants?.[this.activeVariantIndex()];
     if (!variant || !variant.weight_matrix) return 0;
     const entry = variant.weight_matrix.find((w) => String(w.ring_size) === String(size));
@@ -207,6 +218,7 @@ export class ArchetypeDetail extends Base implements OnInit {
       selectedMetalPurity: null,
       selectedMetalColor: null,
     });
+    this.calculatedWeights.set([]);
     this.selectedPurity.set(null);
     this.metalColor.set([]);
 
@@ -422,9 +434,7 @@ export class ArchetypeDetail extends Base implements OnInit {
 
     console.log('Selected Metal:', metalId);
 
-    const selectedMetalObj = this.allowedMetals().find(
-      (m) => String(m.metal_type) === metalId,
-    );
+    const selectedMetalObj = this.allowedMetals().find((m) => String(m.metal_type) === metalId);
     if (selectedMetalObj) {
       this.metalColor.set(selectedMetalObj.allowed_metal_purities_id);
     } else {
@@ -435,6 +445,54 @@ export class ArchetypeDetail extends Base implements OnInit {
     this.detailForm.patchValue({
       selectedMetalColor: null,
     });
+    this.calculatedWeights.set([]);
+  }
+
+  onMetalColorChange(event: Event): void {
+    const selectEl = event.target as HTMLSelectElement;
+    const purityId = selectEl.value;
+
+    if (!purityId) {
+      this.calculatedWeights.set([]);
+      return;
+    }
+
+    const selectedPurityObj = this.metalColor().find(
+      (c) => String(c.metal_purity_id) === String(purityId),
+    );
+    if (!selectedPurityObj) {
+      this.calculatedWeights.set([]);
+      return;
+    }
+
+    const variantId = this.detailForm.value.variantId;
+    if (!variantId) return;
+
+    // Use purity_code if available, otherwise try to extract it from the name (e.g., '18K Premium Gold' -> '18K')
+    const targetPurity =
+      (selectedPurityObj as any).purity_code || selectedPurityObj.metal_purity_name.split(' ')[0];
+
+    const payload = {
+      variantId: Number(variantId),
+      targetPurity: targetPurity,
+    };
+
+    this.httpPostPromise<IGenericResponse<any>, any>(
+      this.apiRoutes.Metal_Purity.CALCULATE_WEIGHT,
+      payload,
+    )
+      .then((res) => {
+        if (res.status && res.data && res.data.weights) {
+          this.calculatedWeights.set(res.data.weights);
+        } else {
+          this.calculatedWeights.set([]);
+        }
+      })
+      .catch((err: HttpErrorResponse) => {
+        console.error('Error calculating metal weight:', err.error.message);
+        this.toastr.error(err.error.message);
+        this.calculatedWeights.set([]);
+      });
   }
 
   onSave(): void {
