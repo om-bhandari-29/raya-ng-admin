@@ -423,7 +423,7 @@ export class ArchetypeDetail extends Base implements OnInit {
     console.log('Selected Metal:', metalId);
 
     const selectedMetalObj = this.allowedMetals().find(
-      (m) => String(m.metal_master_id) === metalId,
+      (m) => String(m.metal_type) === metalId,
     );
     if (selectedMetalObj) {
       this.metalColor.set(selectedMetalObj.allowed_metal_purities_id);

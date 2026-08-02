@@ -112,6 +112,7 @@ export class MetalPurityUpsert extends Base implements OnInit {
             percentage: Number(response.data.percentage),
             rate_per_gram_inr: Number(response.data.rate_per_gram_inr),
             rate_per_gram_usd: Number(response.data.rate_per_gram_usd),
+            density_multiplier: response.data.density_multiplier != null ? Number(response.data.density_multiplier) : null,
           });
         } else {
           this.errorMessage.set(response.message);
@@ -185,6 +186,7 @@ export class MetalPurityUpsert extends Base implements OnInit {
       percentage: formdata.percentage,
       rate_per_gram_inr: formdata.rate_per_gram_inr,
       rate_per_gram_usd: formdata.rate_per_gram_usd,
+      density_multiplier: formdata.density_multiplier,
     };
 
     // console.log(payload);

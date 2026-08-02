@@ -10,6 +10,7 @@ export interface RMetalPurity {
   percentage: number;
   rate_per_gram_inr: number;
   rate_per_gram_usd: number;
+  density_multiplier: number | null;
   created_at: string;
   updated_at: string;
 }

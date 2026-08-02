@@ -63,7 +63,6 @@ export class ArchetypesUpsert extends Base implements OnInit {
   public metalPurity: WritableSignal<any[]> = signal([]);
   public metalColor: WritableSignal<any[]> = signal([]);
 
-
   public metalSpecsForm = new FormGroup<Record<string, FormGroup>>({});
 
   constructor(private _activatedRoute: ActivatedRoute) {
@@ -83,20 +82,30 @@ export class ArchetypesUpsert extends Base implements OnInit {
     }
 
     const queryParams = {
-      isPagination: false
+      isPagination: false,
     };
 
-    this.httpGetPromise<IGenericResponse<{ items: any[] }>>(
-      this.apiRoutes.Metal_Master.GET_PURITIES,
+    this.httpGetPromise<IGenericResponse<any[]>>(
+      this.apiRoutes.Metal_Purity.GET_MASTER_PURITIES,
       true,
-      queryParams
+      queryParams,
     )
       .then((res) => {
-        if (res.status && res.data && res.data.items) {
-          this.metalPurity.set(res.data.items);
+        if (res.status && res.data && Array.isArray(res.data)) {
+          // Map the new response structure to match what the component expects
+          const mappedData = res.data.map((item) => ({
+            id: item.metal_type_id,
+            name: item.metal_name,
+            purities: item.purities.map((p: any) => ({
+              ...p,
+              name: p.purity_code,
+            })),
+          }));
+
+          this.metalPurity.set(mappedData);
 
           const allPurities: any[] = [];
-          res.data.items.forEach((item: any) => {
+          mappedData.forEach((item: any) => {
             if (item.purities && item.purities.length > 0) {
               allPurities.push(...item.purities);
             }
@@ -121,7 +130,7 @@ export class ArchetypesUpsert extends Base implements OnInit {
   private initDynamicMetalSpecsForm() {
     const metals = this.metalPurity();
     console.log('initDynamicMetalSpecsForm - metals:', metals);
-    
+
     // Clear and build dynamic form controls
     const newFormGroupConfig: Record<string, FormGroup> = {};
     metals.forEach((metal) => {
@@ -135,7 +144,10 @@ export class ArchetypesUpsert extends Base implements OnInit {
     });
 
     this.metalSpecsForm = new FormGroup(newFormGroupConfig);
-    console.log('initDynamicMetalSpecsForm - metalSpecsForm controls:', this.metalSpecsForm.controls);
+    console.log(
+      'initDynamicMetalSpecsForm - metalSpecsForm controls:',
+      this.metalSpecsForm.controls,
+    );
   }
 
   public getZoneFormArray(zoneName: string): FormArray<FormGroup<ZoneSlotDetailForm>> {
@@ -156,8 +168,10 @@ export class ArchetypesUpsert extends Base implements OnInit {
           res.data.forEach((item) => {
             if (item.allowed_metal_purities_id) {
               mappedMetals.push({
-                metal_master_id: String(item.metal_master_id),
-                allowed_metal_purities_id: item.allowed_metal_purities_id.map((purity) => String(purity.metal_purity_id)),
+                metal_master_id: String(item.metal_type),
+                allowed_metal_purities_id: item.allowed_metal_purities_id.map((purity) =>
+                  String(purity.metal_purity_id),
+                ),
               });
             }
           });
@@ -167,7 +181,7 @@ export class ArchetypesUpsert extends Base implements OnInit {
           this.metalSpecsForm.reset();
 
           res.data.forEach((item) => {
-            const metalMasterId = String(item.metal_master_id);
+            const metalMasterId = String(item.metal_type);
             const metalGroup = this.metalSpecsForm.get(metalMasterId) as FormGroup;
             if (metalGroup && item.allowed_metal_purities_id) {
               item.allowed_metal_purities_id.forEach((purityObj: any) => {
@@ -263,14 +277,14 @@ export class ArchetypesUpsert extends Base implements OnInit {
         }
         if (allowedColors.length > 0) {
           allowedMetalsPayload.push({
-            metal_master: metal.id,
+            metal_type: metal.id,
             metal_purities: allowedColors,
           });
         }
       }
     });
 
-    console.log("allowedMetalsPayload ", allowedMetalsPayload);
+    console.log('allowedMetalsPayload ', allowedMetalsPayload);
     // return;
 
     this.httpPostPromise<IGenericResponse<null>, any>(

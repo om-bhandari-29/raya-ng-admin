@@ -19,6 +19,7 @@ export interface MetalPurityForm {
   percentage: FormControl<number>;
   rate_per_gram_inr: FormControl<number>;
   rate_per_gram_usd: FormControl<number>;
+  density_multiplier: FormControl<number | null>;
 }
 
 export const initializeForm = (): FormGroup<MetalPurityForm> => {
@@ -49,6 +50,9 @@ export const initializeForm = (): FormGroup<MetalPurityForm> => {
     }),
     rate_per_gram_usd: new FormControl(0, {
       nonNullable: true,
+      validators: [], // Clean slate
+    }),
+    density_multiplier: new FormControl<number | null>(null, {
       validators: [], // Clean slate
     }),
   });
