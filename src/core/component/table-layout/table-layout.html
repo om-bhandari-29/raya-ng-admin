@@ -4,21 +4,27 @@
   <div class="flex items-center justify-between px-3 py-2 border-b border-gray-200">
     <!-- Left: search input -->
     <div class="flex items-center gap-2">
-      <input type="text" [placeholder]="searchPlaceholder" [value]="searchValue" (input)="onSearchInput($event)"
+      <input
+        type="text"
+        [placeholder]="searchPlaceholder"
+        [value]="searchValue"
+        (input)="onSearchInput($event)"
         class="w-40 px-3 py-1 text-sm rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-        style="background-color: #f3f3f3" />
+        style="background-color: #f3f3f3"
+      />
     </div>
 
     <!-- Right: actions -->
     <div class="flex items-center gap-2">
       @if (topBarActions) {
-      <ng-container *ngTemplateOutlet="topBarActions">
-      </ng-container>
+        <ng-container *ngTemplateOutlet="topBarActions"> </ng-container>
       }
 
-      <button type="button"
+      <button
+        type="button"
         class="inline-flex items-center gap-1.5 px-3 py-1 text-sm text-gray-600 rounded-md transition-colors"
-        style="background-color: #f3f3f3">
+        style="background-color: #f3f3f3"
+      >
         <i class="bx bx-filter-alt text-base"></i>
         Filter
       </button>
@@ -26,9 +32,11 @@
         <i class="bx bx-x text-lg"></i>
       </button>
       <div class="w-px h-4 bg-gray-200"></div>
-      <button type="button"
+      <button
+        type="button"
         class="inline-flex items-center gap-1.5 px-3 py-1 text-sm text-gray-600 rounded-md transition-colors"
-        style="background-color: #f3f3f3">
+        style="background-color: #f3f3f3"
+      >
         <i class="bx bx-sort-alt-2 text-base"></i>
         ID
       </button>
@@ -37,196 +45,284 @@
 
   <!-- Error State -->
   @if (errorMessage) {
-  <div class="flex items-center gap-2 px-5 py-3 text-sm text-red-600 bg-red-50 border-b border-red-100">
-    <svg class="h-4 w-4 shrink-0" fill="currentColor" viewBox="0 0 20 20">
-      <path fill-rule="evenodd"
-        d="M10 18a8 8 0 100-16 8 8 0 000 16zm-.75-11.25a.75.75 0 011.5 0v4.5a.75.75 0 01-1.5 0v-4.5zm.75 7.5a.75.75 0 100-1.5.75.75 0 000 1.5z"
-        clip-rule="evenodd" />
-    </svg>
-    {{ errorMessage }}
-  </div>
+    <div
+      class="flex items-center gap-2 px-5 py-3 text-sm text-red-600 bg-red-50 border-b border-red-100"
+    >
+      <svg class="h-4 w-4 shrink-0" fill="currentColor" viewBox="0 0 20 20">
+        <path
+          fill-rule="evenodd"
+          d="M10 18a8 8 0 100-16 8 8 0 000 16zm-.75-11.25a.75.75 0 011.5 0v4.5a.75.75 0 01-1.5 0v-4.5zm.75 7.5a.75.75 0 100-1.5.75.75 0 000 1.5z"
+          clip-rule="evenodd"
+        />
+      </svg>
+      {{ errorMessage }}
+    </div>
   }
 
   <!-- Loading State -->
   @if (isLoading) {
-  <div class="flex items-center justify-center py-16 text-gray-400 text-sm gap-2">
-    <svg class="animate-spin h-4 w-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-      <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-      <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z"></path>
-    </svg>
-    Loading...
-  </div>
+    <div class="flex items-center justify-center py-16 text-gray-400 text-sm gap-2">
+      <svg
+        class="animate-spin h-4 w-4"
+        xmlns="http://www.w3.org/2000/svg"
+        fill="none"
+        viewBox="0 0 24 24"
+      >
+        <circle
+          class="opacity-25"
+          cx="12"
+          cy="12"
+          r="10"
+          stroke="currentColor"
+          stroke-width="4"
+        ></circle>
+        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z"></path>
+      </svg>
+      Loading...
+    </div>
   }
 
   @if (!isLoading) {
-  <div class="overflow-x-auto">
-    <table class="w-full text-sm">
-      <!-- Header -->
-      <thead>
-        <tr class="border-b border-gray-200" style="background-color: #f3f3f3">
-          @if (showCheckbox) {
-          <th scope="col" class="w-9 pl-4 pr-2 py-1.5">
-            <input type="checkbox" class="rounded border-gray-300 text-blue-600 focus:ring-blue-500 cursor-pointer" />
-          </th>
-          }
-
-          @for (column of columns; track trackByKey($index, column)) {
-          @if (!column.hidden) {
-          <th scope="col" [style.width]="column.width"
-            class="px-3 py-1.5 text-left text-xs font-medium text-gray-500 whitespace-nowrap"
-            [class.text-center]="column.align === 'center'" [class.text-right]="column.align === 'right'">
-            {{ column.header }}
-          </th>
-          }
-          }
-
-          @if (showActions) {
-          <th scope="col" class="pl-3 pr-4 py-1.5 text-right">
-            <div class="flex items-center justify-end gap-1.5 text-xs text-gray-500 font-medium whitespace-nowrap">
-              <span>{{ data.length }} of {{ data.length }}</span>
-              <i class="bx bx-heart text-sm"></i>
-            </div>
-          </th>
-          }
-        </tr>
-      </thead>
-
-      <!-- Body -->
-      <tbody class="divide-y divide-gray-100">
-        @for (item of data; track trackById($index, item)) {
-        <tr class="hover:bg-gray-50 transition-colors group cursor-pointer" (click)="handleRowClick(item)">
-          <!-- Checkbox -->
-          @if (showCheckbox) {
-          <td class="w-9 pl-4 pr-2 py-1.5" (click)="$event.stopPropagation()">
-            <input type="checkbox" class="rounded border-gray-300 text-blue-600 focus:ring-blue-500 cursor-pointer" />
-          </td>
-          }
-
-          <!-- Data Cells -->
-          @for (column of columns; track trackByKey($index, column)) {
-          @if (!column.hidden) {
-          <td class="px-3 py-1.5" [class.whitespace-nowrap]="!column.wrap" [class.overflow-hidden]="column.ellipsis"
-            [class.text-ellipsis]="column.ellipsis" [class.max-w-0]="column.ellipsis"
-            [class.text-center]="column.align === 'center'" [class.text-right]="column.align === 'right'"
-            [ngClass]="getCellClass(column, item)" style="color: #525252">
-            @if (column.slot) {
-            @if (getSlotTemplate(column.slot); as tpl) {
-            <ng-container *ngTemplateOutlet="tpl; context: { $implicit: item }"></ng-container>
+    <div class="overflow-x-auto">
+      <table class="w-full text-sm">
+        <!-- Header -->
+        <thead>
+          <tr class="border-b border-gray-200" style="background-color: #f3f3f3">
+            @if (showCheckbox) {
+              <th scope="col" class="w-9 pl-4 pr-2 py-1.5">
+                <input
+                  type="checkbox"
+                  class="rounded border-gray-300 text-blue-600 focus:ring-blue-500 cursor-pointer"
+                />
+              </th>
             }
-            } @else if (column.type === 'boolean') {
-            <input type="checkbox" [checked]="getNestedValue(item, column.key)" disabled
-              class="rounded border-gray-300 text-blue-600 focus:ring-blue-500 cursor-default" />
-            } @else if (column.type === 'badge') {
-            <span [class]="
+
+            @for (column of columns; track trackByKey($index, column)) {
+              @if (!column.hidden) {
+                <th
+                  scope="col"
+                  [style.width]="column.width"
+                  class="px-3 py-1.5 text-left text-xs font-medium text-gray-500 whitespace-nowrap"
+                  [class.text-center]="column.align === 'center'"
+                  [class.text-right]="column.align === 'right'"
+                >
+                  {{ column.header }}
+                </th>
+              }
+            }
+
+            @if (showActions) {
+              <th scope="col" class="pl-3 pr-4 py-1.5 text-right">
+                <div
+                  class="flex items-center justify-end gap-1.5 text-xs text-gray-500 font-medium whitespace-nowrap"
+                >
+                  <span>{{ data.length }} of {{ data.length }}</span>
+                  <i class="bx bx-heart text-sm"></i>
+                </div>
+              </th>
+            }
+          </tr>
+        </thead>
+
+        <!-- Body -->
+        <tbody class="divide-y divide-gray-100">
+          @for (item of data; track trackById($index, item)) {
+            <tr
+              class="hover:bg-gray-50 transition-colors group cursor-pointer"
+              (click)="handleRowClick(item)"
+            >
+              <!-- Checkbox -->
+              @if (showCheckbox) {
+                <td class="w-9 pl-4 pr-2 py-1.5" (click)="$event.stopPropagation()">
+                  <input
+                    type="checkbox"
+                    class="rounded border-gray-300 text-blue-600 focus:ring-blue-500 cursor-pointer"
+                  />
+                </td>
+              }
+
+              <!-- Data Cells -->
+              @for (column of columns; track trackByKey($index, column)) {
+                @if (!column.hidden) {
+                  <td
+                    class="px-3 py-1.5"
+                    [class.whitespace-nowrap]="!column.wrap"
+                    [class.overflow-hidden]="column.ellipsis"
+                    [class.text-ellipsis]="column.ellipsis"
+                    [class.max-w-0]="column.ellipsis"
+                    [class.text-center]="column.align === 'center'"
+                    [class.text-right]="column.align === 'right'"
+                    [ngClass]="getCellClass(column, item)"
+                    style="color: #525252"
+                  >
+                    @if (column.slot) {
+                      @if (getSlotTemplate(column.slot); as tpl) {
+                        <ng-container
+                          *ngTemplateOutlet="tpl; context: { $implicit: item }"
+                        ></ng-container>
+                      }
+                    } @else if (column.type === 'boolean') {
+                      <input
+                        type="checkbox"
+                        [checked]="getNestedValue(item, column.key)"
+                        disabled
+                        class="rounded border-gray-300 text-blue-600 focus:ring-blue-500 cursor-default"
+                      />
+                    } @else if (column.type === 'badge') {
+                      <span
+                        [class]="
                           'inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium ' +
                           getBadgeClass(column, item)
-                        ">
-              {{ getBadgeLabel(column, item) }}
-            </span>
-            } @else {
-            <span [class]="column.type === 'number' ? 'font-medium tabular-nums' : ''">
-              {{ renderCell(column, item) }}
-            </span>
-            }
-          </td>
+                        "
+                      >
+                        {{ getBadgeLabel(column, item) }}
+                      </span>
+                    } @else {
+                      <span [class]="column.type === 'number' ? 'font-medium tabular-nums' : ''">
+                        {{ renderCell(column, item) }}
+                      </span>
+                    }
+                  </td>
+                }
+              }
+
+              <!-- Actions Cell -->
+              @if (showActions) {
+                <td class="pl-3 pr-4 py-1.5" (click)="$event.stopPropagation()">
+                  <div class="flex items-center justify-end gap-3 text-gray-400">
+                    <!-- Time ago -->
+                    <span class="text-xs text-gray-400 tabular-nums">{{
+                      getTimeAgo($any(item).updated_at)
+                    }}</span>
+
+                    <!-- Comment -->
+                    <button
+                      type="button"
+                      class="flex items-center gap-0.5 hover:text-gray-600 transition-colors"
+                    >
+                      <i class="bx bx-comment text-sm"></i>
+                      <span class="text-xs">0</span>
+                    </button>
+
+                    <!-- Heart -->
+                    <button
+                      type="button"
+                      (click)="handleLike(item); $event.stopPropagation()"
+                      class="transition-colors hover:text-red-500"
+                      [class.text-red-500]="$any(item).liked"
+                      [class.text-gray-400]="!$any(item).liked"
+                    >
+                      <i
+                        class="bx text-sm"
+                        [class.bxs-heart]="$any(item).liked"
+                        [class.bx-heart]="!$any(item).liked"
+                      ></i>
+                    </button>
+
+                    <!-- Edit / Delete (hover only) -->
+                    <div class="transition-opacity flex items-center gap-2">
+                      <button
+                        type="button"
+                        (click)="handleEdit(item); $event.stopPropagation()"
+                        class="hover:text-blue-600 transition-colors"
+                      >
+                        <i class="bx bx-edit text-sm"></i>
+                      </button>
+                      <button
+                        type="button"
+                        (click)="handleDelete(item); $event.stopPropagation()"
+                        class="hover:text-red-600 transition-colors"
+                      >
+                        <i class="bx bx-trash text-sm"></i>
+                      </button>
+                    </div>
+                  </div>
+                </td>
+              }
+            </tr>
+          } @empty {
+            <tr>
+              <td
+                [attr.colspan]="columns.length + (showCheckbox ? 1 : 0) + (showActions ? 1 : 0)"
+                class="px-4 py-14 text-center text-gray-400 text-sm"
+              >
+                No items found.
+              </td>
+            </tr>
           }
-          }
-
-          <!-- Actions Cell -->
-          @if (showActions) {
-          <td class="pl-3 pr-4 py-1.5" (click)="$event.stopPropagation()">
-            <div class="flex items-center justify-end gap-3 text-gray-400">
-              <!-- Time ago -->
-              <span class="text-xs text-gray-400 tabular-nums">{{
-                getTimeAgo($any(item).updated_at)
-                }}</span>
-
-              <!-- Comment -->
-              <button type="button" class="flex items-center gap-0.5 hover:text-gray-600 transition-colors">
-                <i class="bx bx-comment text-sm"></i>
-                <span class="text-xs">0</span>
-              </button>
-
-              <!-- Heart -->
-              <button type="button" (click)="handleLike(item); $event.stopPropagation()"
-                class="transition-colors hover:text-red-500" [class.text-red-500]="$any(item).liked"
-                [class.text-gray-400]="!$any(item).liked">
-                <i class="bx text-sm" [class.bxs-heart]="$any(item).liked" [class.bx-heart]="!$any(item).liked"></i>
-              </button>
-
-              <!-- Edit / Delete (hover only) -->
-              <div class="opacity-0 group-hover:opacity-100 transition-opacity flex items-center gap-2">
-                <button type="button" (click)="handleEdit(item); $event.stopPropagation()"
-                  class="hover:text-blue-600 transition-colors">
-                  <i class="bx bx-edit text-sm"></i>
-                </button>
-                <button type="button" (click)="handleDelete(item); $event.stopPropagation()"
-                  class="hover:text-red-600 transition-colors">
-                  <i class="bx bx-trash text-sm"></i>
-                </button>
-              </div>
-            </div>
-          </td>
-          }
-        </tr>
-        } @empty {
-        <tr>
-          <td [attr.colspan]="columns.length + (showCheckbox ? 1 : 0) + (showActions ? 1 : 0)"
-            class="px-4 py-14 text-center text-gray-400 text-sm">
-            No items found.
-          </td>
-        </tr>
-        }
-      </tbody>
-    </table>
-  </div>
+        </tbody>
+      </table>
+    </div>
   }
 </div>
 
 @if (showPagination && totalPages >= 1) {
-<div class="flex items-center justify-between px-4 py-2 border-t border-gray-200 bg-white text-sm text-gray-600">
-  <!-- Left: total info -->
-  <span class="text-xs text-gray-500">
-    Page {{ currentPage }} of {{ totalPages }}
-    @if (totalCount > 0) {
-    <span class="ml-2 text-gray-400">({{ totalCount }} records)</span>
-    }
-  </span>
+  <div
+    class="flex items-center justify-between px-4 py-2 border-t border-gray-200 bg-white text-sm text-gray-600"
+  >
+    <!-- Left: total info -->
+    <span class="text-xs text-gray-500">
+      Page {{ currentPage }} of {{ totalPages }}
+      @if (totalCount > 0) {
+        <span class="ml-2 text-gray-400">({{ totalCount }} records)</span>
+      }
+    </span>
 
-  <!-- Center: page buttons -->
-  <div class="flex items-center gap-1">
-    <button type="button"
-      class="px-2 py-1 rounded text-xs hover:bg-gray-100 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
-      [disabled]="currentPage === 1" (click)="goToPage(1)" title="First page">
-      <i class="bx bx-chevrons-left text-base leading-none"></i>
-    </button>
-    <button type="button"
-      class="px-2 py-1 rounded text-xs hover:bg-gray-100 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
-      [disabled]="currentPage === 1" (click)="goToPage(currentPage - 1)" title="Previous page">
-      <i class="bx bx-chevron-left text-base leading-none"></i>
-    </button>
+    <!-- Center: page buttons -->
+    <div class="flex items-center gap-1">
+      <button
+        type="button"
+        class="px-2 py-1 rounded text-xs hover:bg-gray-100 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+        [disabled]="currentPage === 1"
+        (click)="goToPage(1)"
+        title="First page"
+      >
+        <i class="bx bx-chevrons-left text-base leading-none"></i>
+      </button>
+      <button
+        type="button"
+        class="px-2 py-1 rounded text-xs hover:bg-gray-100 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+        [disabled]="currentPage === 1"
+        (click)="goToPage(currentPage - 1)"
+        title="Previous page"
+      >
+        <i class="bx bx-chevron-left text-base leading-none"></i>
+      </button>
 
-    @for (page of getPageNumbers(); track page) {
-    <button type="button" class="min-w-[28px] px-2 py-1 rounded text-xs transition-colors"
-      [class.bg-blue-600]="page === currentPage" [class.text-white]="page === currentPage"
-      [class.hover:bg-gray-100]="page !== currentPage" (click)="goToPage(page)">
-      {{ page }}
-    </button>
-    }
+      @for (page of getPageNumbers(); track page) {
+        <button
+          type="button"
+          class="min-w-[28px] px-2 py-1 rounded text-xs transition-colors"
+          [class.bg-blue-600]="page === currentPage"
+          [class.text-white]="page === currentPage"
+          [class.hover:bg-gray-100]="page !== currentPage"
+          (click)="goToPage(page)"
+        >
+          {{ page }}
+        </button>
+      }
 
-    <button type="button"
-      class="px-2 py-1 rounded text-xs hover:bg-gray-100 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
-      [disabled]="currentPage === totalPages" (click)="goToPage(currentPage + 1)" title="Next page">
-      <i class="bx bx-chevron-right text-base leading-none"></i>
-    </button>
-    <button type="button"
-      class="px-2 py-1 rounded text-xs hover:bg-gray-100 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
-      [disabled]="currentPage === totalPages" (click)="goToPage(totalPages)" title="Last page">
-      <i class="bx bx-chevrons-right text-base leading-none"></i>
-    </button>
+      <button
+        type="button"
+        class="px-2 py-1 rounded text-xs hover:bg-gray-100 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+        [disabled]="currentPage === totalPages"
+        (click)="goToPage(currentPage + 1)"
+        title="Next page"
+      >
+        <i class="bx bx-chevron-right text-base leading-none"></i>
+      </button>
+      <button
+        type="button"
+        class="px-2 py-1 rounded text-xs hover:bg-gray-100 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+        [disabled]="currentPage === totalPages"
+        (click)="goToPage(totalPages)"
+        title="Last page"
+      >
+        <i class="bx bx-chevrons-right text-base leading-none"></i>
+      </button>
+    </div>
+
+    <!-- Right: page size -->
+    <span class="text-xs text-gray-500">{{ pageSize }} / page</span>
   </div>
-
-  <!-- Right: page size -->
-  <span class="text-xs text-gray-500">{{ pageSize }} / page</span>
-</div>
 }
