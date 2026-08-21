@@ -10,3 +10,9 @@ export interface RAllowedMetal {
     rate_per_gram_usd: number;
   }>;
 }
+
+
+export interface RMetalWeightMatrix {
+  ring_size: string;
+  base_metal_weight_gm: number;
+}

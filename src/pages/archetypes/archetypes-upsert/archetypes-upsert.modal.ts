@@ -93,3 +93,20 @@ export const initializeSizeQuantityMatrixForm = (
         stone_quantity: new FormControl(data?.stone_quantity ?? null),
     });
 };
+
+export interface MetalWeightMatrixForm {
+    ring_size: FormControl<string | null>;
+    base_metal_weight_gm: FormControl<number | null>;
+}
+
+export const initializeMetalWeightMatrixForm = (
+    data?: Partial<{
+        ring_size: string;
+        base_metal_weight_gm: number;
+    }>
+): FormGroup<MetalWeightMatrixForm> => {
+    return new FormGroup<MetalWeightMatrixForm>({
+        ring_size: new FormControl(data?.ring_size ?? null),
+        base_metal_weight_gm: new FormControl(data?.base_metal_weight_gm ?? null),
+    });
+}

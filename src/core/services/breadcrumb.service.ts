@@ -10,7 +10,6 @@ export class BreadcrumbService {
   readonly breadcrumbs = signal<Breadcrumb[]>([]);
 
   set(crumbs: Breadcrumb[]): void {
-    console.log(crumbs)
     this.breadcrumbs.set(crumbs);
   }
 

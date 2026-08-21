@@ -16,6 +16,8 @@ import {
   IVariant,
   VariantUpsertForm,
   ZoneSlotDetailForm,
+  MetalWeightMatrixForm,
+  initializeMetalWeightMatrixForm,
 } from './archetypes-upsert.modal';
 import { IGenericResponse } from '../../../core/response/genericResponse.interface';
 import { FormArray, FormGroup, FormControl, ReactiveFormsModule } from '@angular/forms';
@@ -23,20 +25,14 @@ import {
   IArchetypeVariant,
   ISizeQuantityMatrix,
   IZoneSlot,
-  IMetalPurity,
-  IAllowedMetal,
   ISaveMetalPurity,
 } from '../archetypes.response';
 import { RingComponentZone, RingComponentZoneArray } from '../../../core/enum/ring-component.enum';
 import { RingComponentZoneArrayModel } from '../../../core/models/ringComponentZone.interface';
 import { MatDialog } from '@angular/material/dialog';
 import { ZoneSlotUpsert } from '../zone-slot-upsert/zone-slot-upsert';
-import { BreadcrumbService } from '../../../core/services/breadcrumb.service';
-import { PageTitleService } from '../../../core/services/page-title.service';
 import { VariantEditModal } from './variant-edit-modal/variant-edit-modal';
 import { DecimalPipe } from '@angular/common';
-import { MetalPurity } from '../../../core/enum/metal-purity.enum';
-import { MetalColor } from '../../../core/enum/metal-color.enum';
 import { RMetal } from '../../../core/response/metal-purity.response';
 import { RAllowedMetal } from './archetypes-upsert.response';
 
@@ -58,12 +54,16 @@ export class ArchetypesUpsert extends Base implements OnInit {
   private router = inject(Router);
 
   public activeZone = signal<string>(RingComponentZone.CENTER);
-  public activeTab = signal<'metal' | 'stone'>('metal');
+  public activeTab = signal<'metal' | 'stone' | 'metal_weight_matrix'>('metal');
   public allowedMetals = signal<ISaveMetalPurity[]>([]);
   public metalPurity: WritableSignal<any[]> = signal([]);
   public metalColor: WritableSignal<any[]> = signal([]);
 
   public metalSpecsForm = new FormGroup<Record<string, FormGroup>>({});
+  // public metalWeightMatrixForm: FormArray<FormGroup<MetalWeightMatrixForm>> = new FormArray<FormGroup<MetalWeightMatrixForm>>([]);
+  public metalWeightMatrixForm = new FormGroup<{metalweight_matrix: FormArray<FormGroup<MetalWeightMatrixForm>>}>({
+    metalweight_matrix: new FormArray<FormGroup<MetalWeightMatrixForm>>([]),
+  });
 
   constructor(private _activatedRoute: ActivatedRoute) {
     super();
@@ -129,7 +129,6 @@ export class ArchetypesUpsert extends Base implements OnInit {
 
   private initDynamicMetalSpecsForm() {
     const metals = this.metalPurity();
-    console.log('initDynamicMetalSpecsForm - metals:', metals);
 
     // Clear and build dynamic form controls
     const newFormGroupConfig: Record<string, FormGroup> = {};
@@ -144,10 +143,6 @@ export class ArchetypesUpsert extends Base implements OnInit {
     });
 
     this.metalSpecsForm = new FormGroup(newFormGroupConfig);
-    console.log(
-      'initDynamicMetalSpecsForm - metalSpecsForm controls:',
-      this.metalSpecsForm.controls,
-    );
   }
 
   public getZoneFormArray(zoneName: string): FormArray<FormGroup<ZoneSlotDetailForm>> {
@@ -206,6 +201,10 @@ export class ArchetypesUpsert extends Base implements OnInit {
       });
   }
 
+  public saveMetalWeightMatrix(){}
+  public addMetalWeightMatrixRow(){}
+  public removeMetalWeightMatrixRow(index: number){}
+
   public getZoneAllowedMtl() {
     const vId = this.variantUpsertForm.controls.variantId.value ?? null;
     if (!vId) {
@@ -219,6 +218,7 @@ export class ArchetypesUpsert extends Base implements OnInit {
     this.httpGetPromise<IGenericResponse<IArchetypeVariant>>(
       this.apiRoutes.products_import.GET_ZONE_ALLOWEDMTL(vId),
     ).then((res) => {
+
       if (res.status) {
         // Clear existing form arrays before pushing new items
         Object.keys(this.variantUpsertForm.controls).forEach((key) => {
@@ -246,6 +246,12 @@ export class ArchetypesUpsert extends Base implements OnInit {
             });
           }
         });
+
+        (res.data.weight_matrix ?? []).forEach((item: any) => {
+          this.metalWeightMatrixForm.controls.metalweight_matrix.push(initializeMetalWeightMatrixForm(item))
+        });
+
+        console.log('metalWeightMatrixForm after patch:', this.metalWeightMatrixForm.value);
       } else {
         this.variantUpsertForm = initializeVariantUpsertForm();
       }
