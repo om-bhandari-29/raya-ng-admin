@@ -13,6 +13,6 @@ export interface RAllowedMetal {
 
 
 export interface RMetalWeightMatrix {
-  ring_size: string;
-  base_metal_weight_gm: number;
+  ring_size: number | null;
+  base_metal_weight_gm: number | null;
 }

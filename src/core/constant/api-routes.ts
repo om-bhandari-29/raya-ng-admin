@@ -115,6 +115,7 @@ export const APIRoutes = {
     UPDATE_VARIANT_ALLOWED_METALS: '/products/variant/allowed-metals',
     POST: '/products/variant',
     POST_BULK_VARIANT_UNDER_DESIGN: '/products/bulk-variants',
+    POST_METAL_WEIGHT_MATRIX: '/products/metal-weight-matrix',
   },
 
   Blueprint_Zone_Config: {

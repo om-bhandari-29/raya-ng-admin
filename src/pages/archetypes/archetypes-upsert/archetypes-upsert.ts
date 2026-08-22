@@ -34,7 +34,7 @@ import { ZoneSlotUpsert } from '../zone-slot-upsert/zone-slot-upsert';
 import { VariantEditModal } from './variant-edit-modal/variant-edit-modal';
 import { DecimalPipe } from '@angular/common';
 import { RMetal } from '../../../core/response/metal-purity.response';
-import { RAllowedMetal } from './archetypes-upsert.response';
+import { RAllowedMetal, RMetalWeightMatrix } from './archetypes-upsert.response';
 
 @Component({
   selector: 'app-archetypes-upsert',
@@ -201,7 +201,35 @@ export class ArchetypesUpsert extends Base implements OnInit {
       });
   }
 
-  public saveMetalWeightMatrix(){}
+  public saveMetalWeightMatrix(){
+    console.log('saveMetalWeightMatrix', this.metalWeightMatrixForm.getRawValue());
+
+    const metalWeightMatrixPayload = this.metalWeightMatrixForm.getRawValue().metalweight_matrix.map((item: RMetalWeightMatrix) => ({
+      ring_size: item.ring_size,
+      base_metal_weight_gm: (item.base_metal_weight_gm ?? 0)
+    }));
+
+    const payload = {
+      variantId: this.variantUpsertForm.controls.variantId.value ?? null,
+      metalWeightMatrix: metalWeightMatrixPayload,
+    }
+
+
+    this.httpPostPromise<IGenericResponse<null>, any>(
+      this.apiRoutes.products_import.POST_METAL_WEIGHT_MATRIX,
+      payload,
+    )
+      .then((res) => {
+        if (res.status) {
+          this.toastr.success('Metal weight matrix saved successfully');
+        }
+        else {
+          this.toastr.error('Failed to save metal weight matrix');
+        }
+      })
+
+  }
+
   public addMetalWeightMatrixRow(){}
   public removeMetalWeightMatrixRow(index: number){}
 
@@ -250,8 +278,6 @@ export class ArchetypesUpsert extends Base implements OnInit {
         (res.data.weight_matrix ?? []).forEach((item: any) => {
           this.metalWeightMatrixForm.controls.metalweight_matrix.push(initializeMetalWeightMatrixForm(item))
         });
-
-        console.log('metalWeightMatrixForm after patch:', this.metalWeightMatrixForm.value);
       } else {
         this.variantUpsertForm = initializeVariantUpsertForm();
       }

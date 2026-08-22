@@ -95,14 +95,14 @@ export const initializeSizeQuantityMatrixForm = (
 };
 
 export interface MetalWeightMatrixForm {
-    ring_size: FormControl<string | null>;
+    ring_size: FormControl<number | null>;
     base_metal_weight_gm: FormControl<number | null>;
 }
 
 export const initializeMetalWeightMatrixForm = (
     data?: Partial<{
-        ring_size: string;
-        base_metal_weight_gm: number;
+        ring_size: number | null;
+        base_metal_weight_gm: number | null;
     }>
 ): FormGroup<MetalWeightMatrixForm> => {
     return new FormGroup<MetalWeightMatrixForm>({
