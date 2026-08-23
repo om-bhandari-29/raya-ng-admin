@@ -60,6 +60,7 @@ export class ArchetypesUpsert extends Base implements OnInit {
   public metalColor: WritableSignal<any[]> = signal([]);
 
   public metalSpecsForm = new FormGroup<Record<string, FormGroup>>({});
+  public labourCosts = signal<{ labour_cost_in_inr: number; labour_cost_in_usd: number } | null>(null);
   // public metalWeightMatrixForm: FormArray<FormGroup<MetalWeightMatrixForm>> = new FormArray<FormGroup<MetalWeightMatrixForm>>([]);
   public metalWeightMatrixForm = new FormGroup<{metalweight_matrix: FormArray<FormGroup<MetalWeightMatrixForm>>}>({
     metalweight_matrix: new FormArray<FormGroup<MetalWeightMatrixForm>>([]),
@@ -69,17 +70,20 @@ export class ArchetypesUpsert extends Base implements OnInit {
     super();
   }
 
-  public designSlug: string | null = null;
+  public designId: number | null = null;
 
   override ngOnInit(): void {
-    this.designSlug = this._activatedRoute.snapshot.params['design_slug'] ?? null;
-    if (this.designSlug) {
-      this.pageTitleService.setTitle(`Archetype: ${this.designSlug}`);
-      this.getVaraintBySlug(this.designSlug);
+    this.designId = this._activatedRoute.snapshot.params['design_slug'] ?? null;
+    if (this.designId) {
+      this.pageTitleService.setTitle(`Archetype: ${this.designId}`);
+      this.getVaraintBySlug(this.designId);
     } else {
       this.toastr.error('Design slug not found');
       this.goBack();
     }
+
+
+    console.log("design slug ", this.designId)
 
     const queryParams = {
       isPagination: false,
@@ -238,16 +242,20 @@ export class ArchetypesUpsert extends Base implements OnInit {
     if (!vId) {
       this.allowedMetals.set([]);
       this.metalSpecsForm.reset();
+      this.labourCosts.set(null);
       return;
     }
 
     this.getVariantAllowedMetals(vId);
 
     this.httpGetPromise<IGenericResponse<IArchetypeVariant>>(
-      this.apiRoutes.products_import.GET_ZONE_ALLOWEDMTL(vId),
-    ).then((res) => {
+      this.apiRoutes.products_import.GET_VARIANT_DETAIL(vId),
+    ).then((res: IGenericResponse<IArchetypeVariant>) => {
 
       if (res.status) {
+        
+        this.labourCosts.set(res.data.labour_costs ?? null);
+        console.log('variant detail', this.labourCosts(), res.data.labour_costs);
         // Clear existing form arrays before pushing new items
         Object.keys(this.variantUpsertForm.controls).forEach((key) => {
           if (key !== 'variantId') {
@@ -280,6 +288,7 @@ export class ArchetypesUpsert extends Base implements OnInit {
         });
       } else {
         this.variantUpsertForm = initializeVariantUpsertForm();
+        this.labourCosts.set(null);
       }
       this.cdr.detectChanges();
     });
@@ -315,9 +324,6 @@ export class ArchetypesUpsert extends Base implements OnInit {
         }
       }
     });
-
-    console.log('allowedMetalsPayload ', allowedMetalsPayload);
-    // return;
 
     this.httpPostPromise<IGenericResponse<null>, any>(
       this.apiRoutes.products_import.UPDATE_VARIANT_ALLOWED_METALS,
@@ -380,7 +386,7 @@ export class ArchetypesUpsert extends Base implements OnInit {
     });
   }
 
-  private getVaraintBySlug(design_slug: string) {
+  private getVaraintBySlug(design_slug: number) {
     this.httpGetPromise<IGenericResponse<IVariant[]>>(
       this.apiRoutes.products_import.GET_VARIANT(design_slug),
     )
@@ -416,12 +422,15 @@ export class ArchetypesUpsert extends Base implements OnInit {
         variant_id: selectedVariant.variantId,
         variant_name: selectedVariant.variant_name,
         target_gender: selectedVariant.target_gender,
-        design_slug: this.designSlug,
+        designId: this.designId,
+        labour_cost_in_inr: this.labourCosts()?.labour_cost_in_inr ?? null,
+        labour_cost_in_usd: this.labourCosts()?.labour_cost_in_usd ?? null,
       },
     });
 
     dialogRef.afterClosed().subscribe((result) => {
       if (result) {
+        console.log('Variant edit result:', result);
         // Update local list
         this.designSlugVariant.update((variants) =>
           variants.map((v) =>
@@ -430,6 +439,10 @@ export class ArchetypesUpsert extends Base implements OnInit {
               : v,
           ),
         );
+        this.labourCosts.set({
+          labour_cost_in_inr: result.labour_cost_in_inr,
+          labour_cost_in_usd: result.labour_cost_in_usd
+        });
         this.toastr.success('Variant details updated successfully');
         this.cdr.detectChanges();
       }
@@ -444,13 +457,13 @@ export class ArchetypesUpsert extends Base implements OnInit {
         variant_id: 0,
         variant_name: '',
         target_gender: '',
-        design_slug: this.designSlug ?? '',
+        designId: this.designId ?? '',
       },
     });
 
     dialogRef.afterClosed().subscribe((result) => {
       if (result) {
-        if (this.designSlug) {
+        if (this.designId) {
           this.designSlugVariant.update((oldval) => [
             ...oldval,
             {

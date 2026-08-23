@@ -59,6 +59,10 @@ export interface IArchetypeVariant {
   };
   design_variant_allowed_metals: Array<IAllowedMetal>;
   weight_matrix?: IWeightMatrixEntry[];
+  labour_costs: {
+    labour_cost_in_inr: number;
+    labour_cost_in_usd: number;
+  };
 }
 
 export interface IArchetypeDetail {

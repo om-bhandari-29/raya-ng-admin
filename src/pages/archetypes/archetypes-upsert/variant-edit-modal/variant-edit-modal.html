@@ -43,6 +43,31 @@
                     <p class="text-xxs text-red-500 font-semibold mt-1">Gender is required.</p>
                 }
             </div>
+
+            <!-- Labour Costs side by side -->
+            <div class="grid grid-cols-2 gap-4">
+                <!-- Labour Cost INR -->
+                <div class="space-y-1">
+                    <label class="block text-xs font-bold text-slate-500 uppercase tracking-wide">Labour Cost (INR)</label>
+                    <input type="number" formControlName="labour_costs_in_inr"
+                        class="w-full rounded-lg border border-slate-200 px-3 py-2 text-sm text-slate-800 outline-none transition focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 bg-slate-50 focus:bg-white"
+                        placeholder="INR" min="0" step="0.01" />
+                    @if (form.get('labour_costs_in_inr')?.touched && form.get('labour_costs_in_inr')?.invalid) {
+                        <p class="text-xxs text-red-500 font-semibold mt-1">Must be >= 0.</p>
+                    }
+                </div>
+
+                <!-- Labour Cost USD -->
+                <div class="space-y-1">
+                    <label class="block text-xs font-bold text-slate-500 uppercase tracking-wide">Labour Cost (USD)</label>
+                    <input type="number" formControlName="labour_costs_in_usd"
+                        class="w-full rounded-lg border border-slate-200 px-3 py-2 text-sm text-slate-800 outline-none transition focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 bg-slate-50 focus:bg-white"
+                        placeholder="USD" min="0" step="0.01" />
+                    @if (form.get('labour_costs_in_usd')?.touched && form.get('labour_costs_in_usd')?.invalid) {
+                        <p class="text-xxs text-red-500 font-semibold mt-1">Must be >= 0.</p>
+                    }
+                </div>
+            </div>
         </form>
     </div>
 
