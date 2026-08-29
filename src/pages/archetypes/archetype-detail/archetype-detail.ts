@@ -8,8 +8,6 @@ import {
   IStoneOption,
   IZoneSlot,
 } from '../archetypes.response';
-import { BreadcrumbService } from '../../../core/services/breadcrumb.service';
-import { PageTitleService } from '../../../core/services/page-title.service';
 import { CommonModule } from '@angular/common';
 import {
   FormControl,
@@ -18,12 +16,8 @@ import {
   ɵInternalFormsSharedModule,
 } from '@angular/forms';
 import { BaseRingForm, createDefaultDevotionRingForm } from '../archetypes.model';
-import {
-  IGenericListResponse,
-  IGenericResponse,
-} from '../../../core/response/genericResponse.interface';
+import { IGenericResponse } from '../../../core/response/genericResponse.interface';
 import { RING_SIZES } from '../../../core/enum/ring-component.enum';
-import { RMetal } from '../../../core/response/metal-purity.response';
 import { RAllowedMetal } from '../archetypes-upsert/archetypes-upsert.response';
 import { HttpErrorResponse } from '@angular/common/http';
 

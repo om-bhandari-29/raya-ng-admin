@@ -820,6 +820,72 @@
                 </div>
               </section>
             }
+
+            <div
+              class="w-full overflow-hidden rounded-[22px] border border-slate-200 bg-white shadow-sm"
+            >
+              <!-- Header -->
+              <div class="flex items-center gap-4 bg-[#172238] px-7 py-5">
+                <div
+                  class="flex h-12 w-12 shrink-0 items-center justify-center rounded-[14px] bg-[#28354d]"
+                >
+                  <span class="text-2xl text-yellow-400">⚒</span>
+                </div>
+
+                <div>
+                  <h3 class="text-[21px] font-bold leading-6 text-white">Labour Cost</h3>
+
+                  <p class="mt-1 text-[15px] text-blue-100">
+                    Estimated labour charges for selected ring size & design
+                  </p>
+                </div>
+              </div>
+
+              <div class="px-8 py-7">
+                <!-- Rate -->
+                <div class="flex items-center justify-between py-2">
+                  <span class="text-[16px] font-medium text-slate-500"> Labour Rate </span>
+
+                  <span class="text-[16px] font-semibold text-slate-800">
+                    @let labour_costs = detail()?.variants?.[activeVariantIndex()]?.labour_costs;
+                    ₹{{ labour_costs?.labour_cost_in_inr | number: '1.0-2' }} / ${{
+                      labour_costs?.labour_cost_in_usd | number: '1.0-2'
+                    }}
+                  </span>
+                </div>
+
+                <div class="my-3 h-px bg-slate-100"></div>
+
+                <!-- Total -->
+                <div class="flex items-center justify-between pt-1">
+                  <span class="text-[17px] font-bold text-slate-900"> Final Cost </span>
+
+                  <div class="flex items-center gap-3">
+                    @let finalPriceInr =
+                      getGrandTotalPriceINR() +
+                      (getSelectedMetalPurityDetails()?.rate_per_gram_inr ?? 0) *
+                        getSelectedMetalWeight() +
+                      (labour_costs?.labour_cost_in_inr ?? 0);
+
+                    @let finalPriceUsd =
+                      getGrandTotalPriceUSD() +
+                      (getSelectedMetalPurityDetails()?.rate_per_gram_usd ?? 0) *
+                        getSelectedMetalWeight() +
+                      (labour_costs?.labour_cost_in_usd ?? 0);
+
+                    <span class="text-[25px] font-extrabold text-[#5146e5]">
+                      ₹{{ finalPriceInr | number: '1.2-2' }}
+                    </span>
+
+                    <span class="text-[21px] text-slate-300"> / </span>
+
+                    <span class="text-[25px] font-extrabold text-[#5146e5]">
+                      ${{ finalPriceUsd | number: '1.2-2' }}
+                    </span>
+                  </div>
+                </div>
+              </div>
+            </div>
           }
         </div>
       </div>
